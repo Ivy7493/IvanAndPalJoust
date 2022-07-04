@@ -12,10 +12,8 @@ const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({ limit: '100mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, './backend/scripts')));
 
-
-const socket = new GameSocket(server);
+const gameSocket = new GameSocket(server);
 
 app.use('/Queue', queueRouter);
 app.use('/Identity', indentityRouter);
