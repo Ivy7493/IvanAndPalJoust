@@ -4,15 +4,21 @@ const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
+const bodyParser = require('body-parser')
+const port = process.env.PORT || 3000
+const queueRouter = require('./backend/routes/queueRoutes.js')
+
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.json('/Queue')
 });
 
 io.on('connection', (socket) => {
   console.log('a user connected');
 });
 
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+app.get('/Queue',queueRouter)
+
+server.listen(port, () => {
+  console.log(`listening on ${port}`);
 });
