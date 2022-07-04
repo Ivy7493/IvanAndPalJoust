@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "build": "cd frontend/thisWayUp/$ng build$cd ../../",
-    "serve": "npm run build&npm start"
+    "build": "cd frontend/thisWayUp/ && ng build && cd ../../",
+    "serve": "npm run build && npm start",
+    "get": "cd frontend/thisWayUp/ && npm install && cd ../../ && npm install"
   },
   "repository": {
     "type": "git",
