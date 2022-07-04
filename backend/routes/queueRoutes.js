@@ -1,37 +1,36 @@
-const path = require('path')
-const express = require('express');
-const { join } = require('path');
-const QueueRoute = express.Router()
-let authList = []
+const express = require("express");
+const { statusFail, statusSuccess } = require("../utils/utils");
+const QueueRoute = express.Router();
 
-QueueRoute.get('/', function (req, res) {
+let authList = [];
 
-    console.log("Poggers!")
-})
+QueueRoute.get("/", function (req, res) {
+  console.log("Poggers!");
+});
 
+QueueRoute.post("/player", function (req, res) {
+  authList.filter((x) => {
+    if (x == req.body.name) {
+      res.status(400).json(statusFail("Given name already in use."));
+    }
+  });
 
-QueueRoute.post('/player', function (req, res) {
-    authList.filter(x => {
-        if (x == req.body.name) {
-            res.status(400).json('FAILED')
-        }
-    })
-    authList.push(req.body.name)
-})
+  authList.push(req.body.name);
+  res.json(statusSuccess(req.body.name));
+});
 
-QueueRoute.delete('/player', function (req, res) {
-    authList = authList.filter(x => {
-        if (x != req.body.name) {
-            return x
-        }
-    })
-    res.json("SUCCESS")
-})
+QueueRoute.delete("/player", function (req, res) {
+  authList = authList.filter((x) => {
+    if (x != req.body.name) {
+      return x;
+    }
+  });
 
+  res.json(statusSuccess(req.body.name));
+});
 
-QueueRoute.get('/players', function (req, res) {
-    res.json(authList)
-})
+QueueRoute.get("/players", function (req, res) {
+  res.json(statusSuccess(authList));
+});
 
-
-module.exports = QueueRoute
+module.exports = QueueRoute;
