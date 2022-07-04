@@ -1,0 +1,11 @@
+.shakeBar {
+  position: absolute;
+  background-color: brown;
+  width: 100%;
+  z-index: -10;
+  bottom: 0px;
+  /* height: 100px; */
+
+  color: white;
+  font-family: "Nura";
+}
