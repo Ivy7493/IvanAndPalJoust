@@ -1,0 +1,19 @@
+.joinButton {
+  width: 100%;
+}
+
+.joinButton button {
+  margin: auto;
+  border: 0px;
+  border-radius: 0.3em;
+  padding: 1em;
+  color: white;
+  font-family: "Nura";
+  font-size: 2em;
+  letter-spacing: 1px;
+  background-color: brown;
+}
+
+.joinButton button:hover {
+  background-color: rgb(141, 35, 35);
+}

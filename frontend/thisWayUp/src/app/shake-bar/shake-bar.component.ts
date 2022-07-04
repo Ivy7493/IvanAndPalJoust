@@ -10,12 +10,18 @@ export class ShakeBarComponent implements OnInit {
   constructor(
   ) {}
 
-  percent: Number = 90.0;
+  percent: number = 75.0;
 
   ngOnInit(): void {
+    // setInterval(this.addPercent, 10);
   }
 
-  setPercent(perc: Number) {
+  addPercent() {
+    this.percent++;
+    this.percent %= 100;
+  }
+
+  setPercent(perc: number) {
     this.percent = perc;
   }
 
