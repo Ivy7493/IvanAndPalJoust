@@ -4,7 +4,6 @@ const { join } = require('path');
 const QueueRoute = express.Router()
 let authList = []
 
-
 QueueRoute.get('/', function (req, res) {
 
     console.log("Poggers!")
@@ -12,17 +11,17 @@ QueueRoute.get('/', function (req, res) {
 
 
 QueueRoute.post('/player', function (req, res) {
-    authList.filter(x=>{
-        if(x == req.body.name){
+    authList.filter(x => {
+        if (x == req.body.name) {
             res.status(400).json('FAILED')
         }
     })
     authList.push(req.body.name)
 })
 
-QueueRoute.delete('/player',function (req,res){
-    authList = authList.filter(x =>{
-        if(x != req.body.name){
+QueueRoute.delete('/player', function (req, res) {
+    authList = authList.filter(x => {
+        if (x != req.body.name) {
             return x
         }
     })
@@ -30,8 +29,8 @@ QueueRoute.delete('/player',function (req,res){
 })
 
 
-QueueRoute.get('/players',function (req,res){
-   res.json(authList)
+QueueRoute.get('/players', function (req, res) {
+    res.json(authList)
 })
 
 
