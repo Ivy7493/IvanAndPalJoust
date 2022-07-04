@@ -1,10 +1,10 @@
-import { gameIsRunning, getGameState, startGame } from "./api_layer.js";
+import { gameIsRunning, startGame } from "./api_layer.js";
 import {
   getUrlArgument,
   navigateTo,
   PLAYING_PAGE,
   WAITING_FOR_FINISH,
-} from "./navigation";
+} from "./navigation.js";
 
 window.start = async function start() {
   // This player is starting the game.
