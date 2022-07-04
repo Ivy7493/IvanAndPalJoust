@@ -1,7 +1,10 @@
-const express = require("express");
-const path = require("path");
-const http = require("http");
-const { Server } = require("socket.io");
+const express = require('express');
+const path = require('path')
+const http = require('http');
+const bodyParser = require('body-parser');
+const queueRouter = require('./backend/routes/queueRoutes.js');
+const GameSocket = require('./backend/socket/gameSocket.js');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
