@@ -19,9 +19,9 @@ QueueRoute.post("/player", function (req, res) {
   res.json(statusSuccess(req.body.name));
 });
 
-QueueRoute.delete("/player", function (req, res) {
+QueueRoute.delete("/player/:name", function (req, res) {
   authList = authList.filter((x) => {
-    if (x != req.body.name) {
+    if (x != req.params.name) {
       return x;
     }
   });

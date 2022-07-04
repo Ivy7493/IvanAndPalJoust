@@ -8,6 +8,19 @@ export async function getAllPlayers() {
   return response.data.data;
 }
 
+export async function addPlayerToQueue(playerId) {
+  const response = await axios.post("/Queue/player", {
+    name: playerId,
+  });
+
+  return response.data.data;
+}
+
+export async function removePlayerFromQueue(playerId) {
+  const response = await axios.delete(`/Queue/player/${playerId}`);
+  return response.data.data;
+}
+
 export async function startGame() {
   const response = await axios.put("/Game/start");
   return response.data.data;
