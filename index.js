@@ -1,7 +1,10 @@
 const express = require('express');
 const path = require('path')
 const http = require('http');
-const { Server } = require("socket.io");
+const bodyParser = require('body-parser');
+const queueRouter = require('./backend/routes/queueRoutes.js');
+const GameSocket = require('./backend/socket/gameSocket.js');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -13,14 +16,11 @@ app.use(bodyParser.json({ limit: '100mb' }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, './backend/scripts')))
 
-
 app.get('/', (req, res) => {
   res.json('/Queue')
 });
 
-io.on('connection', (socket) => {
-  console.log('a user connected');
-});
+const socket = new GameSocket(server);
 
 app.get('/Queue',queueRouter)
 app.get('/Indentity',IndentityRouter)
