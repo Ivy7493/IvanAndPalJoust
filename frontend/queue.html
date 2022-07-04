@@ -8,7 +8,9 @@
 </head>
 <body>
 
-    <!-- Put navbar here -->
+    <div class="nav">
+        <img id="logo" src="logoWhite.svg" alt="logo">
+    </div>
 
     <div class="playerList">
     </div>
@@ -17,7 +19,7 @@
 </html>
 
 <script>
-    playerList = document.querySelector(".playerList");
+    const playerList = document.querySelector(".playerList");
 
     function addPlayers(list) {
         list.forEach(p => {

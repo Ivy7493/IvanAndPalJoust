@@ -1,3 +1,10 @@
+@import url("https://use.typekit.net/xln6mnk.css");
+
+:root {
+  --shakeAmount: 0px;
+  --background: coral;
+}
+
 @font-face {
   font-family: Nura;
   src: url("/assets/Nura.ttf");
@@ -5,7 +12,8 @@
 
 /* You can add global styles to this file, and also import other style files */
 body {
-  background-color: coral;
+  background-color: var(--background);
+  /* background: linear-gradient(0deg, rgba(224,82,47,1) 18%, rgba(254,76,0,1) 52%, rgba(255,0,0,1) 100%); */
   padding: 0px;
   margin: 0px;
 }
@@ -21,4 +29,92 @@ body {
   font-family: "Nura Light";
   margin-bottom: 1em;
   padding: 1em;
+}
+
+.bigIcon {
+  margin: auto;
+  width: 85vw;
+  max-width: 400px;
+}
+
+.bigIcon img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(6px 6px 0px rgb(0, 0, 0, 0.75));
+  animation: shake 0.2s infinite;
+}
+
+@keyframes shake {
+  0%   { transform: translateX(calc(-1 * var(--shakeAmount))) }
+  50%  { transform: translateX(var(--shakeAmount)) }
+  100% { transform: translateX(calc(-1 * var(--shakeAmount))) }
+}
+
+.shakeBar {
+  position: absolute;
+  background-color: black;
+  opacity: 0.5;
+  width: 100%;
+  z-index: -10;
+  bottom: 0px;
+  /* height: 100px; */
+
+  color: white;
+  font-family: "Nura";
+}
+
+.nav {
+  width: 100%;
+  background-color: var(--background);
+  height: 8vh;
+  min-height: 40px;
+  padding: 0.4em;
+  filter: drop-shadow(0px 0px 10px black);
+  margin-bottom: 3em;
+}
+
+#logo{
+  height: 80%;
+  width: auto;
+  justify-content: center;
+  display: block;
+}
+
+.body{
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items:center;
+  width:100%;
+  height: 100vh;
+}
+
+#mainLogo {
+  height: 50vh;
+  margin: 40px;
+}
+
+#joinButton {
+  display: block;
+  margin: auto;
+  border: 0px;
+  border-radius: 0.3em;
+  padding: 1em;
+  color: white;
+  font-family: "Nura";
+  font-size: 2em;
+  letter-spacing: 1px;
+  background-color: brown;
+  transition: transform 0.05s ease-in-out;
+}
+#joinButton:hover {
+  background-color: rgb(180, 46, 46);
+  transform: scale(1.05);
+  cursor: pointer;
+  user-select: none;
+  /* box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.627); */
+}
+
+#joinButton:active {
+  background-color: rgb(151, 36, 36);
 }
