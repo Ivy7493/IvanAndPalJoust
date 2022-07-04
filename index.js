@@ -1,29 +1,27 @@
 const express = require('express');
-const path = require('path')
+const path = require('path');
 const http = require('http');
-const bodyParser = require('body-parser');
 const queueRouter = require('./backend/routes/queueRoutes.js');
 const GameSocket = require('./backend/socket/gameSocket.js');
+const bodyParser = require('body-parser');
+const indentityRouter = require('./backend/routes/identityRoutes.js');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
-const bodyParser = require('body-parser')
-const port = process.env.PORT || 3000
-const queueRouter = require('./backend/routes/queueRoutes.js')
-const IndentityRouter = require('./backend/routes/identityRoutes.js')
-app.use(bodyParser.json({ limit: '100mb' }))
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, './backend/scripts')))
+const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-  res.json('/Queue')
-});
+app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, './backend/scripts')));
+
 
 const socket = new GameSocket(server);
 
-app.get('/Queue',queueRouter)
-app.get('/Indentity',IndentityRouter)
+app.use('/Queue', queueRouter);
+app.use('/Identity', indentityRouter);
+app.get('/', (req, res) => {
+  res.json('/Queue')
+});
 
 server.listen(port, () => {
   console.log(`listening on ${port}`);
