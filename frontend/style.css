@@ -1,0 +1,24 @@
+@font-face {
+  font-family: Nura;
+  src: url("/assets/Nura.ttf");
+}
+
+/* You can add global styles to this file, and also import other style files */
+body {
+  background-color: coral;
+  padding: 0px;
+  margin: 0px;
+}
+
+.playerItem {
+  margin: auto;
+  width: 80%;
+  max-width: 500px;
+  background-color: wheat;
+  border-radius: 0.5em;
+  color: black;
+  font-size: 2em;
+  font-family: "Nura Light";
+  margin-bottom: 1em;
+  padding: 1em;
+}
