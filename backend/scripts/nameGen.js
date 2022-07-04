@@ -2,7 +2,7 @@
 function GenerateName(){
     let chosenNoun = noun[Math.floor(Math.random()*noun.length)];
     let chosenadj = Adj[Math.floor(Math.random()*Adj.length)];
-    let result = chosenadj + chosenNoun;
+    let result = `${chosenadj} ${chosenNoun}`;
     return result;
 
 }
