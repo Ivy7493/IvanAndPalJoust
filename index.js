@@ -1,26 +1,27 @@
-const express = require('express');
-const path = require('path');
-const http = require('http');
-const queueRouter = require('./backend/routes/queueRoutes.js');
-const GameSocket = require('./backend/socket/gameSocket.js');
-const bodyParser = require('body-parser');
-const indentityRouter = require('./backend/routes/identityRoutes.js');
+const express = require("express");
+const path = require("path");
+const http = require("http");
+const queueRouter = require("./backend/routes/queueRoutes.js");
+const GameSocket = require("./backend/socket/gameSocket.js");
+const bodyParser = require("body-parser");
+const indentityRouter = require("./backend/routes/identityRoutes.js");
 
 const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const gameSocket = new GameSocket(server);
+app.use(express.static("frontend/thisWayUp/dist/this-way-up"));
 
-app.use('/Queue', queueRouter);
-app.use('/Identity', indentityRouter);
-app.get('/', (req, res) => {
-  res.json('/Queue')
+app.get("/", (_, res) => {
+  res.redirect("/index.html");
 });
 
+app.use("/Queue", queueRouter);
+app.use("/Identity", indentityRouter);
+
 server.listen(port, () => {
-  console.log(`listening on ${port}`);
+  console.log(`listening on http://localhost:${port}`);
 });
