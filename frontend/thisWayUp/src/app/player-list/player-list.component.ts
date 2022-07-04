@@ -9,7 +9,13 @@ export class PlayerListComponent implements OnInit {
 
   constructor() { }
 
+  players = ["Harry", "Hermione", "Ron", "Dumbledore"];
+
   ngOnInit(): void {
+  }
+
+  addPlayer(name: string) {
+    this.players.push(name);
   }
 
 }

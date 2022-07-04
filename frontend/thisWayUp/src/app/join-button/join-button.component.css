@@ -1,8 +1,5 @@
 .joinButton {
-  width: 100%;
-}
-
-.joinButton button {
+  display: block;
   margin: auto;
   border: 0px;
   border-radius: 0.3em;
@@ -12,8 +9,13 @@
   font-size: 2em;
   letter-spacing: 1px;
   background-color: brown;
+  transition: transform 0.05s ease-in-out;
+}
+.joinButton:hover {
+  background-color: rgb(180, 46, 46);
+  transform: scale(1.05);
 }
 
-.joinButton button:hover {
-  background-color: rgb(141, 35, 35);
+.joinButton:active {
+  background-color: rgb(151, 36, 36);
 }

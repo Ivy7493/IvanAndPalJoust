@@ -8,6 +8,6 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'thisWayUp';
 
-  page = 'join'; //THIS CONTROLS THE CURRENT PAGE
+  page = 'game'; //THIS CONTROLS THE CURRENT PAGE
   //['join', 'queue', 'game']
 }

@@ -7,6 +7,7 @@ import { ThisWayUpIconComponent } from './this-way-up-icon/this-way-up-icon.comp
 import { ShakeBarComponent } from './shake-bar/shake-bar.component';
 import { PlayerListComponent } from './player-list/player-list.component';
 import { JoinButtonComponent } from './join-button/join-button.component';
+import { GameReadyTextComponent } from './game-ready-text/game-ready-text.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { JoinButtonComponent } from './join-button/join-button.component';
     ThisWayUpIconComponent,
     ShakeBarComponent,
     PlayerListComponent,
-    JoinButtonComponent
+    JoinButtonComponent,
+    GameReadyTextComponent
   ],
   imports: [
     BrowserModule

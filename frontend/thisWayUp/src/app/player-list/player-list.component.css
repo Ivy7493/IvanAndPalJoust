@@ -1,0 +1,11 @@
+.playerItem {
+  margin: auto;
+  width: 80%;
+  background-color: wheat;
+  border-radius: 0.5em;
+  color: black;
+  font-size: 2em;
+  font-family: "Nura Light";
+  margin-bottom: 1em;
+  padding: 1em;
+}
