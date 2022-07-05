@@ -16,6 +16,11 @@ body {
   /* background: linear-gradient(0deg, rgba(224,82,47,1) 18%, rgba(254,76,0,1) 52%, rgba(255,0,0,1) 100%); */
   padding: 0px;
   margin: 0px;
+  /* overflow: hidden; */
+}
+html {
+  padding: 0px;
+  margin: 0px;
 }
 
 .playerItem {
@@ -64,11 +69,11 @@ body {
 }
 
 .nav {
-  width: 100%;
+  /* width: 100vw; */
   background-color: var(--background);
   height: 8vh;
   min-height: 40px;
-  padding: 0.4em;
+  padding: 0.4em 0px 0.4em 0.4em;
   filter: drop-shadow(0px 0px 10px black);
   margin-bottom: 3em;
 }
