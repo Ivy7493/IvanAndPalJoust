@@ -1,15 +1,16 @@
 const express = require("express");
 const path = require("path");
-const http = require("http");
+const http2Express = require('http2-express-bridge')
+const http2 = require('http2')
 const queueRouter = require("./backend/routes/queueRoutes.js").QueueRoute;
 const GameSocket = require("./backend/socket/gameSocket.js");
 const bodyParser = require("body-parser");
 const indentityRouter = require("./backend/routes/identityRoutes.js");
 const GameRouter = require("./backend/routes/gameRoutes.js");
 const mainRouter = require('./backend/routes/mainRoutes.js')
+const { readFileSync } = require('fs')
 
-const app = express();
-const server = http.createServer(app);
+const app = http2Express(express)
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({ limit: "100mb" }));
@@ -21,6 +22,10 @@ app.use("/Queue", queueRouter);
 app.use("/Identity", indentityRouter);
 app.use("/Game", GameRouter);
 
-server.listen(port, () => {
-  console.log(`listening on http://localhost:${port}`);
-});
+const options = {
+  key: readFileSync('server.key'),
+  cert: readFileSync('server.crt'),
+  allowHTTP1: true
+}
+const server = http2.createSecureServer(options, app)
+server.listen(port);
