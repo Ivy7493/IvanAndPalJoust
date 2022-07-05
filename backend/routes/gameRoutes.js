@@ -35,4 +35,8 @@ GameRouter.get("/state", function (req, res) {
   res.json(statusSuccess(temp));
 });
 
-module.exports = GameRouter;
+function ResetGame() {
+  isDone = true;
+}
+
+module.exports = { GameRouter, ResetGame };
