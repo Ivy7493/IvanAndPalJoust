@@ -6,12 +6,15 @@ const GameRouter = express.Router();
 const fs = require("fs");
 const { TouchPlayer, RemoveDeadPlayers } = require("./queueRoutes");
 const { IsDone, SetIsDone } = require("./state_game");
+const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
 GameRouter.get("/", function (req, res) {
-  res.push(
-    ["/scripts/game.js", "/style.css", "/arrow.svg"],
-    path.join(__dirname, "../../frontend")
-  );
+  RunOnHttp2Only(function () {
+    res.push(
+      ["/scripts/game.js", "/style.css", "/arrow.svg"],
+      path.join(__dirname, "../../frontend")
+    );
+  });
 
   res.writeHead(200);
   res.end(fs.readFileSync(path.join(__dirname, "../../frontend/game.html")));

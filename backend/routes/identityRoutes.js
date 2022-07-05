@@ -1,22 +1,30 @@
 const express = require("express");
 const IdentityRouter = express.Router();
 let nameLib = require("../scripts/nameGen");
-const fs = require('fs')
+const fs = require("fs");
 const { statusSuccess } = require("../utils/utils");
+const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
 IdentityRouter.get("/", function (req, res) {
-  res.push([
-    "/scripts/join_screen.js",
-      "/join.html",
-      "/scripts/mainGame.js",
-      "/style.css",
-      "/scripts/api_layer.js",
-      "/scripts/navigation.js",
-      "/arrow.svg",
-  ], path.join(__dirname, '../../frontend'));
+  RunOnHttp2Only(function () {
+    res.push(
+      [
+        "/scripts/join_screen.js",
+        "/join.html",
+        "/scripts/mainGame.js",
+        "/style.css",
+        "/scripts/api_layer.js",
+        "/scripts/navigation.js",
+        "/arrow.svg",
+      ],
+      path.join(__dirname, "../../frontend")
+    );
+  });
 
   res.writeHead(200);
-  res.end(fs.readFileSync(path.join(__dirname, '../../frontend/mainGame.html')));
+  res.end(
+    fs.readFileSync(path.join(__dirname, "../../frontend/mainGame.html"))
+  );
 });
 
 IdentityRouter.get("/uniquePlayer", function (req, res) {

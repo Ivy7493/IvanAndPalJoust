@@ -4,6 +4,7 @@ const path = require("path");
 const QueueRoute = express.Router();
 const fs = require("fs");
 const { ResetGame, GameStarted } = require("./state_game");
+const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
 // A map of player name to the last time they accessed the server.
 let authMap = new Map();
@@ -19,16 +20,18 @@ function authList() {
 }
 
 QueueRoute.get("/", function (req, res) {
-  res.push(
-    [
-      "/scripts/start_screen.js",
-      "/style.css",
-      "/scripts/api_layer.js",
-      "/scripts/navigation.js",
-      "/arrow.svg",
-    ],
-    path.join(__dirname, "../../frontend")
-  );
+  RunOnHttp2Only(function () {
+    res.push(
+      [
+        "/scripts/start_screen.js",
+        "/style.css",
+        "/scripts/api_layer.js",
+        "/scripts/navigation.js",
+        "/arrow.svg",
+      ],
+      path.join(__dirname, "../../frontend")
+    );
+  });
 
   res.writeHead(200);
   res.end(fs.readFileSync(path.join(__dirname, "../../frontend/start.html")));
