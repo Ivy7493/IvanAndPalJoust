@@ -49,7 +49,7 @@ window.onload = async function () {
   audio.play();
   
   // Else keep polling for game to start.
-  const oneSecond = 2000;
+  const onesecond = 400;
   setInterval(navigateIfGameHasStarted, oneSecond);
   setInterval(UpdatePlayers, oneSecond);
 };
