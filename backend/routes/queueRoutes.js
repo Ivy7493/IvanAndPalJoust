@@ -50,6 +50,14 @@ QueueRoute.get("/", function (req, res) {
   }
 });
 
+QueueRoute.post("/Auth", function (req, res) {
+    for(x in authList){
+      if(x == req.body.name){
+        return res.json({isDone: false})
+      }
+    }
+});
+
 function RemovePlayerFromList(playeName){
   authList = authList.filter(x=>{
     if(x != playeName){
@@ -58,6 +66,15 @@ function RemovePlayerFromList(playeName){
   })
 }
 
+function CheckPlayerInList(playerName){
+  for(x in authList){
+    if(x == req.body.name){
+      return true
+    }
+  }
+  return false
+}
 
 
-module.exports = {QueueRoute,RemovePlayerFromList};
+
+module.exports = {QueueRoute,RemovePlayerFromList,CheckPlayerInList};
