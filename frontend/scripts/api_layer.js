@@ -33,12 +33,12 @@ export async function startGame() {
  * 2. isDone (false if game is running)
  * 3. doneReason
  */
-export async function getGameState() {
-  const response = await axios.get("/Game/state");
+export async function getGameState(playerId) {
+  const response = await axios.get(`/Game/state/${playerId}`);
   return response.data.data;
 }
 
-export async function gameIsRunning() {
-  const gameState = await getGameState();
+export async function gameIsRunning(playerId) {
+  const gameState = await getGameState(playerId);
   return !gameState.isDone;
 }
