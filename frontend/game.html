@@ -11,7 +11,10 @@
     <div class="nav">
         <img id="logo" src="logoWhite.svg" alt="logo">
     </div>
-        
+
+    <p id="debug">
+        Debug text
+    </p>
 
     <div class="bigIcon">
         <img src="thisWayUpWhite.svg" />
@@ -28,12 +31,34 @@
 
     const shakeBar = document.querySelector(".shakeBar");
     const root = document.querySelector(":root");
+    const debug = document.querySelector("#debug");
 
     const barCol1 = new Color("lightgreen");
     const barCol2 = new Color("tomato");
     const barGradient = barCol1.range(barCol2, {space: "lch", outputSpace: "srgb", hue: "increasing"});
 
     let percentage = 0.0;
+
+    // window.addEventListener("deviceorientation", (event) => {
+    //     debug.innerHTML = tilt([event.beta, event.gamma]);
+    // }, true);
+
+    if (window.DeviceOrientationEvent) {
+    addEventListener("deviceorientation", function (event) {
+        // debug.textContent = event.beta;
+        }, true);
+    }
+    if (window.DeviceMotionEvent) {
+    addEventListener('devicemotion', function () {
+        // debug.textContent = event.acceleration.x.toFixed(2);
+        setPercentage(event.acceleration.x + event.acceleration.y);
+        }, true);
+    }
+    else {
+    addEventListener("MozOrientation", function (event) {
+        // debug.textContent = orientation.x;
+        }, true);
+    }
 
     function setPercentage(perc) {
         percentage = perc;
