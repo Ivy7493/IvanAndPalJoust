@@ -79,7 +79,6 @@ async function processPlayerState(playerState) {
 
     // Wait for finish screen should navigate automaticaly to join screen.
     // This is a way of ensuring there are no more players remaining.
-    const playerId = getUrlArgument("playerId");
     navigateTo(WAITING_FOR_FINISH, {
       playerId: playerId,
     });
