@@ -2,6 +2,7 @@
 
 :root {
   --shakeAmount: 0px;
+  --upIconRotation: 0deg;
   --background: coral;
 }
 
@@ -40,19 +41,21 @@ html {
   margin: auto;
   width: 85vw;
   max-width: 400px;
+  rotate: 30deg;
 }
 
 .bigIcon img {
   width: 100%;
   height: auto;
   filter: drop-shadow(6px 6px 0px rgb(0, 0, 0, 0.75));
-  animation: shake 0.2s infinite;
+  /* animation: shake 0.2s infinite; */
+  /* transform: rotateZ(30deg); */
 }
 
 @keyframes shake {
-  0%   { transform: translateX(calc(-1 * var(--shakeAmount))) }
-  50%  { transform: translateX(var(--shakeAmount)) }
-  100% { transform: translateX(calc(-1 * var(--shakeAmount))) }
+  0%   { transform: rotate(var(--upIconRotation)) translateX(calc(-1 * var(--shakeAmount))) }
+  50%  { transform: rotate(var(--upIconRotation)) translateX(var(--shakeAmount)) }
+  100% { transform: rotate(var(--upIconRotation)) translateX(calc(-1 * var(--shakeAmount))) }
 }
 
 .shakeBar {
