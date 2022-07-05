@@ -4,8 +4,8 @@ const { join } = require("path");
 const { statusSuccess } = require("../utils/utils");
 const GameRouter = express.Router();
 const fs = require("fs");
-
-let isDone = true;
+const { TouchPlayer, RemoveDeadPlayers } = require("./queueRoutes");
+const { IsDone, SetIsDone } = require("./state_game");
 
 GameRouter.get("/", function (req, res) {
   res.push(
@@ -18,23 +18,23 @@ GameRouter.get("/", function (req, res) {
 });
 
 GameRouter.put("/start", function (req, res) {
-  if (isDone == true) {
-    isDone = false;
+  if (IsDone() == true) {
+    SetIsDone(false);
   }
   res.json(statusSuccess("Poggers"));
 });
 
-GameRouter.get("/state", function (req, res) {
+GameRouter.get("/state/:name", function (req, res) {
+  const playerName = req.params.name;
+  TouchPlayer(playerName);
+  RemoveDeadPlayers();
+
   temp = {
-    isDone: isDone,
+    isDone: IsDone(),
     Threshold: 50,
     closeReason: "",
   };
   res.json(statusSuccess(temp));
 });
 
-function ResetGame() {
-  isDone = true;
-}
-
-module.exports = { GameRouter, ResetGame };
+module.exports = { GameRouter };

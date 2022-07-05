@@ -40,7 +40,7 @@ export async function startGame() {
  * 3. doneReason
  */
 export async function getGameState(playerId) {
-  const response = await axios.get(`/Game/state`);
+  const response = await axios.get(`/Game/state/${playerId}`);
   return response.data.data;
 }
 

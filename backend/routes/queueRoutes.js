@@ -1,13 +1,21 @@
 const express = require("express");
 const { statusFail, statusSuccess } = require("../utils/utils");
 const path = require("path");
-const { join } = require("path");
 const QueueRoute = express.Router();
 const fs = require("fs");
-const { ResetGame } = require("./gameRoutes");
+const { ResetGame, GameStarted } = require("./state_game");
 
-let authList = [];
-let gameStarted = false;
+// A map of player name to the last time they accessed the server.
+let authMap = new Map();
+
+function authList() {
+  const out = [];
+  for (const x of authMap.keys()) {
+    out.push(x);
+  }
+
+  return out;
+}
 
 QueueRoute.get("/", function (req, res) {
   res.push(
@@ -26,45 +34,29 @@ QueueRoute.get("/", function (req, res) {
 });
 
 QueueRoute.post("/player", function (req, res) {
-  authList.filter((x) => {
-    if (x == req.body.name) {
+  authList().filter((x) => {
+    if (x === req.body.name) {
       res.status(400).json(statusFail("Given name already in use."));
     }
-    console.log("New Auth List: ", authList);
+    console.log("New Auth List: ", authList());
   });
 
-  authList.push(req.body.name);
+  authMap.set(req.body.name, Date.now());
   res.json(statusSuccess(req.body.name));
 });
 
 QueueRoute.delete("/player/:name", function (req, res) {
-  authList = authList.filter((x) => {
-    if (x != req.params.name) {
-      return x;
-    }
-  });
-
-  if (authList.length === 0) {
-    ResetGame();
-  }
+  RemovePlayerFromList(req.params.name);
   res.json(statusSuccess(req.body.name));
 });
 
 QueueRoute.get("/players", function (req, res) {
-  res.json(statusSuccess(authList));
-});
-
-QueueRoute.get("/start", function (req, res) {
-  if (gameStarted == false) {
-    gameStarted = true;
-  }
-
-  res.json("Okay");
+  res.json(statusSuccess(authList()));
 });
 
 QueueRoute.get("/Auth/:name", function (req, res) {
-  for (const x of authList) {
-    if (x == req.params.name) {
+  for (const x of authList()) {
+    if (x === req.params.name) {
       res.json(statusSuccess(true));
       return;
     }
@@ -73,17 +65,13 @@ QueueRoute.get("/Auth/:name", function (req, res) {
   res.json(statusSuccess(false));
 });
 
-function RemovePlayerFromList(playeName) {
-  authList = authList.filter((x) => {
-    if (x != playeName) {
-      return x;
-    }
-  });
+function RemovePlayerFromList(playerName) {
+  authMap.delete(playerName);
 }
 
 function CheckPlayerInList(playerName) {
-  for (const x of authList) {
-    if (x == playerName) {
+  for (const x of authList()) {
+    if (x === playerName) {
       return true;
     }
   }
@@ -91,7 +79,32 @@ function CheckPlayerInList(playerName) {
 }
 
 function GetAuthList() {
-  return authList;
+  return authList();
+}
+
+function TouchPlayer(playerName) {
+  if (authMap.has(playerName)) {
+    console.log("Touched player")
+    authMap.set(playerName, Date.now());
+  }
+}
+
+function RemoveDeadPlayers() {
+  console.log(authList());
+  for (const playerName of authList()) {
+    const isDead = Date.now() - authMap.get(playerName) > 3 * 1000;
+    if (isDead) {
+      console.log("Player dead");
+      RemovePlayerFromList(playerName);
+    }
+  }
+
+  if (GameStarted()) {
+    if (authMap.size <= 1) {
+      authMap.clear();
+      ResetGame();
+    }
+  }
 }
 
 module.exports = {
@@ -99,4 +112,6 @@ module.exports = {
   RemovePlayerFromList,
   CheckPlayerInList,
   GetAuthList,
+  TouchPlayer,
+  RemoveDeadPlayers,
 };
