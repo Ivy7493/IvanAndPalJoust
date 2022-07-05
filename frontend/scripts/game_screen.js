@@ -2,7 +2,8 @@ import {
   addPlayerToQueue,
   removePlayerFromQueue,
   getGameState,
-  Auth,
+  addPlayerToLost,
+  Auth
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -66,15 +67,18 @@ async function onTick() {
  */
 async function processPlayerState(playerState) {
   if (playerState === PLAYER_STATE.LOST) {
+    const playerId = getUrlArgument("playerId");
+    addPlayerToLost(playerId);  
     await logoutPlayer();
     navigateTo(PLAYER_LOST);
   } else if (playerState === PLAYER_STATE.WON) {
+    const playerId = getUrlArgument("playerId");
+    addPlayerToLost(playerId);  
     await logoutPlayer();
     window.confirm("Yay! You have won!");
 
     // Wait for finish screen should navigate automaticaly to join screen.
     // This is a way of ensuring there are no more players remaining.
-    const playerId = getUrlArgument("playerId");
     navigateTo(WAITING_FOR_FINISH, {
       playerId: playerId,
     });

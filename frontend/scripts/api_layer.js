@@ -26,7 +26,7 @@ export async function addPlayerToLost(playerId) {
 }
 
 // returns an array
-export async function getAllLostPlayers(playerId) {
+export async function getAllLostPlayers() {
   const response = await axios.get("/Queue/LostPlayers");
 
   return response.data.data;
