@@ -137,6 +137,7 @@ p {
 
 #joinButton:active {
   background-color: rgb(151, 36, 36);
+  transform: scale(0.97);
 }
 
 #body{
