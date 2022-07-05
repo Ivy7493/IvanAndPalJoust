@@ -1,6 +1,7 @@
 const express = require("express");
 const IdentityRouter = express.Router();
 let nameLib = require("../scripts/nameGen");
+const fs = require('fs')
 const { statusSuccess } = require("../utils/utils");
 
 IdentityRouter.get("/", function (req, res) {
