@@ -78,6 +78,13 @@ html {
   margin-bottom: 3em;
 }
 
+p {
+  text-align: center;
+  color: white;
+  font-family: "Roboto";
+  font-size: 2em;
+}
+
 #logo{
   height: 80%;
   width: auto;
