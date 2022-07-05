@@ -54,6 +54,7 @@ async function onTick() {
   await processPlayerState(playerState);
 }
 
+
 /**
  * Processeses the state of this player to show the correct UI.
  */
@@ -77,7 +78,12 @@ async function processPlayerState(playerState) {
  * TODO: Logic to be implemented.
  */
 function computePlayerState(gameState) {
-  return PLAYER_STATE.STILL_PLAYING;
+   sensitivity = 1/gameState.threshold
+   if(gameOver == true){
+      return PLAYER_STATE.LOST
+   }else{
+    return PLAYER_STATE.STILL_PLAYING
+   }
 }
 
 // ========== SENSOR DATA + UI ==========
@@ -98,6 +104,7 @@ const barGradient = barCol1.range(barCol2, {space: "lch", outputSpace: "srgb", h
 let percentage = 0.0;
 let kfMotion = new KalmanFilter({R: 0.01, Q: 20, A: 0.5});
 let kfRotate = new KalmanFilter();
+let sensitivity = 1;
 
 let gameOver = false;
 
@@ -140,6 +147,7 @@ addEventListener('devicemotion', function () {
           gameOver = true;
           setPercentage(100);
           debug.textContent = "GAME OVER " + debug.textContent;
+
       }
       // if(sig < min) { min = sig; debug.textContent = min; }
   }

@@ -10,6 +10,7 @@ const GameRouter = require("./backend/routes/gameRoutes.js").GameRouter;
 const mainRouter = require("./backend/routes/mainRoutes.js");
 const { readFileSync } = require("fs");
 const WaitRouter = require("./backend/routes/waitingRoutes.js");
+const LostRoutes = require("./backend/routes/lostRoutes.js");
 
 process.on("uncaughtException", function (e) {
   // console.log(e)
@@ -27,6 +28,7 @@ app.use("/Queue", queueRouter);
 app.use("/Identity", indentityRouter);
 app.use("/Game", GameRouter);
 app.use("/AwaitFinish", WaitRouter);
+app.use("/Lost", LostRoutes);
 
 const options = {
   key: readFileSync('server.key'),
