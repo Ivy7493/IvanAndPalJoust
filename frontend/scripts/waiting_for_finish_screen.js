@@ -13,7 +13,7 @@ window.onload = async function () {
  */
 async function navigateIfGameIsFinished() {
   const isRunning = await gameIsRunning();
-  if (!isRunning) {
+  if (isRunning) {
     navigateTo(JOIN_PAGE);
   }
 }

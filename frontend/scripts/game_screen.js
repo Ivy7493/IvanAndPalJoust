@@ -2,6 +2,7 @@ import {
   addPlayerToQueue,
   removePlayerFromQueue,
   getGameState,
+  Auth
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -17,19 +18,29 @@ const PLAYER_STATE = {
   WON: 3,
 };
 
-window.onload = function () {
-  loginPlayer();
-
+window.onload = async function () {
   const oneSecond = 1000;
+  await CheckForReload()
+  const playerId = getUrlArgument("playerId");
+  let canLobby = await Auth(playerId)
+  console.log("DO we have permission?: ",canLobby)
+  if(!canLobby){
+    navigateTo(WAITING_FOR_FINISH);
+  }
   setInterval(onTick, oneSecond * 5);
 };
 
 window.onbeforeunload = logoutPlayer;
 
-async function loginPlayer() {
-  const playerId = getUrlArgument("playerId");
-  await addPlayerToQueue(playerId);
+async function CheckForReload(){
+  let data=window.performance.getEntriesByType("navigation")[0].type;
+  console.log(data);
+    if (data === "reload") {
+
+      await logoutPlayer()
+    } 
 }
+
 
 async function logoutPlayer() {
   const playerId = getUrlArgument("playerId");
@@ -68,3 +79,6 @@ async function processPlayerState(playerState) {
 function computePlayerState(gameState) {
   return PLAYER_STATE.STILL_PLAYING;
 }
+
+
+
