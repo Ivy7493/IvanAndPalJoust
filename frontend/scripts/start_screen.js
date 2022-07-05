@@ -42,7 +42,7 @@ window.onload = async function () {
     navigateTo(WAITING_FOR_FINISH);
   }
   let song = await getSongName();
-  alert(song);
+  // alert(song);
 
   // let aud = new Audio(song);
   
