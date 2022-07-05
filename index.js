@@ -6,12 +6,14 @@ const queueRouter = require("./backend/routes/queueRoutes.js").QueueRoute;
 const GameSocket = require("./backend/socket/gameSocket.js");
 const bodyParser = require("body-parser");
 const indentityRouter = require("./backend/routes/identityRoutes.js");
-const GameRouter = require("./backend/routes/gameRoutes.js");
+const GameRouter = require("./backend/routes/gameRoutes.js").GameRouter;
 const mainRouter = require("./backend/routes/mainRoutes.js");
 const { readFileSync } = require("fs");
 const WaitRouter = require("./backend/routes/waitingRoutes.js");
 
-process.on("uncaughtException", function (e) {});
+process.on("uncaughtException", function (e) {
+  // console.log(e)
+});
 
 const app = http2Express(express);
 const port = process.env.PORT || 3000;
@@ -33,4 +35,3 @@ const options = {
 }
 const server = http2.createSecureServer(options, app)
 server.listen(port);
-console.log("hello");

@@ -1,4 +1,4 @@
-export const JOIN_PAGE = "/Join";
+export const JOIN_PAGE = "/";
 export const START_PAGE = "/Queue";
 export const PLAYING_PAGE = "/Game";
 export const PLAYER_LOST = "/Lost";
