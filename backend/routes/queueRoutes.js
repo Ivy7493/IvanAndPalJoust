@@ -7,6 +7,7 @@ const { ResetGame, GameStarted } = require("./state_game");
 
 // A map of player name to the last time they accessed the server.
 let authMap = new Map();
+let losers = [];
 
 function authList() {
   const out = [];
@@ -65,6 +66,15 @@ QueueRoute.get("/Auth/:name", function (req, res) {
   res.json(statusSuccess(false));
 });
 
+QueueRoute.post("/Lost", function (req, res) {
+  losers.push(req.body.name);
+  res.json(statusSuccess(losers));
+});
+
+QueueRoute.get("/LostPlayers", function (req, res) {
+  res.json(statusSuccess(losers));
+});
+
 function RemovePlayerFromList(playerName) {
   authMap.delete(playerName);
 }
@@ -84,7 +94,7 @@ function GetAuthList() {
 
 function TouchPlayer(playerName) {
   if (authMap.has(playerName)) {
-    console.log("Touched player")
+    console.log("Touched player");
     authMap.set(playerName, Date.now());
   }
 }
