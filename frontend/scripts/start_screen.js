@@ -1,4 +1,4 @@
-import { gameIsRunning, startGame,getAllPlayers, addPlayerToQueue,Auth} from "./api_layer.js";
+import { gameIsRunning, startGame,getAllPlayers, addPlayerToQueue,Auth} from "/api_layer.js";
 import {
   getUrlArgument,
   navigateTo,

@@ -3,14 +3,23 @@ const { statusFail, statusSuccess } = require("../utils/utils");
 const path = require('path')
 const { join } = require('path');
 const QueueRoute = express.Router();
+const fs = require('fs')
 
 let authList = [];
 let connectedPlayers = 0;
 let gameStarted = false;
 
 QueueRoute.get("/", function (req, res) {
-  console.log("Pggers");
-  res.sendFile(path.join(__dirname, '../../frontend/start.html'));
+  res.push([
+    "/scripts/start_screen.js",
+    "/style.css",
+    "/scripts/api_layer.js",
+    "/scripts/navigation.js",
+    "/arrow.svg"
+  ], path.join(__dirname, '../../frontend'));
+
+  res.writeHead(200);
+  res.end(fs.readFileSync(path.join(__dirname, '../../frontend/start.html')));
 });
 
 QueueRoute.post("/player", function (req, res) {
