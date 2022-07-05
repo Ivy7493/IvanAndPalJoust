@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("frontend/thisWayUp/dist/this-way-up"));
 
 app.get("/", (_, res) => {
-  res.redirect("/index.html");
+  res.redirect("/Identity");
 });
 
 app.use("/Queue", queueRouter);
