@@ -8,6 +8,8 @@ mainRouter.get("/", function (req, res) {
   res.push(
     [
       "/scripts/join_screen.js",
+      "/join.html",
+      "/scripts/mainGame.js",
       "/style.css",
       "/scripts/api_layer.js",
       "/scripts/navigation.js",
@@ -17,7 +19,7 @@ mainRouter.get("/", function (req, res) {
   );
 
   res.writeHead(200);
-  res.end(fs.readFileSync(path.join(__dirname, "../../frontend/join.html")));
+  res.end(fs.readFileSync(path.join(__dirname, "../../frontend/mainGame.html")));
 });
 
 module.exports = mainRouter;

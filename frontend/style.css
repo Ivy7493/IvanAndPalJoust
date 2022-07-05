@@ -4,6 +4,10 @@
   --background: coral;
 }
 
+body {
+  overflow: hidden; /* Hide scrollbars */
+}
+
 @font-face {
   font-family: Nura;
   src: url("/assets/Nura.ttf");
@@ -165,4 +169,19 @@ height: 90vh;
 
 #loserPage{
   animation: loseColour 0.5s linear 0s infinite alternate forwards ;
+}
+
+#clickable{
+  /* background-color: rgba(195, 195, 195, 0.01); */
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+#frame{
+  width: 100%;
+  height: 100vh;
+  
 }

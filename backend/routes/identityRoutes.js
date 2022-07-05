@@ -7,14 +7,16 @@ const { statusSuccess } = require("../utils/utils");
 IdentityRouter.get("/", function (req, res) {
   res.push([
     "/scripts/join_screen.js",
-    "/style.css",
-    "/scripts/api_layer.js",
-    "/scripts/navigation.js",
-    "/arrow.svg"
+      "/join.html",
+      "/scripts/mainGame.js",
+      "/style.css",
+      "/scripts/api_layer.js",
+      "/scripts/navigation.js",
+      "/arrow.svg",
   ], path.join(__dirname, '../../frontend'));
 
   res.writeHead(200);
-  res.end(fs.readFileSync(path.join(__dirname, '../../frontend/join.html')));
+  res.end(fs.readFileSync(path.join(__dirname, '../../frontend/mainGame.html')));
 });
 
 IdentityRouter.get("/uniquePlayer", function (req, res) {
