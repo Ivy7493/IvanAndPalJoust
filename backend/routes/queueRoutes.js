@@ -1,11 +1,15 @@
 const express = require("express");
 const { statusFail, statusSuccess } = require("../utils/utils");
+const path = require('path')
+const { join } = require('path');
 const QueueRoute = express.Router();
 
 let authList = [];
+let gameStarted = false;
 
 QueueRoute.get("/", function (req, res) {
-  console.log("Poggers!");
+  console.log("Pggers");
+  res.sendFile(path.join(__dirname, '../../frontend/start.html'));
 });
 
 QueueRoute.post("/player", function (req, res) {
@@ -31,6 +35,12 @@ QueueRoute.delete("/player/:name", function (req, res) {
 
 QueueRoute.get("/players", function (req, res) {
   res.json(statusSuccess(authList));
+});
+
+QueueRoute.get("/start", function (req, res) {
+    if(gameStarted == false){
+      gameStarted = true
+    }
 });
 
 module.exports = QueueRoute;

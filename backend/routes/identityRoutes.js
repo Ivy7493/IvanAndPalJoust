@@ -4,7 +4,7 @@ let nameLib = require("../scripts/nameGen");
 const { statusSuccess } = require("../utils/utils");
 
 IdentityRouter.get("/", function (req, res) {
-  console.log("Poggers!");
+  res.sendFile(path.join(__dirname, '../../frontend/join.html'))
 });
 
 IdentityRouter.get("/uniquePlayer", function (req, res) {
