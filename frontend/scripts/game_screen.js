@@ -19,7 +19,7 @@ const PLAYER_STATE = {
 };
 
 window.onload = async function () {
-  const onesecond = 400;
+  const oneSecond = 400;
   await CheckForReload();
   const playerId = getUrlArgument("playerId");
   console.log("Player id is " + playerId);

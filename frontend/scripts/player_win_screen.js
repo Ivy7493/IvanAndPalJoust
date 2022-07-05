@@ -7,7 +7,7 @@ import { navigateTo, WAITING_FOR_FINISH } from "./navigation.js";
 window.onload = async function () {
   vibrateDevice();
 
-  const onesecond = 400;
+  const oneSecond = 400;
   setInterval(navigateToWaitingForFinishScreen, oneSecond * 5);
 };
 
