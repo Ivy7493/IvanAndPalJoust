@@ -22,6 +22,7 @@ export async function Auth(playerID){
 }
 
 export async function removePlayerFromQueue(playerId) {
+  console.log("ayyyyooooio")
   const response = await axios.delete(`/Queue/player/${playerId}`);
   return response.data.data;
 }

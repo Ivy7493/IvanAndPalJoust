@@ -19,6 +19,11 @@ let isDone = true
       res.end(fs.readFileSync(path.join(__dirname, '../../frontend/game.html')));
  })
 
+ GameRouter.get("/AwaitFinish", function (req, res) {
+    res.sendFile(path.join(__dirname, '../../frontend/waiting_for_finish.html'))
+});
+
+
  GameRouter.put('/start', function (req, res) {
    if(isDone == true){
         isDone = false
