@@ -1,7 +1,9 @@
 const express = require("express");
-const { statusFail, statusSuccess } = require("../utils/utils");
-const path = require('path')
-const { join } = require('path');
-const waitRouter = express.Router();
+const path = require("path");
+const WaitRouter = express.Router();
 
-waitRouter.get('/')
+WaitRouter.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "../../frontend/waiting_for_finish.html"));
+});
+
+module.exports = WaitRouter;

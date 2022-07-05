@@ -1,6 +1,7 @@
 // In this page we constantly polling the Game service
 // for the state of the game until the game is finished.
 
+import { gameIsRunning } from "./api_layer.js";
 import { navigateTo, JOIN_PAGE } from "./navigation.js";
 
 window.onload = async function () {

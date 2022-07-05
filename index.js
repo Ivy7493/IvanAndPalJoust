@@ -9,6 +9,7 @@ const indentityRouter = require("./backend/routes/identityRoutes.js");
 const GameRouter = require("./backend/routes/gameRoutes.js");
 const mainRouter = require('./backend/routes/mainRoutes.js');
 const { readFileSync } = require('fs');
+const WaitRouter = require("./backend/routes/waitingRoutes.js");
 
 const app = http2Express(express);
 const port = process.env.PORT || 3000;
@@ -21,11 +22,12 @@ app.use("/", mainRouter);
 app.use("/Queue", queueRouter);
 app.use("/Identity", indentityRouter);
 app.use("/Game", GameRouter);
+app.use("/AwaitFinish", WaitRouter);
 
 const options = {
-  key: readFileSync('server.key'),
-  cert: readFileSync('server.crt'),
-  allowHTTP1: true
-}
-const server = http2.createSecureServer(options, app)
+  key: readFileSync("server.key"),
+  cert: readFileSync("server.crt"),
+  allowHTTP1: true,
+};
+const server = http2.createSecureServer(options, app);
 server.listen(port);
