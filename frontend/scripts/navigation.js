@@ -29,5 +29,5 @@ export function makeUrlWithArguments(prefix, args = {}) {
 }
 
 export function navigateTo(pageRoute, params = {}) {
-  window.location.href = makeUrlWithArguments(pageRoute, params);
+  window.location.replace(makeUrlWithArguments(pageRoute, params));
 }

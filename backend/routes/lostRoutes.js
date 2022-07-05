@@ -6,6 +6,7 @@ const LostRoutes = express.Router();
 LostRoutes.get("/", function (req, res) {
   res.push([
     "/scripts/player_lost_screen.js",
+    "/audio/lose.mp3",
     "/style.css",
     "/scripts/api_layer.js",
     "/scripts/navigation.js",

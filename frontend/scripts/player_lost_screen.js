@@ -5,8 +5,6 @@ import { getAllLostPlayers, addPlayerToLost } from "./api_layer.js";
 import { navigateTo, WAITING_FOR_FINISH } from "./navigation.js";
 
 window.onload = async function () {
-  vibrateDevice();
-
   const oneSecond = 1000;
   setInterval(navigateToWaitingForFinishScreen, oneSecond * 5);
 

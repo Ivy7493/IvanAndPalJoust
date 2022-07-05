@@ -12,7 +12,6 @@ import {
   PLAYER_LOST,
 } from "./navigation.js";
 
-
 const PLAYER_STATE = {
   STILL_PLAYING: 1,
   LOST: 2,
@@ -21,40 +20,47 @@ const PLAYER_STATE = {
 
 window.onload = async function () {
   const oneSecond = 1000;
-  await CheckForReload()
+  await CheckForReload();
   const playerId = getUrlArgument("playerId");
-  let canLobby = await Auth(playerId)
-  console.log("DO we have permission?: ",canLobby)
-  if(!canLobby){
-    navigateTo(WAITING_FOR_FINISH);
+  console.log("Player id is " + playerId);
+  let canLobby = await Auth(playerId);
+  console.log("DO we have permission?: ", canLobby);
+  if (!canLobby) {
+    navigateTo(WAITING_FOR_FINISH, {
+      playerId: playerId,
+    });
   }
-  setInterval(onTick, oneSecond * 5);
+  setInterval(onTick, oneSecond);
 };
 
-window.onbeforeunload = logoutPlayer;
-
-async function CheckForReload(){
-  let data=window.performance.getEntriesByType("navigation")[0].type;
+async function CheckForReload() {
+  let data = window.performance.getEntriesByType("navigation")[0].type;
   console.log(data);
-    if (data === "reload") {
-
-      await logoutPlayer()
-    } 
+  if (data === "reload") {
+    await logoutPlayer();
+  }
 }
-
 
 async function logoutPlayer() {
   const playerId = getUrlArgument("playerId");
   await removePlayerFromQueue(playerId);
+  navigateTo(WAITING_FOR_FINISH, {
+    playerId: playerId,
+  });
 }
 
 async function onTick() {
+  // Check if the player is still authenticated.
   const playerId = getUrlArgument("playerId");
+  const isAuthenticated = await Auth(playerId);
+  if (!isAuthenticated) {
+    await logoutPlayer();
+  }
+
   const gameState = await getGameState(playerId);
   const playerState = computePlayerState(gameState);
   await processPlayerState(playerState);
 }
-
 
 /**
  * Processeses the state of this player to show the correct UI.
@@ -73,7 +79,10 @@ async function processPlayerState(playerState) {
 
     // Wait for finish screen should navigate automaticaly to join screen.
     // This is a way of ensuring there are no more players remaining.
-    navigateTo(WAITING_FOR_FINISH);
+    const playerId = getUrlArgument("playerId");
+    navigateTo(WAITING_FOR_FINISH, {
+      playerId: playerId,
+    });
   }
 }
 
@@ -83,12 +92,12 @@ async function processPlayerState(playerState) {
  * TODO: Logic to be implemented.
  */
 function computePlayerState(gameState) {
-   sensitivity = 1/gameState.threshold
-   if(gameOver == true){
-      return PLAYER_STATE.LOST
-   }else{
-    return PLAYER_STATE.STILL_PLAYING
-   }
+  sensitivity = 1 / gameState.threshold;
+  if (gameOver == true) {
+    return PLAYER_STATE.LOST;
+  } else {
+    return PLAYER_STATE.STILL_PLAYING;
+  }
 }
 
 // ========== SENSOR DATA + UI ==========
@@ -99,69 +108,94 @@ const shakeBar = document.querySelector(".shakeBar");
 const root = document.querySelector(":root");
 const debug = document.querySelector("#debug");
 const upIcon = document.querySelector(".bigIcon");
-const toRad = Math.PI/180.0;
+const toRad = Math.PI / 180.0;
 const qUp = new Quaternion(0, 0, 1, 0);
 
 const barCol1 = new Color("lightgreen");
 const barCol2 = new Color("tomato");
-const barGradient = barCol1.range(barCol2, {space: "lch", outputSpace: "srgb", hue: "increasing"});
+const barGradient = barCol1.range(barCol2, {
+  space: "lch",
+  outputSpace: "srgb",
+  hue: "increasing",
+});
 
 let percentage = 0.0;
-let kfMotion = new KalmanFilter({R: 0.01, Q: 20, A: 0.5});
+let kfMotion = new KalmanFilter({ R: 0.01, Q: 20, A: 0.5 });
 let kfRotate = new KalmanFilter();
 let sensitivity = 1;
 
 let gameOver = false;
 
 if (window.DeviceOrientationEvent) {
-addEventListener("deviceorientation", function (event) {
-  // Vertical up has a beta of 90
-  // upIcon.style.transform.rotate
-  // setPercentage(Math.abs(90 - event.beta));
-  // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
+  addEventListener(
+    "deviceorientation",
+    function (event) {
+      // Vertical up has a beta of 90
+      // upIcon.style.transform.rotate
+      // setPercentage(Math.abs(90 - event.beta));
+      // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
 
-  let q = Quaternion.fromEuler(event.alpha * toRad, event.beta * toRad, event.gamma * toRad, 'ZXY');
-  let pointUp = Quaternion.I;
-  // let pointUp = new Quaternion(0, 0, 0, 0);
-  // let pointUp = Quaternion.fromAxisAngle("Z", 0);
-  let qFinal = q;
-  // let qFinal = Quaternion.fromBetweenVectors(q.toVector(), pointUp.toVector());
-  // let qFinal = Quaternion.slerp();
+      let q = Quaternion.fromEuler(
+        event.alpha * toRad,
+        event.beta * toRad,
+        event.gamma * toRad,
+        "ZXY"
+      );
+      let pointUp = Quaternion.I;
+      // let pointUp = new Quaternion(0, 0, 0, 0);
+      // let pointUp = Quaternion.fromAxisAngle("Z", 0);
+      let qFinal = q;
+      // let qFinal = Quaternion.fromBetweenVectors(q.toVector(), pointUp.toVector());
+      // let qFinal = Quaternion.slerp();
 
-  upIcon.style.transform = "rotateX(90deg) matrix3d(" + qFinal.conjugate().toMatrix4() + ") scaleZ(-1)";
-  // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+      upIcon.style.transform =
+        "rotateX(90deg) matrix3d(" +
+        qFinal.conjugate().toMatrix4() +
+        ") scaleZ(-1)";
+      // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
 
-  let v = qFinal.toVector();
-  debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
-  // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
-  }, true);
+      let v = qFinal.toVector();
+      debug.innerHTML =
+        v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
+      // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+    },
+    true
+  );
 }
 if (window.DeviceMotionEvent) {
-addEventListener('devicemotion', function () {
-  if(!gameOver)
-  {
-      let mag = norm(event.acceleration.x, event.acceleration.y, event.acceleration.z);
-      let sig = 100.0*Math.abs(kfMotion.filter(mag));
+  addEventListener(
+    "devicemotion",
+    function () {
+      if (!gameOver) {
+        let mag = norm(
+          event.acceleration.x,
+          event.acceleration.y,
+          event.acceleration.z
+        );
+        let sig = 100.0 * Math.abs(kfMotion.filter(mag));
 
-      debug.textContent = sig.toFixed(4);
-      setPercentage(clamp(sig, 0.0, 100.0));
+        debug.textContent = sig.toFixed(4);
+        setPercentage(clamp(sig, 0.0, 100.0));
 
-      if(sig > 100.0)
-      {
+        if (sig > 100.0) {
           //Lose game
           gameOver = true;
           setPercentage(100);
           debug.textContent = "GAME OVER " + debug.textContent;
-
+        }
+        // if(sig < min) { min = sig; debug.textContent = min; }
       }
-      // if(sig < min) { min = sig; debug.textContent = min; }
-  }
-  }, true);
-}
-else {
-addEventListener("MozOrientation", function (event) {
-  // debug.textContent = orientation.x;
-  }, true);
+    },
+    true
+  );
+} else {
+  addEventListener(
+    "MozOrientation",
+    function (event) {
+      // debug.textContent = orientation.x;
+    },
+    true
+  );
 }
 
 function setPercentage(perc) {
@@ -180,16 +214,21 @@ function updateShakeBar() {
 
   shakeBar.style.opacity = remap(percentage, 0.0, 100.0, 20.0, 30.0) + "%";
   // shakeBar.style.backgroundColor = barGradient(percentage/100.0).toString();
-  root.style.setProperty("--shakeAmount", percentage*percentage/200.0 + "px");
-  document.body.style.backgroundColor = barGradient(percentage/100.0).toString();
+  root.style.setProperty(
+    "--shakeAmount",
+    (percentage * percentage) / 200.0 + "px"
+  );
+  document.body.style.backgroundColor = barGradient(
+    percentage / 100.0
+  ).toString();
 }
 
 function remap(x, fromMin, fromMax, toMin, toMax) {
-  return ((x - fromMin)/fromMax)*toMax + toMin;
+  return ((x - fromMin) / fromMax) * toMax + toMin;
 }
 
 function sigmoid(z) {
-  return 1.0/(1 + Math.exp(-z/2));
+  return 1.0 / (1 + Math.exp(-z / 2));
 }
 
 function clamp(x, min, max) {
@@ -201,11 +240,15 @@ function threshold(x, t) {
 }
 
 function norm(x, y, z) {
-  return x*x + y*y + z*z;
+  return x * x + y * y + z * z;
 }
 
-screen.orientation.lock();
-screen.lockOrientation("default");
+screen.orientation
+  .lock()
+  .then(function () {
+    screen.lockOrientation("default");
+  })
+  .catch(function (e) {});
 
 // setPercentage(50.0);
 // setInterval(addPercentage, 30);
