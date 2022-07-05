@@ -28,7 +28,7 @@ GameRouter.put("/start", function (req, res) {
 GameRouter.get("/state", function (req, res) {
   temp = {
     isDone: isDone,
-    Threshold: 5,
+    Threshold: 50,
     closeReason: "",
   };
   console.log("Authlist: ", QueueInfo.GetAuthList());
