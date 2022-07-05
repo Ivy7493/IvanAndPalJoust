@@ -118,3 +118,25 @@ body {
 #joinButton:active {
   background-color: rgb(151, 36, 36);
 }
+
+#body{
+  display: flex;
+  padding-top: 10vh;
+  justify-content: center;
+}
+
+#message{
+height: 90vh;
+}
+
+.img{
+  width: 100%;
+}
+
+#winnerPage{
+  background-color: rgb(17, 228, 17) !important;
+}
+
+#loserPage{
+  background-color: rgb(228, 31, 17) !important;
+}
