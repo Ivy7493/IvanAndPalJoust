@@ -5,7 +5,6 @@ const fs = require('fs')
 const { statusSuccess } = require("../utils/utils");
 
 IdentityRouter.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, '../../frontend/join.html'))
   res.push([
     "/scripts/join_screen.js",
     "/style.css",
