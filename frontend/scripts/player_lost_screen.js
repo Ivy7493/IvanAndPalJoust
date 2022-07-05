@@ -5,7 +5,7 @@ import { getAllLostPlayers, addPlayerToLost } from "./api_layer.js";
 import { navigateTo, WAITING_FOR_FINISH } from "./navigation.js";
 
 window.onload = async function () {
-  const oneSecond = 1000;
+  const oneSecond = 400;
   setInterval(navigateToWaitingForFinishScreen, oneSecond * 5);
 
   setInterval(UpdatePlayers, oneSecond)

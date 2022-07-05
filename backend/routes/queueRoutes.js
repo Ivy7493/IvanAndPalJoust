@@ -105,7 +105,7 @@ function TouchPlayer(playerName) {
 function RemoveDeadPlayers() {
   console.log(authList());
   for (const playerName of authList()) {
-    const isDead = Date.now() - authMap.get(playerName) > 3 * 1000;
+    const isDead = Date.now() - authMap.get(playerName) > 5 * 1000;
     if (isDead) {
       console.log("Player dead");
       RemovePlayerFromList(playerName);
