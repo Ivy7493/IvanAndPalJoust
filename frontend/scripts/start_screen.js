@@ -1,4 +1,11 @@
-import { gameIsRunning, startGame,getAllPlayers,Auth,removePlayerFromQueue} from "./api_layer.js";
+import {
+  gameIsRunning,
+  startGame,
+  getAllPlayers,
+  Auth,
+  removePlayerFromQueue,
+  getSongName
+} from "./api_layer.js";
 import {
   getUrlArgument,
   navigateTo,
@@ -10,15 +17,17 @@ const playerList = document.querySelector(".playerList");
 
 
 async function UpdatePlayers(){
-  let list = await getAllPlayers()
-  console.log("what we got from request: ",list)
-  addPlayers(list)
+  let list = await getAllPlayers();
+  console.log("what we got from request: ",list);
+  addPlayers(list);
 }
 
 window.start = async function start() {
   // This player is starting the game.
 
   await startGame();
+
+
   goToPlayingPage();
 };
 
@@ -32,6 +41,10 @@ window.onload = async function () {
     // Redirect the player to wait for the game to finish.
     navigateTo(WAITING_FOR_FINISH);
   }
+  let song = await getSongName();
+  alert(song);
+
+  // let aud = new Audio(song);
   
   // Else keep polling for game to start.
   const oneSecond = 1000;

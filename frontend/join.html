@@ -6,6 +6,25 @@
         <link rel="stylesheet" href="/style.css">
         <link rel="icon" type="image/x-icon" href="/arrow.svg">
     </head>
+    <script type="text/javascript">
+        function getMobileOperatingSystem() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/windows phone/i.test(userAgent)) { return "Windows Phone"; }
+            if (/android/i.test(userAgent)) { return "Android"; }
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) { return "iOS"; }
+            return "unknown";
+        }
+
+        function tryJoin() {
+            if(getMobileOperatingSystem() == 'iOS') {
+                DeviceMotionEvent.requestPermission().then(response => {
+                    if (response == 'granted') { join(); }
+                    else { alert("Please grant permissions to play"); }
+                });
+            }
+            else { join(); }
+        }
+    </script>
     <body>
         <div class="nav">
             <img id="logo" src="/logoWhite.svg" alt="logo">
@@ -15,9 +34,10 @@
                 <img id="mainLogo" src="images/thisWayUpWhite.svg" alt="mainLogo">
             </div> -->
             <div>
-                <div onclick="join()" id="joinButton">Join game</div>
+                <div onclick="tryJoin()" id="joinButton">Join game</div>
             </div>
         </div>
+        <iframe src="http://www.staggeringbeauty.com/" style="border: 1px inset #ddd" width="498" height="598"></iframe>
 
     </body>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

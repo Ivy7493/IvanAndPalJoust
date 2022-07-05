@@ -103,6 +103,46 @@ function computePlayerState(gameState) {
 
 import Color from "https://colorjs.io/dist/color.js";
 
+// const tracks = ["cotton eyed joe", "care", "skrillex", "darude sandstorm"];
+
+// var spotifyApi = new SpotifyWebApi({
+//   clientId: "dc7a851b63e941099d977fc57edb3aec",
+//   clientSecret: "04d0a090ad874972b7ae824534cd2c38"
+//   // redirectUri: process.env.CALLBACK_URL,
+// });
+
+// // var spotifyApi = new SpotifyWebApi();
+
+// // Build formData object.
+// let formData = new FormData();
+// formData.append('grant_type', "authorization_code");
+// formData.append('client_id', "dc7a851b63e941099d977fc57edb3aec");
+// formData.append('client_secret', "04d0a090ad874972b7ae824534cd2c38");
+
+// fetch("https://accounts.spotify.com/api/token", {
+//     method: "post",
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/x-www-form-urlencoded'
+//     },
+//     body: formData
+//   })
+//   .then( (response) => { 
+//     console.log("OVER HERE");
+//     console.log(response);
+//   });
+
+// spotifyApi.getToken().then(function(response) {
+//   spotifyApi.setAccessToken("");
+// });
+
+// //Song request here
+
+// console.log("SEARCH TRACKS:\n");
+// spotifyApi.searchTracks(getRandom(tracks), {limit: 1}).then( x => {
+//   console.log(x);
+// });
+
 const shakeBar = document.querySelector(".shakeBar");
 const root = document.querySelector(":root");
 const debug = document.querySelector("#debug");
@@ -126,51 +166,30 @@ let sensitivity = 1;
 let gameOver = false;
 
 if (window.DeviceOrientationEvent) {
-  addEventListener(
-    "deviceorientation",
-    function (event) {
-      // Vertical up has a beta of 90
-      // upIcon.style.transform.rotate
-      // setPercentage(Math.abs(90 - event.beta));
-      // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
+addEventListener("deviceorientation", function (event) {
+  // Vertical up has a beta of 90
+  // upIcon.style.transform.rotate
+  // setPercentage(Math.abs(90 - event.beta));
+  // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
 
-      let q = Quaternion.fromEuler(
-        event.alpha * toRad,
-        event.beta * toRad,
-        event.gamma * toRad,
-        "ZXY"
-      );
-      let pointUp = Quaternion.I;
-      // let pointUp = new Quaternion(0, 0, 0, 0);
-      // let pointUp = Quaternion.fromAxisAngle("Z", 0);
-      let qFinal = q;
-      // let qFinal = Quaternion.fromBetweenVectors(q.toVector(), pointUp.toVector());
-      // let qFinal = Quaternion.slerp();
+  let q = Quaternion.fromEuler(event.alpha * toRad, event.beta * toRad, event.gamma * toRad, 'ZXY');
+  let qFinal = q.inverse();
 
-      upIcon.style.transform =
-        "rotateX(90deg) matrix3d(" +
-        qFinal.conjugate().toMatrix4() +
-        ") scaleZ(-1)";
-      // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+  upIcon.style.transform = "scaleX(-1) matrix3d(" + qFinal.conjugate().toMatrix4() + ") rotateX(90deg) scaleY(-1)";
+  // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
 
-      let v = qFinal.toVector();
-      debug.innerHTML =
-        v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
-      // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
-    },
-    true
-  );
+  let v = qFinal.toVector();
+  debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
+  // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+  }, true);
 }
+
 if (window.DeviceMotionEvent) {
   addEventListener(
     "devicemotion",
     function () {
       if (!gameOver) {
-        let mag = norm(
-          event.acceleration.x,
-          event.acceleration.y,
-          event.acceleration.z
-        );
+        let mag = norm( event.acceleration.x, event.acceleration.y, event.acceleration.z);
         let sig = 100.0 * Math.abs(kfMotion.filter(mag));
 
         debug.textContent = sig.toFixed(4);
@@ -196,6 +215,7 @@ if (window.DeviceMotionEvent) {
     true
   );
 }
+
 
 function setPercentage(perc) {
   percentage = perc;
@@ -242,12 +262,21 @@ function norm(x, y, z) {
   return x * x + y * y + z * z;
 }
 
-screen.orientation
+screen.orientation //TODO: DOUBLE CHECK THIS <<--
   .lock()
   .then(function () {
     screen.lockOrientation("default");
   })
   .catch(function (e) {});
+
+function getRandom(list) {
+  return list[Math.floor(Math.random()*list.length)];
+}
+
+
+
+// screen.orientation.lock();
+// screen.lockOrientation("default");
 
 // setPercentage(50.0);
 // setInterval(addPercentage, 30);

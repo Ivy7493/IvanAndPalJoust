@@ -47,3 +47,8 @@ if (isHeroku) {
   const server = http2.createSecureServer(options, app);
   server.listen(port);
 }
+<<<<<<< Updated upstream
+=======
+const server = http2.createSecureServer(options, app);
+server.listen(port);
+>>>>>>> Stashed changes

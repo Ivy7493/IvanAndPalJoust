@@ -8,6 +8,9 @@ const { TouchPlayer, RemoveDeadPlayers } = require("./queueRoutes");
 const { IsDone, SetIsDone } = require("./state_game");
 const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
+let isDone = true;
+let currentSong = "cottonEyedJoe.m4a";
+
 GameRouter.get("/", function (req, res) {
   RunOnHttp2Only(function () {
     res.push(
@@ -31,7 +34,16 @@ GameRouter.get("/state/:name", function (req, res) {
   const playerName = req.params.name;
   TouchPlayer(playerName);
   RemoveDeadPlayers();
+});
 
+GameRouter.get("/song", function (req, res) {
+  if (currentSong == "") {
+    // Logic for multiple songs
+  }
+  res.json(statusSuccess(path.join(__dirname, currentSong)));
+});
+
+GameRouter.get("/state", function (req, res) {
   temp = {
     isDone: IsDone(),
     Threshold: 50,
