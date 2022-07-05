@@ -29,3 +29,4 @@ const options = {
 }
 const server = http2.createSecureServer(options, app)
 server.listen(port);
+console.log("hello");
