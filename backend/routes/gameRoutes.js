@@ -3,18 +3,29 @@ const express = require('express');
 const { join } = require('path');
 const { statusSuccess } = require('../utils/utils');
 const GameRouter = express.Router()
+const QueueInfo = require("./queueRoutes")
 
 let isDone = true
-let activePlayers = []
 
  GameRouter.get('/', function (req, res) {
-    isDone = false
      res.sendFile(path.join(__dirname, '../../frontend/game.html'))
  })
 
- GameRouter.get("/state", function (req, res) {
+ GameRouter.put('/start', function (req, res) {
+   if(isDone == true){
+        isDone = false
+   }
+})
+
+ GameRouter.get("/state/:name", function (req, res) {
+    let isPlayerIn = false
+    if(QueueInfo.CheckPlayerInList(req.params.name) == true){
+        isPlayerIn = true
+    }else{
+        isPlayerIn = false
+    }
     temp = {
-        isDone: isDone,
+        isDone: !isPlayerIn, ///this could be weird if we run into issues later
         Threshold: 5,
         closeReason: ""
     }

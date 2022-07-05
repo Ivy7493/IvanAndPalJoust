@@ -10,6 +10,7 @@ import {
   PLAYER_LOST,
 } from "./navigation.js";
 
+
 const PLAYER_STATE = {
   STILL_PLAYING: 1,
   LOST: 2,
@@ -36,7 +37,8 @@ async function logoutPlayer() {
 }
 
 async function onTick() {
-  const gameState = await getGameState();
+  const playerId = getUrlArgument("playerId");
+  const gameState = await getGameState(playerId);
   const playerState = computePlayerState(gameState);
   await processPlayerState(playerState);
 }

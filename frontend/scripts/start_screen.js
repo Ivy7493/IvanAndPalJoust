@@ -8,12 +8,15 @@ import {
 
 window.start = async function start() {
   // This player is starting the game.
+
   await startGame();
   goToPlayingPage();
 };
 
 window.onload = async function () {
-  const isRunning = await gameIsRunning();
+  const playerId = getUrlArgument("playerId");
+  const isRunning = await gameIsRunning(playerId);
+
   if (isRunning) {
     // Redirect the player to wait for the game to finish.
     navigateTo(WAITING_FOR_FINISH);
@@ -28,7 +31,8 @@ window.onload = async function () {
  * Called every second to navigate to Game page if game has started.
  */
 async function navigateIfGameHasStarted() {
-  const isRunning = await gameIsRunning();
+  const playerId = getUrlArgument("playerId");
+  const isRunning = await gameIsRunning(playerId);
   if (isRunning) {
     goToPlayingPage();
   }
