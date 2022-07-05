@@ -1,5 +1,3 @@
-@import url("https://use.typekit.net/xln6mnk.css");
-
 :root {
   --shakeAmount: 0px;
   --upIconRotation: 0deg;
@@ -56,6 +54,16 @@ html {
   0%   { transform: rotate(var(--upIconRotation)) translateX(calc(-1 * var(--shakeAmount))) }
   50%  { transform: rotate(var(--upIconRotation)) translateX(var(--shakeAmount)) }
   100% { transform: rotate(var(--upIconRotation)) translateX(calc(-1 * var(--shakeAmount))) }
+}
+
+@keyframes loseColour {
+  0% {background-color: rgb(213, 132, 123); }
+  100% {background-color: rgb(180, 46, 46);}
+}
+
+@keyframes winColour {
+  0% {background-color: rgb(195, 252, 187); }
+  100% {background-color: rgb(64, 220, 36);}
 }
 
 .shakeBar {
@@ -132,6 +140,7 @@ p {
 
 #joinButton:active {
   background-color: rgb(151, 36, 36);
+  transform: scale(0.97);
 }
 
 #body{
@@ -142,16 +151,18 @@ p {
 
 #message{
 height: 90vh;
+
 }
 
 .img{
   width: 100%;
+  animation: shake 0.2s infinite;
 }
 
 #winnerPage{
-  background-color: rgb(17, 228, 17) !important;
+  animation: winColour 0.5s linear 0s infinite alternate forwards ;
 }
 
 #loserPage{
-  background-color: rgb(228, 31, 17) !important;
+  animation: loseColour 0.5s linear 0s infinite alternate forwards ;
 }

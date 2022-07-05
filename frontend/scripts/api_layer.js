@@ -16,6 +16,11 @@ export async function addPlayerToQueue(playerId) {
   return response.data.data;
 }
 
+export async function Auth(playerID){
+  const response = await axios.get(`/Queue/Auth/${playerID}`)
+  return response.data.data;
+}
+
 export async function removePlayerFromQueue(playerId) {
   const response = await axios.delete(`/Queue/player/${playerId}`);
   return response.data.data;
@@ -33,12 +38,13 @@ export async function startGame() {
  * 2. isDone (false if game is running)
  * 3. doneReason
  */
-export async function getGameState() {
-  const response = await axios.get("/Game/state");
+export async function getGameState(playerId) {
+  const response = await axios.get(`/Game/state`);
   return response.data.data;
 }
 
-export async function gameIsRunning() {
-  const gameState = await getGameState();
+export async function gameIsRunning(playerId) {
+  const gameState = await getGameState(playerId);
+  console.log(playerId + ": GameState : " + gameState.isDone)
   return !gameState.isDone;
 }

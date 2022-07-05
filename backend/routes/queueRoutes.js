@@ -5,6 +5,7 @@ const { join } = require('path');
 const QueueRoute = express.Router();
 
 let authList = [];
+let connectedPlayers = 0;
 let gameStarted = false;
 
 QueueRoute.get("/", function (req, res) {
@@ -17,6 +18,7 @@ QueueRoute.post("/player", function (req, res) {
     if (x == req.body.name) {
       res.status(400).json(statusFail("Given name already in use."));
     }
+    console.log("New Auth List: ",authList)
   });
 
   authList.push(req.body.name);
@@ -41,6 +43,41 @@ QueueRoute.get("/start", function (req, res) {
     if(gameStarted == false){
       gameStarted = true
     }
+
+    res.json("Okay")
 });
 
-module.exports = QueueRoute;
+
+QueueRoute.get("/Auth/:name", function (req, res) {
+    for(x in authList){
+      if(x == req.params.name){
+        return res.json(statusSuccess(true))
+      }
+    }
+    res.json(statusFail(false))
+});
+
+function RemovePlayerFromList(playeName){
+  authList = authList.filter(x=>{
+    if(x != playeName){
+      return x
+    }
+  })
+}
+
+function CheckPlayerInList(playerName){
+  for(x in authList){
+    if(x == playerName){
+      return true
+    }
+  }
+  return false
+}
+
+function GetAuthList(){
+  return authList
+}
+
+
+
+module.exports = {QueueRoute,RemovePlayerFromList,CheckPlayerInList,GetAuthList};
