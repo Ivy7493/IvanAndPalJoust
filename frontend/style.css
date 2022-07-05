@@ -185,3 +185,7 @@ height: 90vh;
   height: 100vh;
   
 }
+
+#hiddenAudioElement {
+  display: none;
+}

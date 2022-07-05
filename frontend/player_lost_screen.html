@@ -15,6 +15,14 @@
       <div id="message">
         <img class="img" src="loser.svg" alt="loser">
       </div>
+
+      <audio controls autoplay id="hiddenAudioElement" >
+        <source src="audio/lose.mp3" type="audio/mp3" />
+        Your browser does not support the audio element.
+      </audio>
+      <script>
+        document.getElementById('hiddenAudioElement').play();
+      </script>
     </div>
     </div>
   </body>
