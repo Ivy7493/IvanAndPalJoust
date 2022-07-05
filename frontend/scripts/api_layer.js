@@ -16,6 +16,22 @@ export async function addPlayerToQueue(playerId) {
   return response.data.data;
 }
 
+// returns an array
+export async function addPlayerToLost(playerId) {
+  const response = await axios.post("/Queue/Lost", {
+    name: playerId,
+  });
+
+  return response.data.data;
+}
+
+// returns an array
+export async function getAllLostPlayers(playerId) {
+  const response = await axios.get("/Queue/LostPlayers");
+
+  return response.data.data;
+}
+
 export async function Auth(playerID){
   const response = await axios.get(`/Queue/Auth/${playerID}`)
   return response.data.data;

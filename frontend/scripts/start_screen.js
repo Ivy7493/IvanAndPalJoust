@@ -15,7 +15,6 @@ async function UpdatePlayers(){
   addPlayers(list)
 }
 
-
 window.start = async function start() {
   // This player is starting the game.
 

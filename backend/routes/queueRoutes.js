@@ -7,6 +7,7 @@ const fs = require("fs");
 const { ResetGame } = require("./gameRoutes");
 
 let authList = [];
+let losers = [];
 let gameStarted = false;
 
 QueueRoute.get("/", function (req, res) {
@@ -71,6 +72,16 @@ QueueRoute.get("/Auth/:name", function (req, res) {
   }
 
   res.json(statusSuccess(false));
+});
+
+QueueRoute.post("/Lost", function(req, res) {
+  losers.push(req.body.name);
+
+  res.json(statusSuccess(losers));
+});
+
+QueueRoute.get("/LostPlayers", function(req, res) {
+  res.json(statusSuccess(losers));
 });
 
 function RemovePlayerFromList(playeName) {
