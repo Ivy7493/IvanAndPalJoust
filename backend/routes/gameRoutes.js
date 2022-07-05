@@ -5,8 +5,10 @@ const { statusSuccess } = require('../utils/utils');
 const GameRouter = express.Router()
 
 let isDone = true
+let activePlayers = []
 
  GameRouter.get('/', function (req, res) {
+    isDone = false
      res.sendFile(path.join(__dirname, '../../frontend/game.html'))
  })
 
@@ -19,12 +21,5 @@ let isDone = true
 
     res.json(statusSuccess(temp))
 });
-
-GameRouter.get("/", function (req, res) {
-  if(gameStarted == false){
-    gameStarted = true
-  }
-});
-
 
 module.exports = GameRouter

@@ -5,6 +5,7 @@ const { join } = require('path');
 const QueueRoute = express.Router();
 
 let authList = [];
+let connectedPlayers = 0;
 let gameStarted = false;
 
 QueueRoute.get("/", function (req, res) {
@@ -43,4 +44,20 @@ QueueRoute.get("/start", function (req, res) {
     }
 });
 
-module.exports = QueueRoute;
+QueueRoute.get("/", function (req, res) {
+  if(gameStarted == false){
+    gameStarted = true
+  }
+});
+
+function RemovePlayerFromList(playeName){
+  authList = authList.filter(x=>{
+    if(x != playeName){
+      return x
+    }
+  })
+}
+
+
+
+module.exports = {QueueRoute,RemovePlayerFromList};

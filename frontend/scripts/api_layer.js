@@ -22,7 +22,7 @@ export async function removePlayerFromQueue(playerId) {
 }
 
 export async function startGame() {
-  const response = await axios.put("/Game/start");
+  const response = await axios.put("/Game");
   return response.data.data;
 }
 
