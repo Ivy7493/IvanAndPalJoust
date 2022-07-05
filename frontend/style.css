@@ -10,7 +10,7 @@ body {
 
 @font-face {
   font-family: Nura;
-  src: url("/assets/Nura.ttf");
+  src: url("/Nura.ttf");
 }
 
 /* You can add global styles to this file, and also import other style files */
@@ -35,8 +35,14 @@ html {
   color: black;
   font-size: 2em;
   font-family: "Nura Light";
-  margin-bottom: 1em;
+  margin-top: 1em;
   padding: 1em;
+}
+
+h2 {
+  font-family: "Roboto";
+  text-align: center;
+  margin-top: 1em;
 }
 
 .bigIcon {

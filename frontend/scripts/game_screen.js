@@ -175,7 +175,7 @@ addEventListener("deviceorientation", function (event) {
   let q = Quaternion.fromEuler(event.alpha * toRad, event.beta * toRad, event.gamma * toRad, 'ZXY');
   let qFinal = q.inverse();
 
-  upIcon.style.transform = "scaleX(-1) matrix3d(" + qFinal.conjugate().toMatrix4() + ") rotateX(90deg) scaleY(-1)";
+  upIcon.style.transform = "scaleX(-1) matrix3d(" + qFinal.conjugate().toMatrix4() + ") rotateX(90deg) scaleX(-1)";
   // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
 
   let v = qFinal.toVector();
