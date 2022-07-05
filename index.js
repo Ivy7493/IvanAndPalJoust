@@ -31,8 +31,9 @@ app.use("/Game", GameRouter);
 app.use("/AwaitFinish", WaitRouter);
 app.use("/Lost", LostRoutes);
 
+let server;
 if (isHeroku) {
-  const server = http.createServer(app);
+  server = http.createServer(app);
 
   server.listen(port, () => {
     console.log(`listening on http://localhost:${port}`);
@@ -44,6 +45,16 @@ if (isHeroku) {
     allowHTTP1: true,
   };
 
-  const server = http2.createSecureServer(options, app);
+  server = http2.createSecureServer(options, app);
   server.listen(port);
 }
+
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});

@@ -1,3 +1,6 @@
+window.onload = () => {
+  var socket = io();
+}
 
 function test(){
     alert("h");
