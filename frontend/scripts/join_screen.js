@@ -1,4 +1,4 @@
-import { makeUniquePlayer } from "./api_layer.js";
+import { makeUniquePlayer,addPlayerToQueue } from "./api_layer.js";
 import { navigateTo, START_PAGE } from "./navigation.js";
 
 /**
@@ -6,5 +6,6 @@ import { navigateTo, START_PAGE } from "./navigation.js";
  */
 window.join = async function join() {
   const playerId = await makeUniquePlayer();
+  await addPlayerToQueue(playerId);
   navigateTo(START_PAGE, { playerId: playerId });
 };

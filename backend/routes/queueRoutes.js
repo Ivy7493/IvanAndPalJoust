@@ -18,6 +18,7 @@ QueueRoute.post("/player", function (req, res) {
     if (x == req.body.name) {
       res.status(400).json(statusFail("Given name already in use."));
     }
+    console.log("New Auth List: ",authList)
   });
 
   authList.push(req.body.name);
@@ -42,20 +43,18 @@ QueueRoute.get("/start", function (req, res) {
     if(gameStarted == false){
       gameStarted = true
     }
+
+    res.json("Okay")
 });
 
-QueueRoute.get("/", function (req, res) {
-  if(gameStarted == false){
-    gameStarted = true
-  }
-});
 
-QueueRoute.post("/Auth", function (req, res) {
+QueueRoute.get("/Auth/:name", function (req, res) {
     for(x in authList){
-      if(x == req.body.name){
-        return res.json({isDone: false})
+      if(x == req.params.name){
+        return res.json(statusSuccess(true))
       }
     }
+    res.json(statusFail(false))
 });
 
 function RemovePlayerFromList(playeName){
@@ -68,13 +67,17 @@ function RemovePlayerFromList(playeName){
 
 function CheckPlayerInList(playerName){
   for(x in authList){
-    if(x == req.body.name){
+    if(x == playerName){
       return true
     }
   }
   return false
 }
 
+function GetAuthList(){
+  return authList
+}
 
 
-module.exports = {QueueRoute,RemovePlayerFromList,CheckPlayerInList};
+
+module.exports = {QueueRoute,RemovePlayerFromList,CheckPlayerInList,GetAuthList};

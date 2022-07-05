@@ -3,7 +3,7 @@ const express = require('express');
 const { join } = require('path');
 const { statusSuccess } = require('../utils/utils');
 const GameRouter = express.Router()
-const QueueInfo = require("./queueRoutes")
+const QueueInfo = require("./queueRoutes");
 
 let isDone = true
 
@@ -15,21 +15,17 @@ let isDone = true
    if(isDone == true){
         isDone = false
    }
+   res.json(statusSuccess("Poggers"))
 })
 
- GameRouter.get("/state/:name", function (req, res) {
-    let isPlayerIn = false
-    if(QueueInfo.CheckPlayerInList(req.params.name) == true){
-        isPlayerIn = true
-    }else{
-        isPlayerIn = false
-    }
+
+ GameRouter.get("/state", function (req, res) {
     temp = {
-        isDone: !isPlayerIn, ///this could be weird if we run into issues later
+        isDone: isDone,
         Threshold: 5,
         closeReason: ""
     }
-
+    console.log("Authlist: ",QueueInfo.GetAuthList())
     res.json(statusSuccess(temp))
 });
 

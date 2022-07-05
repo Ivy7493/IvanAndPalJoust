@@ -7,7 +7,7 @@ function statusSuccess(ret = {}) {
 
 function statusFail(reason) {
   return {
-    data: ret,
+    data: {},
     status: "FAILED",
     message: reason,
   };
