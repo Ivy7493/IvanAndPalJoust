@@ -19,7 +19,7 @@ const PLAYER_STATE = {
 };
 
 window.onload = async function () {
-  const oneSecond = 400;
+  const oneSecond = 2000;
   await CheckForReload();
   const playerId = getUrlArgument("playerId");
   console.log("Player id is " + playerId);
@@ -188,7 +188,7 @@ if (window.DeviceMotionEvent) {
   addEventListener(
     "devicemotion",
     function () {
-      if (!gameOver) {
+      if (!gameOver && Date.now()-pageLoadTime > 2000) {
         let mag = norm( event.acceleration.x, event.acceleration.y, event.acceleration.z);
         let sig = 100.0 * Math.abs(kfMotion.filter(mag));
 

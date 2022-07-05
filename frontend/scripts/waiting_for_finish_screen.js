@@ -5,7 +5,7 @@ import { gameIsRunning } from "./api_layer.js";
 import { navigateTo, JOIN_PAGE } from "./navigation.js";
 
 window.onload = async function () {
-  const oneSecond = 400;
+  const oneSecond = 2000;
   setInterval(navigateIfGameIsFinished, oneSecond);
 };
 

@@ -32,7 +32,7 @@ GameRouter.put("/start", function (req, res) {
 GameRouter.get("/state/:name", function (req, res) {
   const playerName = req.params.name;
   TouchPlayer(playerName);
-  // console.log(playerName);
+  console.log(playerName);
   RemoveDeadPlayers();
 
   temp = {

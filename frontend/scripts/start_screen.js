@@ -45,9 +45,11 @@ window.onload = async function () {
   // alert(song);
 
   // let aud = new Audio(song);
+  var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+  audio.play();
   
   // Else keep polling for game to start.
-  const oneSecond = 400;
+  const oneSecond = 2000;
   setInterval(navigateIfGameHasStarted, oneSecond);
   setInterval(UpdatePlayers, oneSecond);
 };

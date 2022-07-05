@@ -5,6 +5,7 @@ const QueueRoute = express.Router();
 const fs = require("fs");
 const { ResetGame, GameStarted } = require("./state_game");
 const { RunOnHttp2Only } = require("./utils/http2_bridge");
+const { time } = require("console");
 
 // A map of player name to the last time they accessed the server.
 let authMap = new Map();
@@ -97,7 +98,7 @@ function GetAuthList() {
 
 function TouchPlayer(playerName) {
   if (authMap.has(playerName)) {
-    console.log("Touched player");
+    console.log("Touched " + playerName + ": " + (Date.now()/1000).toFixed(2));
     authMap.set(playerName, Date.now());
   }
 }
@@ -105,9 +106,9 @@ function TouchPlayer(playerName) {
 function RemoveDeadPlayers() {
   console.log(authList());
   for (const playerName of authList()) {
-    const isDead = Date.now() - authMap.get(playerName) > 5 * 1000;
+    const isDead = Date.now() - authMap.get(playerName) > 20 * 1000;
     if (isDead) {
-      console.log("Player dead");
+      console.log(playerName + " dead");
       RemovePlayerFromList(playerName);
     }
   }
