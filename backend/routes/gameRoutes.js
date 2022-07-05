@@ -4,11 +4,18 @@ const { join } = require("path");
 const { statusSuccess } = require("../utils/utils");
 const GameRouter = express.Router();
 const QueueInfo = require("./queueRoutes");
+const fs = require("fs");
 
 let isDone = true;
 
 GameRouter.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "../../frontend/game.html"));
+  res.push(
+    ["/scripts/game.js", "/style.css", "/arrow.svg"],
+    path.join(__dirname, "../../frontend")
+  );
+
+  res.writeHead(200);
+  res.end(fs.readFileSync(path.join(__dirname, "../../frontend/game.html")));
 });
 
 GameRouter.put("/start", function (req, res) {

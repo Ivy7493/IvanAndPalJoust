@@ -1,10 +1,21 @@
 const express = require("express");
 const IdentityRouter = express.Router();
 let nameLib = require("../scripts/nameGen");
+const fs = require('fs')
 const { statusSuccess } = require("../utils/utils");
 
 IdentityRouter.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, '../../frontend/join.html'))
+  res.push([
+    "/scripts/join_screen.js",
+    "/style.css",
+    "/scripts/api_layer.js",
+    "/scripts/navigation.js",
+    "/arrow.svg"
+  ], path.join(__dirname, '../../frontend'));
+
+  res.writeHead(200);
+  res.end(fs.readFileSync(path.join(__dirname, '../../frontend/join.html')));
 });
 
 IdentityRouter.get("/uniquePlayer", function (req, res) {
