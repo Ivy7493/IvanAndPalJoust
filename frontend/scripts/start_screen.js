@@ -1,4 +1,4 @@
-import { gameIsRunning, startGame,getAllPlayers, addPlayerToQueue,Auth} from "./api_layer.js";
+import { gameIsRunning, startGame,getAllPlayers,Auth,removePlayerFromQueue} from "./api_layer.js";
 import {
   getUrlArgument,
   navigateTo,
@@ -24,9 +24,11 @@ window.start = async function start() {
 };
 
 window.onload = async function () {
+  await CheckForReload()
   const playerId = getUrlArgument("playerId");
   const isRunning = await gameIsRunning(playerId);      
   let canLobby = await Auth(playerId)
+  console.log("Lobby stuff "+ canLobby)
   if (isRunning || !canLobby) {
     // Redirect the player to wait for the game to finish.
     navigateTo(WAITING_FOR_FINISH);
@@ -67,7 +69,7 @@ function addPlayers(list) {
     }
 }
 
-window.onbeforeunload = CheckForReload;
+window.onunload = CheckForReload;
 
 function ClearPlayersList(){
   playerList.innerHTML = "";
@@ -80,15 +82,14 @@ function addPlayer(name) {
     playerList.appendChild(newPlayer);
 }
 
-function CheckForReload(){
+async function CheckForReload(){
   let data=window.performance.getEntriesByType("navigation")[0].type;
   console.log(data);
     if (data === "reload") {
-      logoutPlayer()
+
+      await logoutPlayer()
     } 
 }
-
-window.Add
 
 async function logoutPlayer() {
   const playerId = getUrlArgument("playerId");

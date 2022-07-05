@@ -9,7 +9,6 @@ let connectedPlayers = 0;
 let gameStarted = false;
 
 QueueRoute.get("/", function (req, res) {
-  console.log("Pggers");
   res.sendFile(path.join(__dirname, '../../frontend/start.html'));
 });
 
@@ -49,12 +48,14 @@ QueueRoute.get("/start", function (req, res) {
 
 
 QueueRoute.get("/Auth/:name", function (req, res) {
-    for(x in authList){
+    for(const x of authList){
       if(x == req.params.name){
-        return res.json(statusSuccess(true))
+        res.json(statusSuccess(true))
+        return;
       }
     }
-    res.json(statusFail(false))
+
+    res.json(statusSuccess(false))
 });
 
 function RemovePlayerFromList(playeName){
@@ -66,7 +67,7 @@ function RemovePlayerFromList(playeName){
 }
 
 function CheckPlayerInList(playerName){
-  for(x in authList){
+  for(const x of authList){
     if(x == playerName){
       return true
     }

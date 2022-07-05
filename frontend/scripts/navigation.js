@@ -2,7 +2,7 @@ export const JOIN_PAGE = "/Join";
 export const START_PAGE = "/Queue";
 export const PLAYING_PAGE = "/Game";
 export const PLAYER_LOST = "/Lost";
-export const WAITING_FOR_FINISH = "/AwaitFinish";
+export const WAITING_FOR_FINISH = "Game/AwaitFinish";
 
 /**
  * Returns the value of the URL parameter with the given name.
