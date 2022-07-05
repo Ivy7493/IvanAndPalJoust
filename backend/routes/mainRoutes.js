@@ -1,16 +1,23 @@
 const express = require("express");
-const { statusFail, statusSuccess } = require("../utils/utils");
-const path = require('path')
-const { join } = require('path');
+const fs = require("fs");
+const path = require("path");
+const { join } = require("path");
 const mainRouter = express.Router();
 
 mainRouter.get("/", function (req, res) {
-    console.log("Pggers");
-    res.sendFile(path.join(__dirname, '../../frontend/join.html'));
-  });
+  res.push(
+    [
+      "/scripts/join_screen.js",
+      "/style.css",
+      "/scripts/api_layer.js",
+      "/scripts/navigation.js",
+      "/arrow.svg",
+    ],
+    path.join(__dirname, "../../frontend")
+  );
 
+  res.writeHead(200);
+  res.end(fs.readFileSync(path.join(__dirname, "../../frontend/join.html")));
+});
 
-
-
-
-module.exports = mainRouter
+module.exports = mainRouter;
