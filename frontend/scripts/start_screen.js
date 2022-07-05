@@ -57,11 +57,8 @@ function goToPlayingPage() {
   });
 }
 
-
-
-
 function addPlayers(list) {
-    ClearPlayersList()
+    clearPlayersList()
     console.log("List numbers: ", list.length)
     for(let x of list){
       addPlayer(x)
@@ -70,7 +67,7 @@ function addPlayers(list) {
 
 window.onunload = CheckForReload;
 
-function ClearPlayersList(){
+function clearPlayersList(){
   playerList.innerHTML = "";
 }
 

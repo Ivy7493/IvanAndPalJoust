@@ -2,6 +2,7 @@ import {
   addPlayerToQueue,
   removePlayerFromQueue,
   getGameState,
+  addPlayerToLost,
   Auth
 } from "./api_layer.js";
 import {
@@ -60,9 +61,13 @@ async function onTick() {
  */
 async function processPlayerState(playerState) {
   if (playerState === PLAYER_STATE.LOST) {
+    const playerId = getUrlArgument("playerId");
+    addPlayerToLost(playerId);  
     await logoutPlayer();
     navigateTo(PLAYER_LOST);
   } else if (playerState === PLAYER_STATE.WON) {
+    const playerId = getUrlArgument("playerId");
+    addPlayerToLost(playerId);  
     await logoutPlayer();
     window.confirm("Yay! You have won!");
 
