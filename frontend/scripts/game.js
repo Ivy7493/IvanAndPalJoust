@@ -85,6 +85,7 @@ export function initGame() { // essentially onload for join
     addEventListener(
         "devicemotion",
         function (event) {
+            // document.writeln(accelScore);
         if (!gameOver && ignoreBeginData++ > numDataIgnore) { //Date.now() - pageLoadTime > initialWait) {
 
             //=====Accel Score=====
