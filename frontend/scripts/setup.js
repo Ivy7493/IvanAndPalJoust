@@ -102,6 +102,7 @@ let didSyncMusic = false;
 
 export function OnRTT(rtt) {
   rttValues.addValue(rtt);
+  console.log("On rtt value ", rtt);
 }
 
 export function ResetMusicSync() {
