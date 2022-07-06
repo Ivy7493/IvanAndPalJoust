@@ -1,6 +1,12 @@
 import Color from "https://colorjs.io/dist/color.js";
 
+async function playGameSong() {
+    const song = "Umbrella.mp3";
+    await playPreloadedSong(song);
+}
+
 export function initGame() { // essentially onload for join
+    playGameSong();
 
     const shakeBar = document.querySelector(".shakeBar");
     const root = document.querySelector(":root");
