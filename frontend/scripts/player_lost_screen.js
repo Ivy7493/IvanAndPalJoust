@@ -8,7 +8,7 @@ window.onload = async function () {
   const playerId = getUrlArgument("playerId");
   InitGameListener(playerId);
 
-  setTimeout(navigateToWaitingForFinishScreen, 1000 * 5);
+  setTimeout(navigateToWaitingForFinishScreen, 1000 * 10);
 };
 
 /**
