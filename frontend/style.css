@@ -161,6 +161,19 @@ p {
   transition: transform 0.05s ease-in-out;
 }
 
+#joinButtonNo {
+  margin: auto;
+  margin-top: 1em;
+  border: 0px;
+  border-radius: 0.3em;
+  padding: 1em;
+  color: rgb(225, 225, 225);
+  font-family: "Nura";
+  font-size: 2em;
+  letter-spacing: 1px;
+  background-color: rgb(148, 87, 87);
+}
+
 #startButton {
   display: block;
   margin: auto;
@@ -188,6 +201,7 @@ p {
   background-color: rgb(151, 36, 36);
   transform: scale(0.97);
 }
+
 
 #body{
   display: flex;
