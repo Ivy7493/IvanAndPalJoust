@@ -44,6 +44,8 @@ const io = new Server(server);
 io.on('connection', (socket) => {
     console.log('a user connected');
 
+    numPlayersReady++;
+
     connections[socket.id] = {
         socket: socket,
         ready: false
@@ -111,11 +113,12 @@ io.on('connection', (socket) => {
         numPlaying--;
         losers.push(connections[socket.id].name);
         socket.join(STATE.lost);
-        io.to(STATE.losers).emit("losers", losers); // sending the latest data of all the losers
+        io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
 
+        console.log(numPlaying);
         if (numPlaying == 0) {
             gameInProgress = false;
-            io.to(STATE.losers).emit("finished", null);
+            io.emit("finished", null);
         }
     });
 
@@ -125,3 +128,8 @@ io.on('connection', (socket) => {
         numPlaying = numPlayersReady;
     });
 });
+
+// send the threshold value
+setInterval(() => {
+    io.to(STATE.playing).emit("threshhold", 0);
+}, 1000)
