@@ -212,9 +212,6 @@ export function displayPlayers() {
 
     playerList.appendChild(newPlayer);
   }
-  newPlayer.style.backgroundColor = rgbToString(color);
-
-  playerList.appendChild(newPlayer);
 }
 
 export function displayLosers() {
