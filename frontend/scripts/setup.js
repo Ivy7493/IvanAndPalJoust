@@ -118,9 +118,10 @@ export function OnServerTimestamp(serverTimestamp) {
       // localisedServerTimeToResetSong is in future
       const diffToReset = localisedServerTimeToResetSong - Date.now();
       console.log("Syncing in", diffToReset);
+      didSyncMusic = true;
+
       setTimeout(() => {
         RestartPlayingSong();
-        didSyncMusic = true;
         console.log("Song reset at", Date.now());
       }, diffToReset);
     }
