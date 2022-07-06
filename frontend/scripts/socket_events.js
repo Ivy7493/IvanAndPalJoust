@@ -3,8 +3,10 @@ import { setPage } from "./setPage.js";
 // navigatge to start page
 socket.on("players", (p) => {
     players = p;
-    if (!gameInProgress)
+    if (!gameInProgress) {
+        playing = true;
         setPage("start");
+    }
 });
 
 socket.on("name", (n) => {
@@ -14,6 +16,7 @@ socket.on("name", (n) => {
 // navigate to waiting page
 socket.on("gameInProgress", () => {
     gameInProgress = true; // disable button
+    playing = false;
     gameProgess();
 });
 
@@ -25,11 +28,14 @@ socket.on("start", () => {
 
 // getting the threshold value
 socket.on("threshhold", (thresh) => {
+    console.log("poggers: ",thresh)
+    setPlayerRate(thresh)
     threshhold = thresh;
 });
 
 // gets sent to the losing players
 socket.on("losers", (l) => {
+    console.log("got here");
     losers = l;
     setPage("lose");
 });
@@ -40,6 +46,12 @@ socket.on("finished", async () => {
     await sleep(5000); // waiting so everyone can see score
     gameInProgress = false;
     gameFinished();
+    players = []; // the players
+    playerName = ""; // players name
+    gameInProgress = false;
+    playing = false;
+    threshhold = 0;
+    losers = [];
     setPage("join");
 });
 

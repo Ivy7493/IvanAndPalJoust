@@ -62,8 +62,10 @@ async function playPreloadedSong(songPath) {
 function setPlayerRate(rate) {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
-    if (!player.paused) {
+    if (!player.paused && song != 'elevatorMusic.mp3') {
       player.playbackRate = rate;
+    }else if(!player.paused && song == 'elevatorMusic.mp3'){
+        player.playbackRate = 1
     }
   }
 }
@@ -137,7 +139,7 @@ export function displayLosers() {
     for (let i = 0; i < losers.length; i++) {
         // colors
         let color = hashStringToColor(losers[losers.length - 1 - i]);
-        let invColor = invertColor(color);s
+        let invColor = invertColor(color);
 
         let newPlayer = document.createElement("div");
         newPlayer.classList.add("playerItem");
