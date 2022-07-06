@@ -130,6 +130,12 @@ io.on('connection', (socket) => {
 
 function reset() {
     // connections = {}; // list of connection ids
+    for (let c of Object.keys(connections)) {
+        connections[c].socket.leave(STATE.playing);
+        connections[c].socket.leave(STATE.lost);
+        connections[c].socket.leave(STATE.waiting);
+    }
+
     players = [] // name of the players
     losers = [];
     numPlayersReady = 0;
