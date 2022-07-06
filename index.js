@@ -158,6 +158,10 @@ io.on("connection", (socket) => {
     io.to(STATE.playing).emit("timeToResetMusic", Date.now() + 4000); // set time in future for clients to sync music
     numPlaying = numPlayersReady;
   });
+
+  socket.on("rtt", (timestamp) => {
+    socket.emit("rtt", timestamp);
+  });
 });
 
 function reset() {

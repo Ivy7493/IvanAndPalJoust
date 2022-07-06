@@ -1,7 +1,8 @@
 import { setPage } from "./setPage.js";
-import { OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
+import { OnRTT, OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
 import {SetSensitivity} from './game.js'
 import {setPlayerRate, StopMusic} from './setup.js'
+import { MovingAverageQueue } from "./data_structures.js";
 
 // navigatge to start page
 socket.on("players", (p) => {
@@ -31,7 +32,6 @@ socket.on("start", () => {
 
 // getting the threshold value
 socket.on("threshhold", (thresh) => {
-    console.log("poggers: ",thresh)
     setPlayerRate(thresh)
     SetSensitivity(thresh)
     threshhold = thresh;
@@ -70,6 +70,15 @@ socket.on("timeToResetMusic", (timestamp) => {
     SetServerTimeToResetSong(timestamp);
     ResetMusicSync();
 });
+
+socket.on("rtt", (timestamp) => {
+    const rtt = Date.now() - timestamp;
+    OnRTT(rtt);
+});
+
+setInterval(() =>{
+    socket.emit("rtt", Date.now());
+}, 100);
 
 function gameProgess() {
   let joinButton = document.getElementById("joinButton");
