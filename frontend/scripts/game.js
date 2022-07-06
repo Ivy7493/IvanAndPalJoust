@@ -9,6 +9,8 @@ export function initGame() { // essentially onload for join
     const toRad = Math.PI / 180.0;
     const qUp = new Quaternion(0, 0, 1, 0);
 
+    const initialWait = 2000;
+
     const barCol1 = new Color("lightgreen");
     const barCol2 = new Color("tomato");
     const barGradient = barCol1.range(barCol2, {
@@ -28,7 +30,7 @@ export function initGame() { // essentially onload for join
     addEventListener(
         "deviceorientation",
         function (event) {
-            if (!gameOver && Date.now() - pageLoadTime > 2000) {
+            if (!gameOver && Date.now() - pageLoadTime > initialWait) {
 
             // Vertical up has a beta of 90
             // upIcon.style.transform.rotate
@@ -71,7 +73,7 @@ export function initGame() { // essentially onload for join
     addEventListener(
         "devicemotion",
         function () {
-        if (!gameOver && Date.now() - pageLoadTime > 2000) {
+        if (!gameOver && Date.now() - pageLoadTime > initialWait) {
             let mag = norm(
             event.acceleration.x,
             event.acceleration.y,
