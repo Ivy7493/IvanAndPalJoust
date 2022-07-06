@@ -79,7 +79,6 @@ io.on('connection', (socket) => {
                     }
     
                 reset();
-                console.log(players);
                 io.emit("finished", null);
             }
         }
@@ -99,7 +98,6 @@ io.on('connection', (socket) => {
             await socket.join(STATE.waiting);
             io.to(STATE.waiting).emit("gameInProgress");
         } else {
-            console.log(players);
             numPlayersReady++; // temp
             let name = nameLib.GenerateName();
             connections[socket.id]["name"] = name; // adding name to json object

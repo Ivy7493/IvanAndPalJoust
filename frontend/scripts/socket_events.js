@@ -1,5 +1,5 @@
 import { setPage } from "./setPage.js";
-import {setPlayerRate} from './setup.js'
+import {setPlayerRate, StopMusic} from './setup.js'
 
 // navigatge to start page
 socket.on("players", (p) => {
@@ -54,6 +54,8 @@ socket.on("finished", async () => {
     threshhold = 0;
     losers = [];
 
+    StopMusic();
+    
     setPage("join");
 });
 
