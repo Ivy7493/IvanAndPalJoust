@@ -86,8 +86,8 @@ h2 {
 }
 
 @keyframes loseColour {
-  0% {background-color: rgb(213, 132, 123); }
-  100% {background-color: rgb(180, 46, 46);}
+  0% {background-color: rgb(52, 184, 211); }
+  100% {background-color: rgb(70, 48, 210);}
 }
 
 @keyframes winColour {
@@ -159,6 +159,9 @@ p {
   letter-spacing: 1px;
   background-color: brown;
   transition: transform 0.05s ease-in-out;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
 }
 
 #joinButtonNo {
@@ -224,7 +227,7 @@ height: 30vh;
 }
 
 #loserPage{
-  animation: loseColour 0.5s linear 0s infinite alternate forwards ;
+  animation: loseColour 1.5s linear 0s infinite alternate forwards ;
 }
 
 #clickable{
@@ -241,6 +244,7 @@ height: 30vh;
   margin: auto;
   margin-top: 2em;
   width: 90vw;
+  max-width: 400px;
 }
 
 #frame{
@@ -272,7 +276,7 @@ height: 30vh;
 }
 
 #loserImg{
-  width: 50%;
+  width: 100%;
   margin: 5px auto;
   display: block;
 }
