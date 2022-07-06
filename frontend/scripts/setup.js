@@ -102,7 +102,7 @@ let didSyncMusic = false;
 
 export function OnRTT(rtt) {
   rttValues.addValue(rtt);
-  console.log("On rtt value ", rtt);
+  console.log("On rtt value ", rttValues.getAverage());
 }
 
 export function ResetMusicSync() {
