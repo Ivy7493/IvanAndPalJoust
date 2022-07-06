@@ -113,7 +113,7 @@ async function processPlayerState(playerState) {
  * TODO: Logic to be implemented.
  */
 function computePlayerState(gameState) {
-  sensitivity = 1 / gameState.threshold;
+  sensitivity = 1.0 / gameState.threshold;
   const winnerIsUs = gameState.winner === getUrlArgument("playerId");
 
   if (gameOver == true) {
@@ -128,46 +128,6 @@ function computePlayerState(gameState) {
 // ========== SENSOR DATA + UI ==========
 
 import Color from "https://colorjs.io/dist/color.js";
-
-// const tracks = ["cotton eyed joe", "care", "skrillex", "darude sandstorm"];
-
-// var spotifyApi = new SpotifyWebApi({
-//   clientId: "dc7a851b63e941099d977fc57edb3aec",
-//   clientSecret: "04d0a090ad874972b7ae824534cd2c38"
-//   // redirectUri: process.env.CALLBACK_URL,
-// });
-
-// // var spotifyApi = new SpotifyWebApi();
-
-// // Build formData object.
-// let formData = new FormData();
-// formData.append('grant_type', "authorization_code");
-// formData.append('client_id', "dc7a851b63e941099d977fc57edb3aec");
-// formData.append('client_secret', "04d0a090ad874972b7ae824534cd2c38");
-
-// fetch("https://accounts.spotify.com/api/token", {
-//     method: "post",
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/x-www-form-urlencoded'
-//     },
-//     body: formData
-//   })
-//   .then( (response) => {
-//     console.log("OVER HERE");
-//     console.log(response);
-//   });
-
-// spotifyApi.getToken().then(function(response) {
-//   spotifyApi.setAccessToken("");
-// });
-
-// //Song request here
-
-// console.log("SEARCH TRACKS:\n");
-// spotifyApi.searchTracks(getRandom(tracks), {limit: 1}).then( x => {
-//   console.log(x);
-// });
 
 const shakeBar = document.querySelector(".shakeBar");
 const root = document.querySelector(":root");
@@ -233,7 +193,7 @@ if (window.DeviceMotionEvent) {
           event.acceleration.y,
           event.acceleration.z
         );
-        let sig = 100.0 * Math.abs(kfMotion.filter(mag));
+        let sig = 100.0 * Math.abs(kfMotion.filter(mag * sensitivity));
 
         debug.textContent = sig.toFixed(4);
         setPercentage(clamp(sig, 0.0, 100.0));
