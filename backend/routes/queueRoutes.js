@@ -43,10 +43,10 @@ QueueRoute.post("/player", function (req, res) {
     if (x === req.body.name) {
       res.status(400).json(statusFail("Given name already in use."));
     }
-    console.log("New Auth List: ", authList());
   });
 
   authMap.set(req.body.name, Date.now());
+  console.log("New Auth List: ", authList());
   res.json(statusSuccess(req.body.name));
 });
 
@@ -81,6 +81,7 @@ QueueRoute.get("/LostPlayers", function (req, res) {
 
 function RemovePlayerFromList(playerName) {
   authMap.delete(playerName);
+  console.log("New Auth List: ", authList());
 }
 
 function CheckPlayerInList(playerName) {
@@ -98,15 +99,22 @@ function GetAuthList() {
 
 function TouchPlayer(playerName) {
   if (authMap.has(playerName)) {
-    console.log("Touched " + playerName + ": " + (Date.now()/1000).toFixed(2));
+    console.log(
+      "Touched " + playerName + ": " + (Date.now() / 1000).toFixed(2)
+    );
     authMap.set(playerName, Date.now());
   }
+}
+
+function ClearPlayers() {
+  authMap.clear();
+  console.log("New Auth List: ", authList());
 }
 
 function RemoveDeadPlayers() {
   console.log(authList());
   for (const playerName of authList()) {
-    const isDead = Date.now() - authMap.get(playerName) > 20 * 1000;
+    const isDead = Date.now() - authMap.get(playerName) > 5 * 1000;
     if (isDead) {
       console.log(playerName + " dead");
       RemovePlayerFromList(playerName);
@@ -128,4 +136,5 @@ module.exports = {
   GetAuthList,
   TouchPlayer,
   RemoveDeadPlayers,
+  ClearPlayers,
 };

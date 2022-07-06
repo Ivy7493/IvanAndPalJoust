@@ -1,14 +1,16 @@
 const path = require("path");
 const express = require("express");
-const { join } = require("path");
 const { statusSuccess } = require("../utils/utils");
 const GameRouter = express.Router();
 const fs = require("fs");
-const { TouchPlayer, RemoveDeadPlayers } = require("./queueRoutes");
+const {
+  TouchPlayer,
+  RemoveDeadPlayers,
+  GetAuthList,
+} = require("./queueRoutes");
 const { IsDone, SetIsDone } = require("./state_game");
 const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
-//let currentSong = "cottonEyedJoe.m4a";
 let songList = ['Umbrella.mp3','cottonEyedJoe.m4a']
 let currentSong = ""
 let Threshold = 1
@@ -16,8 +18,11 @@ let max = 1.5
 let min = 0.5
 let TempChange = 5000
 console.log("Any poggers and piggers?")
-setInterval(ChangeSongSpeed,5000)
+setInterval(ChangeSongSpeed,TempChange)
 
+const socketConnections = new Map();
+
+setInterval(onTick, 250);
 
 GameRouter.get("/", function (req, res) {
   RunOnHttp2Only(function () {
@@ -36,23 +41,8 @@ GameRouter.put("/start", function (req, res) {
     SetIsDone(false);
     currentSong = songList[Math.floor(Math.random()*songList.length)];
     console.log("Chosen song: ",currentSong)
-    setInterval(ChangeSongSpeed,5000)
   }
   res.json(statusSuccess("Poggers"));
-});
-
-GameRouter.get("/state/:name", function (req, res) {
-  const playerName = req.params.name;
-  TouchPlayer(playerName);
-  console.log(playerName)
-  RemoveDeadPlayers();
-
-  temp = {
-    isDone: IsDone(),
-    Threshold: Threshold,
-    closeReason: "",
-  };
-  res.json(statusSuccess(temp));
 });
 
 GameRouter.get("/song", function (req, res) {
@@ -79,4 +69,44 @@ function ChangeSongSpeed(){
   console.log("New Threshold: ", Threshold)
 }
 
-module.exports = { GameRouter };
+function onTick() {
+  RemoveDeadPlayers();
+
+  let hasWinner = GetAuthList().length == 1;
+  let winner = hasWinner ? GetAuthList()[0] : "";
+
+  const state = {
+    isDone: IsDone(),
+    threshold: Threshold,
+    closeReason: hasWinner ? "winner" : "",
+    winner: winner,
+  };
+
+  for (const socket of socketConnections.keys()) {
+    socket.emit("state", JSON.stringify(state));
+  }
+}
+
+function SetupGameServer(expressServer) {
+  const { Server } = require("socket.io");
+  const io = new Server(expressServer);
+
+  io.on("connection", function (socket) {
+    console.log("new connection on game server");
+
+    socket.on("playerId", function (playerId) {
+      socketConnections.set(socket, playerId);
+      TouchPlayer(playerId);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+      const playerId = socketConnections.get(socket);
+      if (Boolean(playerId)) {
+        socketConnections.delete(playerId);
+      }
+    });
+  });
+}
+
+module.exports = { GameRouter, SetupGameServer };

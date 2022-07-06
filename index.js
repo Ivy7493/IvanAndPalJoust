@@ -12,9 +12,10 @@ const { readFileSync } = require("fs");
 const WaitRouter = require("./backend/routes/waitingRoutes.js");
 const LostRoutes = require("./backend/routes/lostRoutes.js");
 const { isHeroku } = require("./backend/routes/utils/http2_bridge.js");
+const { SetupGameServer } = require("./backend/routes/gameRoutes.js");
 
 process.on("uncaughtException", function (e) {
-  // console.log(e)
+  console.log(e)
 });
 
 const app = isHeroku ? express() : http2Express(express);
@@ -38,6 +39,8 @@ if (isHeroku) {
   server.listen(port, () => {
     console.log(`listening on http://localhost:${port}`);
   });
+
+  SetupGameServer(server);
 } else {
   const options = {
     key: readFileSync("server.key"),
@@ -47,14 +50,5 @@ if (isHeroku) {
 
   server = http2.createSecureServer(options, app);
   server.listen(port);
+  SetupGameServer(server);
 }
-
-const { Server } = require("socket.io");
-const io = new Server(server);
-
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
