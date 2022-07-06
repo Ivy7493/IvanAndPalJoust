@@ -9,7 +9,7 @@ async function preloadAllAudio() {
   const audioFilenames = [
     "elevatorMusic.mp3",
     "lose.mp3",
-    "JMABGRZ-claps-clapping.mp3",
+    "claps.mp3",
     "Umbrella.mp3",
   ];
 
@@ -133,7 +133,7 @@ export function displayLosers() {
     for (let i = 0; i < losers.length; i++) {
         // colors
         let color = hashStringToColor(losers[losers.length - 1 - i]);
-        let invColor = invertColor(color);s
+        let invColor = invertColor(color);
 
         let newPlayer = document.createElement("div");
         newPlayer.classList.add("playerItem");

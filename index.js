@@ -114,15 +114,17 @@ io.on('connection', (socket) => {
         socket.join(STATE.lost);
         io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
 
-        console.log(numPlaying);
         if (numPlaying == 1) { // there is a winner
-            for (let c of Object.keys(connections))
-                if (!losers.includes(connections[c].name)) {
-                    losers.push(connections[socket.id].name);
-                    socket.join(STATE.lost);
-                    io.to(STATE.lost).emit("losers", losers);
-                    break;
-                }
+            for (let c of Object.keys(connections)) {
+
+                console.log(!losers.includes(connections[c].name))
+                    if (!losers.includes(connections[c].name)) {
+                        losers.push(connections[c].name);
+                        socket.join(STATE.lost);
+                        io.to(STATE.lost).emit("losers", losers);
+                        break;
+                    }
+            }
 
             reset();
             io.emit("finished", null);
