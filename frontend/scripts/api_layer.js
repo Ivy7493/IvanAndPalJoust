@@ -16,6 +16,7 @@ export function InitGameListener(playerId) {
       threshold: 50,
       closeReason: "",
       winner: "",
+      authList: []
     };
   });
 
@@ -32,8 +33,10 @@ export async function makeUniquePlayer() {
 }
 
 export async function getAllPlayers() {
-  const response = await axios.get("/Queue/players");
-  return response.data.data;
+  // const response = await axios.get("/Queue/players");
+  // return response.data.data;
+
+  return lastReceivedGameState.authList;
 }
 
 export async function addPlayerToQueue(playerId) {
