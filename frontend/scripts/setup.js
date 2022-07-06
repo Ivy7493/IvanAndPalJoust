@@ -80,7 +80,7 @@ window.onload = () => {
   preloadAllAudio();
 
   // buttons
-  joinButton.onclick = function tryJoin() {
+  joinButton.onclick = () => {
     var elem = document.documentElement;
 
     if (elem.requestFullscreen) {
@@ -97,8 +97,17 @@ window.onload = () => {
     playPreloadedSong("elevatorMusic.mp3");
   };
 
-  document.getElementById("startButton").onclick = function tryJoin() {
-    socket.emit("gameStart", null);
+  let clickCount = 0;
+  document.getElementById("startButton").onclick = () => {
+    // need at least 2 players to play
+    if (players.length > 1)
+      socket.emit("gameStart", null);
+    
+    clickCount++;
+    if (clickCount == 5) {
+      clickCount = 0;
+      alert("You require at least 2 players to player");
+    }
   };
 };
 

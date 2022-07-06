@@ -34,7 +34,7 @@ const STATE = {
 
 let connections = {}; // list of connection ids
 let numConnections = 0;
-let players = [] // name of the players
+let players = []; // name of the players
 let losers = [];
 let numPlayersReady = 0;
 let numPlaying = 0;
@@ -61,17 +61,17 @@ io.on('connection', (socket) => {
             if (p != connections[socket.id].name)
                 newPlayers.push(p);
 
+        players = newPlayers;
+
         // is client is in game and leaves add them as loser
         if (connections[socket.id].playing) {
             numPlaying--;
             losers.push(connections[socket.id].name);
-            console.log(connections[socket.id].name);
             io.to(STATE.lost).emit("losers", losers);
 
             if (numPlaying == 1) {
                 for (let c of Object.keys(connections))
                     if (!losers.includes(connections[c].name)) {
-                        console.log(connections[c].name);
                         losers.push(connections[c].name);
                         await connections[c].socket.join(STATE.lost);
                         io.to(STATE.lost).emit("losers", losers);
@@ -79,11 +79,10 @@ io.on('connection', (socket) => {
                     }
     
                 reset();
+                console.log(players);
                 io.emit("finished", null);
             }
         }
-
-        players = newPlayers;
 
         io.to(STATE.playing).emit("players", players);
 
@@ -100,6 +99,7 @@ io.on('connection', (socket) => {
             await socket.join(STATE.waiting);
             io.to(STATE.waiting).emit("gameInProgress");
         } else {
+            console.log(players);
             numPlayersReady++; // temp
             let name = nameLib.GenerateName();
             connections[socket.id]["name"] = name; // adding name to json object
@@ -174,7 +174,7 @@ function reset() {
         connections[c].playing = false;
     }
 
-    players = [] // name of the players
+    players = []; // name of the players
     losers = [];
     numPlayersReady = 0;
     numPlaying = 0;
@@ -185,5 +185,5 @@ function reset() {
 setInterval(() => {
     let max = 1.5
     let min = 0.5
-    io.to(STATE.playing).emit("threshhold",Math.random() * (max - min) + min);
+    io.to(STATE.playing).emit("threshhold", Math.random() * (max - min) + min);
 }, 5000)
