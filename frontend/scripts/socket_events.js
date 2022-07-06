@@ -37,5 +37,6 @@ socket.on("losers", (l) => {
 socket.on("finished", async () => {
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     await sleep(5000); // waiting so everyone can see score
+    gameInProgress = false;
     setPage("join");
 });

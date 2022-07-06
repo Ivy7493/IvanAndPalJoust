@@ -63,11 +63,13 @@ export function initGame() { // essentially onload for join
             if(gyroScore < 0.9)
             {
                 //Lose game
-                gameOver = true;
-                debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
+                // gameOver = true;
+                // debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
+                // this.alert("GAME OVER GYRO\n" + gyroScore.toFixed(3));
             }
 
-            debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1) + "<br />" + gyroScore.toFixed(3);
+            debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);// + "<br />" + gyroScore.toFixed(3);
+            // debug.innerHTML = gyroScore.toFixed(3);
             // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
         }
         },
@@ -92,10 +94,11 @@ export function initGame() { // essentially onload for join
 
             if (sig > 100.0) {
             //Lose game
-                gameOver = true;
-                setPercentage(100);
-                debug.textContent = "GAME OVER " + debug.textContent;
-                socket.emit("playerLost");
+            gameOver = true;
+            setPercentage(100);
+            debug.textContent = "GAME OVER " + debug.textContent;
+            // this.alert("GAME OVER ACCEL\n" + gyroScore.toFixed(3));
+            socket.emit("playerLost");
             }
             // if(sig < min) { min = sig; debug.textContent = min; }
         }
