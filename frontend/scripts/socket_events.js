@@ -1,5 +1,5 @@
 import { setPage } from "./setPage.js";
-import { OnServerTimestamp, SetServerTimeToResetSong } from "./setup.js";
+import { OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
 import {SetSensitivity} from './game.js'
 import {setPlayerRate, StopMusic} from './setup.js'
 
@@ -68,6 +68,7 @@ socket.on("serverTime", (timestamp) => {
   
 socket.on("timeToResetMusic", (timestamp) => {
     SetServerTimeToResetSong(timestamp);
+    ResetMusicSync();
 });
 
 function gameProgess() {

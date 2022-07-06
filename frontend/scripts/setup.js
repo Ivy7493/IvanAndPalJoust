@@ -97,6 +97,10 @@ let serverClientTimeDeltas = [];
 const serverClientDeltasToMaintain = 20;
 let didSyncMusic = false;
 
+export function ResetMusicSync() {
+  didSyncMusic = false;
+}
+
 export function SetServerTimeToResetSong(value) {
   serverTimeToResetSong = value;
 }
@@ -113,17 +117,24 @@ export function OnServerTimestamp(serverTimestamp) {
       const arr = serverClientTimeDeltas;
       const avgDelta = (() => arr.reduce((a, b) => a + b, 0) / arr.length)();
 
-      const localisedServerTimeToResetSong = serverTimeToResetSong + avgDelta;
+      const estServerTime = Date.now() + avgDelta;
 
-      // localisedServerTimeToResetSong is in future
-      const diffToReset = localisedServerTimeToResetSong - Date.now();
-      console.log("Syncing in", diffToReset);
-      didSyncMusic = true;
-
-      setTimeout(() => {
+      if ( estServerTime >= serverTimeToResetSong ) {
+        didSyncMusic = true;
         RestartPlayingSong();
-        console.log("Song reset at", Date.now());
-      }, diffToReset);
+        console.log("music reset");
+      }
+      //const localisedServerTimeToResetSong = serverTimeToResetSong + avgDelta;
+
+      // (localisedServerTimeToResetSong > 0) => is ahead, else behind serverTimeToResetString
+      // const diffToReset = localisedServerTimeToResetSong - Date.now();
+      // console.log("Syncing in", diffToReset);
+      // didSyncMusic = true;
+
+      // setTimeout(() => {
+      //   RestartPlayingSong();
+      //   console.log("Song reset at", Date.now());
+      // }, diffToReset);
     }
   }
 }
