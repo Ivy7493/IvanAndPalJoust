@@ -11,7 +11,7 @@ const {
 const { IsDone, SetIsDone } = require("./state_game");
 const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
-let songList = ['Umbrella.mp3','cottonEyedJoe.m4a']
+let songList = ['Umbrella.mp3','cottonEyedJoe.m4a', 'JMABGRZ-claps-clapping.mp3']
 let currentSong = ""
 let Threshold = 1
 let max = 1.5
