@@ -1,6 +1,11 @@
 window.onload = () => {
+    // buttons
     document.getElementById("joinButton").onclick = function tryJoin() {
         socket.emit("join", null);
+    }
+
+    document.getElementById("startButton").onclick = function tryJoin() {
+        socket.emit("gameStart", null);
     }
 }
 

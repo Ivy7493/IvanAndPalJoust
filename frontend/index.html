@@ -58,10 +58,8 @@
     <div class="page startPage">
         <div class="body">
         <div>
-            <div id="joinButton" onclick="start()" >Start Game</div>
+            <div id="startButton">Start Game</div>
             <div class="playerList">
-                <div class="playerList">
-                </div>
             </div>
         </div>
         
@@ -102,42 +100,12 @@
         
     </div>
 
-    <script>
-        // page init functions
-        function initStart() {
-            displayPlayers();
-        }
-        function initJoin() { // essentially onload for join
-
-        }
-
-        //====='PAGE' SWITCHING ON SPA=====//
-        const allPages = document.querySelectorAll(".page");
-        let currPage = "";
-        let activePage = null;
-
-        function setPage(p) {
-            if(["game", "join", "start", "win", "lose"].indexOf(p) > -1) //Page types
-            {
-                currPage = p;
-                allPages.forEach(x => {
-                    x.disabled = true; //TODO: Check
-                    x.classList.add("disabled");
-                });
-                activePage = document.querySelector("." + p + "Page"); //enable current page
-                
-                if (p == "join")
-                    initJoin();
-                if (p == "start")
-                    initStart();
-
-                activePage.classList.remove("disabled");
-            }
-        }
+    <script type="module">
+        import { setPage } from "./scripts/setPage.js";
 
         setPage("join");
     </script>
 
-    <script src="scripts/socket_events.js"></script>
+    <script src="scripts/socket_events.js" type="module"></script>
 </body>
 </html>
