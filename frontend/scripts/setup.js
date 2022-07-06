@@ -6,12 +6,7 @@ const audioPlayers = new Map();
 const readySongs = new Map();
 
 async function preloadAllAudio() {
-  const audioFilenames = [
-    "elevatorMusic.mp3",
-    "lose.mp3",
-    "claps.mp3",
-    "Umbrella.mp3",
-  ];
+  const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
   for (const song of audioFilenames) {
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
@@ -47,7 +42,7 @@ async function preloadAllAudio() {
   document.getElementById("loading").style.display = "none";
 }
 
-async function playPreloadedSong(songPath) {
+export async function playPreloadedSong(songPath) {
   const lastSlashIndex = songPath.lastIndexOf("/");
   if (lastSlashIndex != -1) {
     songPath = songPath.substring(lastSlashIndex + 1);
@@ -64,13 +59,23 @@ async function playPreloadedSong(songPath) {
   }
 }
 
-function setPlayerRate(rate) {
+export function setPlayerRate(rate) {
+    console.log("GOT HERE YES")
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused && song != 'elevatorMusic.mp3') {
       player.playbackRate = rate;
     }else if(!player.paused && song == 'elevatorMusic.mp3'){
         player.playbackRate = 1
+    }
+  }
+}
+
+function StopMusic() {
+  for (const song of audioPlayers.keys()) {
+    const player = audioPlayers.get(song);
+    if (!player.paused) {
+      player.pause();
     }
   }
 }

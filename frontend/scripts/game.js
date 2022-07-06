@@ -1,8 +1,9 @@
 import Color from "https://colorjs.io/dist/color.js";
+import { playPreloadedSong } from "./setup.js";
 
 async function playGameSong() {
     const song = "Umbrella.mp3";
-    // await playPreloadedSong(song);
+    await playPreloadedSong(song);
 }
 
 export function initGame() { // essentially onload for join
