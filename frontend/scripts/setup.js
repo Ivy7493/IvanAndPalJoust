@@ -9,6 +9,8 @@ const readySongs = new Map();
 
 const lobbyMusic = "elevatorMusic.mp3";
 
+const flashIndicator = document.querySelector(".flashIndicator");
+
 async function preloadAllAudio() {
   const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
@@ -75,21 +77,29 @@ export function setPlayerRate(rate) {
     }
   }
 }
-
 export function StopMusic() {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused) {
-      player.pause();
+      // player.pause();
     }
   }
 }
 
-function RestartPlayingSong() {
+function RestartPlayingSong(data="") {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused) {
-      player.currentTime = 0;
+      // player.currentTime = 0;
+      // player.pause();
+      // alert(data);
+
+      setInterval(function() {
+        flashIndicator.classList.remove("disabled");
+        setTimeout(function() {
+          flashIndicator.classList.add("disabled");
+        }, 100);
+      }, 1000);
     }
   }
 }
@@ -128,12 +138,8 @@ export function OnServerTimestamp(serverTimestamp) {
 
       if (estServerTime >= serverTimeToResetSong) {
         didSyncMusic = true;
-        RestartPlayingSong();
+        RestartPlayingSong(estServerTime);
         console.log("music reset at est server time", estServerTime);
-      } else {
-        console.log("estimate: ", estServerTime, " resetTime: ", serverTimeToResetSong);
-        console.log("Music stopped");
-        StopMusic();
       }
     }
   }
