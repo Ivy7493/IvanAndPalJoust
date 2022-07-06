@@ -127,6 +127,7 @@ io.on("connection", (socket) => {
     }
   });
 
+
   // for when a player lost
   socket.on("playerLost", async () => {
     numPlaying--;
