@@ -73,7 +73,7 @@ export function setPlayerRate(rate) {
   }
 }
 
-function StopMusic() {
+export function StopMusic() {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused) {
@@ -145,12 +145,10 @@ export function displayPlayers() {
         newPlayer.classList.add("playerItem");
         newPlayer.textContent = p;
 
-        if (playerName == p) {
-            newPlayer.textContent = newPlayer.textContent + " (You)";
-            let iColor = rgbToString(invColor);
-            newPlayer.style.color = iColor;
-            newPlayer.style.border = "4px solid " + iColor;
-        }
+        let iColor = rgbToString(invColor)
+        newPlayer.style.color = iColor
+        if (playerName == p)
+            newPlayer.style.border = "2px solid " + iColor;
         newPlayer.style.backgroundColor = rgbToString(color);
 
         playerList.appendChild(newPlayer);
@@ -170,11 +168,10 @@ export function displayLosers() {
         newPlayer.classList.add("playerItem");
         newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
 
-        if (playerName == losers[losers.length - 1 - i]) {
-            let iColor = rgbToString(invColor)
-            newPlayer.style.color = iColor
+        let iColor = rgbToString(invColor)
+        newPlayer.style.color = iColor
+        if (playerName == losers[losers.length - 1 - i])
             newPlayer.style.border = "2px solid " + iColor;
-        }
         newPlayer.style.backgroundColor = rgbToString(color);
 
         playerList.appendChild(newPlayer);

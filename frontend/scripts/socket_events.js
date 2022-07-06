@@ -1,6 +1,10 @@
 import { setPage } from "./setPage.js";
+<<<<<<< HEAD
 import {setPlayerRate} from './setup.js'
 import {SetSensitivity} from './game.js'
+=======
+import {setPlayerRate, StopMusic} from './setup.js'
+>>>>>>> f3282879cf4e57341b8bcf47da9e3bc4f28fd960
 
 // navigatge to start page
 socket.on("players", (p) => {
@@ -56,6 +60,8 @@ socket.on("finished", async () => {
     threshhold = 0;
     losers = [];
 
+    StopMusic();
+    
     setPage("join");
 });
 
