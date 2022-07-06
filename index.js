@@ -1,24 +1,15 @@
 const express = require("express");
-const http2Express = require("http2-express-bridge");
-const http2 = require("http2");
 const http = require("http");
-const queueRouter = require("./backend/routes/queueRoutes.js").QueueRoute;
-const GameSocket = require("./backend/socket/gameSocket.js");
+const { createSocket } = require("dgram");
 const bodyParser = require("body-parser");
-const indentityRouter = require("./backend/routes/identityRoutes.js");
-const GameRouter = require("./backend/routes/gameRoutes.js").GameRouter;
 const mainRouter = require("./backend/routes/mainRoutes.js");
-const { readFileSync } = require("fs");
-const WaitRouter = require("./backend/routes/waitingRoutes.js");
-const LostRoutes = require("./backend/routes/lostRoutes.js");
-const { isHeroku } = require("./backend/routes/utils/http2_bridge.js");
-const { SetupGameServer } = require("./backend/routes/gameRoutes.js");
+const { Server } = require("socket.io");
 
 process.on("uncaughtException", function (e) {
-  console.log(e)
+    console.log(e)
 });
 
-const app = isHeroku ? express() : http2Express(express);
+const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json({ limit: "100mb" }));
@@ -26,29 +17,99 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static("frontend"));
 app.use("/", mainRouter);
-app.use("/Queue", queueRouter);
-app.use("/Identity", indentityRouter);
-app.use("/Game", GameRouter);
-app.use("/AwaitFinish", WaitRouter);
-app.use("/Lost", LostRoutes);
 
-let server;
-if (isHeroku) {
-  server = http.createServer(app);
+let server = http.createServer(app);
 
-  server.listen(port, () => {
+server.listen(port, () => {
     console.log(`listening on http://localhost:${port}`);
-  });
+});
 
-  SetupGameServer(server);
-} else {
-  const options = {
-    key: readFileSync("server.key"),
-    cert: readFileSync("server.crt"),
-    allowHTTP1: true,
-  };
+// socket code
+const STATE = {
+    playing: "playing",
+    lost: "lost",
+    waiting: "waiting",
+};
 
-  server = http2.createSecureServer(options, app);
-  server.listen(port);
-  SetupGameServer(server);
-}
+let connections = {}; // list of connection ids
+let numConnections = 0;
+let players = [] // name of the players
+let losers = [];
+let numPlayersReady = 0;
+let numPlaying = 0;
+let gameInProgress = false;
+
+const io = new Server(server);
+io.on('connection', (socket) => {
+    console.log('a user connected');
+
+    connections[socket.id] = {
+        socket: socket,
+        ready: false
+    }; // adding to list
+    numConnections++;
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+        //   players.splice(players.findIndex(connections[socket.id].name), 1); // remove from names
+        delete connections[socket.id];
+        numConnections--;
+    });
+
+    // asking for socket name
+    socket.on("join", async () => {
+        if (gameInProgress) {
+            socket.join(STATE.waiting);
+            socket.to(STATE.waiting).emit("gameInProgress");
+        } else {
+            let name = "Awesome Name";
+            connections[socket.id]["name"] = name; // adding name to json object
+            players.push(name);
+            socket.emit("name", name);
+            await socket.join(STATE.playing);
+            io.to(STATE.playing).emit("players", players);
+        }
+    });
+
+    // returns array
+    socket.on("getPlayers", () => {
+        socket.emit("players", players);
+    });
+
+    // makes player ready
+    socket.on("playerReady", (ready) => {
+        if (ready) {
+            if (!connections[socket.id].ready) {
+                connections[socket.id].ready = true;
+                numPlayersReady++;
+            }
+
+            if (numPlayersReady == numConnections) {
+                io.emit("allReady", null);
+            }
+        } else {
+            if (connections[socket.id].ready)
+                numPlayersReady--;
+            connections[socket.id].ready = false;
+        }
+    });
+
+    // for when a player lost
+    socket.on("playerLost", () => {
+        numPlaying--;
+        losers.push(connections[socket.id].name);
+        socket.join(STATE.lost);
+        io.to(STATE.losers).emit("losers", losers); // sending the latest data of all the losers
+
+        if (numPlaying == 0) {
+            gameInProgress = false;
+            io.to(STATE.losers).emit("finished", null);
+        }
+    });
+
+    socket.on("gameStart", () => {
+        gameInProgress = true;
+        io.to(STATE.playing).emit("start", null) // for when the game starts
+        numPlaying = numPlayersReady;
+    });
+});
