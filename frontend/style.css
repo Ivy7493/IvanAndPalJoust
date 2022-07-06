@@ -1,11 +1,7 @@
 :root {
   --shakeAmount: 0px;
-  --upIconRotation: 0deg;
+  /* --upIconRedness: 0%; */
   --background: coral;
-}
-
-body {
-  overflow: hidden; /* Hide scrollbars */
 }
 
 @font-face {
@@ -19,11 +15,16 @@ body {
   /* background: linear-gradient(0deg, rgba(224,82,47,1) 18%, rgba(254,76,0,1) 52%, rgba(255,0,0,1) 100%); */
   padding: 0px;
   margin: 0px;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 html {
   padding: 0px;
   margin: 0px;
+}
+
+.disabled {
+  display: none;
+  visibility: hidden;
 }
 
 .playerItem {
@@ -42,6 +43,19 @@ html {
   letter-spacing: 1px;
   text-align: center;
 
+}
+
+.rotationMarker {
+  width: 40vw;
+  height: 40vw;
+  display: block;
+  left: 50vw;
+  position: absolute;
+  background-color: rgba(255, 0, 0, 0.5);
+  z-index: -20;
+  transform-origin: 0% 100%;
+  transform: rotate(-45deg);
+  /* rotate: 45deg; */
 }
 
 h2 {
@@ -66,9 +80,9 @@ h2 {
 }
 
 @keyframes shake {
-  0%   { transform: rotate(var(--upIconRotation)) translateX(calc(-1 * var(--shakeAmount))) }
-  50%  { transform: rotate(var(--upIconRotation)) translateX(var(--shakeAmount)) }
-  100% { transform: rotate(var(--upIconRotation)) translateX(calc(-1 * var(--shakeAmount))) }
+  0%   { transform: translateX(calc(-1 * var(--shakeAmount))) }
+  50%  { transform: translateX(var(--shakeAmount)) }
+  100% { transform: translateX(calc(-1 * var(--shakeAmount))) }
 }
 
 @keyframes loseColour {

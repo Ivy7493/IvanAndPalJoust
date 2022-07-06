@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" type="image/x-icon" href="/arrow.svg">
+    <title>This Way Up</title>
+    <script type="text/javascript">
+        //=====PAGE LOAD TIMESTAMP=====//
+        var pageLoadTime = Date.now();
+    </script>
+</head>
+<body>
+
+    <!-- GAME -->
+    <div class="page gamePage">
+        <div class="rotationMarker">
+        </div>
+
+        <p id="debug">
+            Debug text
+        </p>
+
+        <div class="bigIcon">
+            <img src="thisWayUpWhite.svg" />
+        </div>
+
+        <div class="shakeBar">
+        </div>
+    </div>
+
+    <!-- JOIN -->
+    <div class="page joinPage">
+        <div class="nav">
+            <img id="logo" src="/logoWhite.svg" alt="logo">
+        </div>
+        <div class="body">
+            <div>
+                <div onclick="tryJoin()" id="joinButton">Join game</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- START -->
+    <div class="page startPage">
+        <div class="body">
+        <div>
+            <div id="joinButton" onclick="start()" >Start Game</div>
+            <div class="playerList">
+            </div>
+        </div>
+        
+        </div>
+        
+
+        <audio controls autoplay loop id="hiddenAudioElement">
+        <source id = "AudioSource" src="audio/elevatorMusic.mp3" type="audio/mp3" />
+        Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <!-- WIN -->
+    <div class="page winPage" id="winnerPage">
+        <body id="winnerPage">
+        <div id="body">
+            <div id="message">
+                <img class="img" src="winner.svg" alt="win">
+            </div>
+        </div>
+    </div>
+
+    <!-- LOSE -->
+    <div class="page losePage" id="loserPage">
+        <div id="body">
+        <div id="message">
+            <img class="img" src="loser.svg" alt="loser">
+        </div>
+
+        <audio controls autoplay id="hiddenAudioElement" >
+            <source src="audio/lose.mp3" type="audio/mp3" />
+            Your browser does not support the audio element.
+        </audio>
+        <script>
+            document.getElementById('hiddenAudioElement').play();
+        </script>
+        </div>
+        <div class="playerList">
+        </div>
+    </div>
+
+    <script>
+        //====='PAGE' SWITCHING ON SPA=====//
+        const allPages = document.querySelectorAll(".page");
+        let currPage = "";
+        let activePage = null;
+
+        function setPage(p) {
+            if(["game", "join", "start", "win", "lose"].indexOf(p) > -1) //Page types
+            {
+                currPage = p;
+                allPages.forEach(x => {
+                    x.disabled = true; //TODO: Check
+                    x.classList.add("disabled");
+                });
+                activePage = document.querySelector("." + p + "Page"); //enable current page
+                activePage.classList.remove("disabled");
+            }
+        }
+
+        setPage("join");
+        setTimeout(x => {setPage("start");}, 3000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="scripts/join_screen.js" type="module"></script>
+</body>
+</html>
