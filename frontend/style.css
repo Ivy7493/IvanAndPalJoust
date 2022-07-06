@@ -159,6 +159,9 @@ p {
   letter-spacing: 1px;
   background-color: brown;
   transition: transform 0.05s ease-in-out;
+  text-align: center;
+  width: 80%;
+  max-width: 400px;
 }
 
 #joinButtonNo {
@@ -241,6 +244,7 @@ height: 30vh;
   margin: auto;
   margin-top: 2em;
   width: 90vw;
+  max-width: 400px;
 }
 
 #frame{
