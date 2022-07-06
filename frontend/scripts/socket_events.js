@@ -1,6 +1,7 @@
 import { setPage } from "./setPage.js";
-import {setPlayerRate} from './setup.js'
 import { OnServerTimestamp, SetServerTimeToResetSong } from "./setup.js";
+import {SetSensitivity} from './game.js'
+import {setPlayerRate, StopMusic} from './setup.js'
 
 // navigatge to start page
 socket.on("players", (p) => {
@@ -30,8 +31,10 @@ socket.on("start", () => {
 
 // getting the threshold value
 socket.on("threshhold", (thresh) => {
-  setPlayerRate(thresh);
-  threshhold = thresh;
+    console.log("poggers: ",thresh)
+    setPlayerRate(thresh)
+    SetSensitivity(thresh)
+    threshhold = thresh;
 });
 
 // gets sent to the losing players
@@ -54,6 +57,8 @@ socket.on("finished", async () => {
     threshhold = 0;
     losers = [];
 
+    StopMusic();
+    
     setPage("join");
 });
 

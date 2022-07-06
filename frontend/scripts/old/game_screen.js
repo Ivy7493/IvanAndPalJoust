@@ -197,11 +197,7 @@ if (window.DeviceMotionEvent) {
     "devicemotion",
     function () {
       if (!gameOver && Date.now() - pageLoadTime > 2000) {
-        let mag = norm(
-          event.acceleration.x,
-          event.acceleration.y,
-          event.acceleration.z
-        );
+        let mag = norm( event.acceleration.x, event.acceleration.y, event.acceleration.z);
         let sig = 100.0 * Math.abs(kfMotion.filter(mag)) * sensitivity;
 
         debug.textContent = sig.toFixed(4);

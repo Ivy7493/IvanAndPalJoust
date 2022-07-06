@@ -6,6 +6,8 @@ let joinButton = document.getElementById("joinButton");
 const audioPlayers = new Map();
 const readySongs = new Map();
 
+const lobbyMusic = "elevatorMusic.mp3";
+
 async function preloadAllAudio() {
   const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
@@ -61,18 +63,17 @@ export async function playPreloadedSong(songPath) {
 }
 
 export function setPlayerRate(rate) {
-    console.log("GOT HERE YES")
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
-    if (!player.paused && song != "elevatorMusic.mp3") {
+    if (!player.paused && song != lobbyMusic) {
       player.playbackRate = rate;
-    } else if (!player.paused && song == "elevatorMusic.mp3") {
-      player.playbackRate = 1;
+    }else if(!player.paused && song == lobbyMusic){
+        player.playbackRate = 1
     }
   }
 }
 
-function StopMusic() {
+export function StopMusic() {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused) {
@@ -177,49 +178,51 @@ window.onload = () => {
 // functions needed to be called in multple areas
 // add code to indentify players
 export function displayPlayers() {
-  const playerList = document.querySelector(".playerList");
-  playerList.innerHTML = "";
+    const playerList = document.querySelector(".playerList");
+    playerList.innerHTML = "";
 
-  for (let p of players) {
-    // colors
-    let color = hashStringToColor(p);
-    let invColor = invertColor(color);
+    for (let p of players) {
+        // colors
+        let color = hashStringToColor(p);
+        let invColor = invertColor(color);
 
-    let newPlayer = document.createElement("div");
-    newPlayer.classList.add("playerItem");
-    newPlayer.textContent = p;
+        let newPlayer = document.createElement("div");
+        newPlayer.classList.add("playerItem");
+        newPlayer.textContent = p;
 
-    if (playerName == p) {
-      let iColor = rgbToString(invColor);
-      newPlayer.style.color = iColor;
-      newPlayer.style.border = "2px solid " + iColor;
+        let iColor = rgbToString(invColor)
+        newPlayer.style.color = iColor
+        if (playerName == p)
+            newPlayer.style.border = "2px solid " + iColor;
+        newPlayer.style.backgroundColor = rgbToString(color);
+
+        playerList.appendChild(newPlayer);
     }
     newPlayer.style.backgroundColor = rgbToString(color);
 
     playerList.appendChild(newPlayer);
-  }
 }
 
+
 export function displayLosers() {
-  const playerList = document.querySelector(".playerListLose");
-  playerList.innerHTML = "";
+    const playerList = document.querySelector(".playerListLose");
+    playerList.innerHTML = "";
 
-  for (let i = 0; i < losers.length; i++) {
-    // colors
-    let color = hashStringToColor(losers[losers.length - 1 - i]);
-    let invColor = invertColor(color);
+    for (let i = 0; i < losers.length; i++) {
+        // colors
+        let color = hashStringToColor(losers[losers.length - 1 - i]);
+        let invColor = invertColor(color);
 
-    let newPlayer = document.createElement("div");
-    newPlayer.classList.add("playerItem");
-    newPlayer.textContent = i + 1 + ". " + losers[losers.length - 1 - i];
+        let newPlayer = document.createElement("div");
+        newPlayer.classList.add("playerItem");
+        newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
 
-    if (playerName == losers[losers.length - 1 - i]) {
-      let iColor = rgbToString(invColor);
-      newPlayer.style.color = iColor;
-      newPlayer.style.border = "2px solid " + iColor;
+        let iColor = rgbToString(invColor)
+        newPlayer.style.color = iColor
+        if (playerName == losers[losers.length - 1 - i])
+            newPlayer.style.border = "2px solid " + iColor;
+        newPlayer.style.backgroundColor = rgbToString(color);
+
+        playerList.appendChild(newPlayer);
     }
-    newPlayer.style.backgroundColor = rgbToString(color);
-
-    playerList.appendChild(newPlayer);
-  }
 }

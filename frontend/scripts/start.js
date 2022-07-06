@@ -1,5 +1,7 @@
-import { displayPlayers } from "./setup.js";
+import { displayPlayers, playPreloadedSong } from "./setup.js";
 
-export function initStart() {
+export async function initStart() {
     displayPlayers();
+    const song = "elevatorMusic.mp3";
+    await playPreloadedSong(song);
 }
