@@ -4,6 +4,7 @@ const { createSocket } = require("dgram");
 const bodyParser = require("body-parser");
 const mainRouter = require("./backend/routes/mainRoutes.js");
 const { Server } = require("socket.io");
+let nameLib = require("./frontend/scripts/nameGen");
 
 process.on("uncaughtException", function (e) {
     console.log(e)
@@ -62,7 +63,7 @@ io.on('connection', (socket) => {
             socket.join(STATE.waiting);
             socket.to(STATE.waiting).emit("gameInProgress");
         } else {
-            let name = "Awesome Name";
+            let name = nameLib.GenerateName();
             connections[socket.id]["name"] = name; // adding name to json object
             players.push(name);
             socket.emit("name", name);
