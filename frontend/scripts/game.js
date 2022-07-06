@@ -13,8 +13,6 @@ export function SetSensitivity(_sense){
 }
 
 export function initGame() { // essentially onload for join
-    playGameSong();
-
     const shakeBar = document.querySelector(".shakeBar");
     const root = document.querySelector(":root");
     const debug = document.querySelector("#debug");
@@ -39,90 +37,89 @@ export function initGame() { // essentially onload for join
 
     let gameOver = false;
 
+    //Counter to ignore the initial few accelerometer readings
+    let ignoreBeginData = 0;
+    const numDataIgnore = 100;
+
     if (window.DeviceOrientationEvent) {
-        addEventListener(
-            "deviceorientation",
-            function (event) {
-                if (!gameOver && Date.now() - pageLoadTime > initialWait) {
+    addEventListener(
+        "deviceorientation",
+        function (event) {
+            if (!gameOver && ignoreBeginData > numDataIgnore) {
 
-                    // Vertical up has a beta of 90
-                    // upIcon.style.transform.rotate
-                    // setPercentage(Math.abs(90 - event.beta));
-                    // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
+            let q = Quaternion.fromEuler(
+                event.alpha * toRad,
+                event.beta * toRad,
+                event.gamma * toRad,
+                "ZXY"
+            );
 
-                    let q = Quaternion.fromEuler(
-                        event.alpha * toRad,
-                        event.beta * toRad,
-                        event.gamma * toRad,
-                        "ZXY"
-                    );
-                    let qFinal = q.inverse();
+            //=====Point up arrow=====
+            let qFinal = q.inverse();
+            upIcon.style.transform =
+                "scaleX(-1) matrix3d(" +
+                qFinal.conjugate().toMatrix4() +
+                ") rotateX(90deg) scaleX(-1)";
+            // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
 
-                    upIcon.style.transform =
-                        "scaleX(-1) matrix3d(" +
-                        qFinal.conjugate().toMatrix4() +
-                        ") rotateX(90deg) scaleX(-1)";
-                    // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+            //=====Gyro score=====
+            let gyroScore = calcGyroScore(event.beta);
 
-                    let v = q.toVector();
-                    let gyroScore = Math.abs(vDot(v, [0.7, 0.7, 0]));
+            //=====Check Game Over=====
+            if(gyroScore < 0.65)
+            {
+                gameOver = true;
+                socket.emit("playerLost");
+            }
 
-                    if (gyroScore < 0.9) {
-                        //Lose game
-                        // gameOver = true;
-                        // debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
-                        // this.alert("GAME OVER GYRO\n" + gyroScore.toFixed(3));
-                    }
-
-                    debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);// + "<br />" + gyroScore.toFixed(3);
-                    // debug.innerHTML = gyroScore.toFixed(3);
-                    // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
-                }
-            },
-            true
-        );
+            //=====Debug Output=====
+            // debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);// + "<br />" + gyroScore.toFixed(3);
+            // debug.innerHTML = "<br />" + gyroScore.toFixed(3);
+            // debug.innerHTML += "<br />" + event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+        }
+        },
+        true
+    );
     }
 
     if (window.DeviceMotionEvent) {
-        addEventListener(
-            "devicemotion",
-            function () {
-                if (!gameOver && Date.now() - pageLoadTime > initialWait) {
-                    let mag = norm(
-                        event.acceleration.x,
-                        event.acceleration.y,
-                        event.acceleration.z
-                    );
-                    let sig = 100.0 * Math.abs(kfMotion.filter(mag)) * sensitivity;
+    addEventListener(
+        "devicemotion",
+        function (event) {
+        if (!gameOver && ignoreBeginData++ > numDataIgnore) { //Date.now() - pageLoadTime > initialWait) {
 
-                    debug.textContent = sig.toFixed(4);
-                    setPercentage(clamp(sig, 0.0, 100.0));
+            //=====Accel Score=====
+            let accelScore = calcAccelScore(event.acceleration.x, event.acceleration.y, event.acceleration.z);
+            accelScore *= sensitivity;
 
-                    if (sig > 100.0) {
-                        //Lose game
-                        gameOver = true;
-                        setPercentage(100);
-                        debug.textContent = "GAME OVER " + debug.textContent;
-                        // this.alert("GAME OVER ACCEL\n" + gyroScore.toFixed(3));
-                        socket.emit("playerLost");
-                    }
-                    // if(sig < min) { min = sig; debug.textContent = min; }
-                }
-            },
-            true
-        );
+            setPercentage(100.0*clamp(accelScore, 0.0, 1.0));
+
+            //=====Check Game Over=====
+            if (accelScore > 1.0) {
+                gameOver = true;
+                setPercentage(100);
+                socket.emit("playerLost");
+            }
+
+            //=====Debug Output=====
+            // debug.innerHTML = accelScore.toFixed(3);
+        }
+        },
+        true
+    );
     } else {
         addEventListener(
-            "MozOrientation",
-            function (event) {
-                // debug.textContent = orientation.x;
-            },
-            true
-        );
+        "MozOrientation",
+        function (event) {
+        // debug.textContent = orientation.x;
+        },
+        true
+    );
     }
 
     function setPercentage(perc) {
         percentage = perc;
+        debug.innerHTML = percentage.toFixed(3);
         updateShakeBar();
     }
 
@@ -135,15 +132,27 @@ export function initGame() { // essentially onload for join
     function updateShakeBar() {
         shakeBar.style.height = percentage + "%";
 
-        shakeBar.style.opacity = remap(percentage, 0.0, 100.0, 20.0, 30.0) + "%";
+        shakeBar.style.opacity = remap(percentage, 0.0, 100.0, 20.0, 40.0) + "%";
         // shakeBar.style.backgroundColor = barGradient(percentage/100.0).toString();
-        root.style.setProperty(
-            "--shakeAmount",
-            (percentage * percentage) / 200.0 + "px"
-        );
+        // root.style.setProperty(
+        //     "--shakeAmount",
+        //     (percentage * percentage) / 200.0 + "px"
+        // );
         document.body.style.backgroundColor = barGradient(
             percentage / 100.0
         ).toString();
+    }
+
+    function calcGyroScore(beta)
+    {
+        //this is fuck ugly, will reduce later
+        return Math.sign(beta)*(1.0-Math.abs(90-Math.abs(beta))/90.0);
+    }
+
+    function calcAccelScore(aX, aY, aZ)
+    {
+        let mag = norm(aX, aY, aZ);
+        return Math.abs(kfMotion.filter(mag));
     }
 
     function remap(x, fromMin, fromMax, toMin, toMax) {
@@ -170,14 +179,16 @@ export function initGame() { // essentially onload for join
         return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
     }
 
-    screen.orientation //TODO: DOUBLE CHECK THIS <<--
-        .lock()
-        .then(function () {
-            screen.lockOrientation("default");
-        })
-        .catch(function (e) { });
+    // screen.orientation //TODO: DOUBLE CHECK THIS <<--
+    // .lock()
+    // .then(function () {
+    //     screen.lockOrientation("default");
+    // })
+    // .catch(function (e) {});
 
     function getRandom(list) {
         return list[Math.floor(Math.random() * list.length)];
     }
+    playGameSong();
+
 }

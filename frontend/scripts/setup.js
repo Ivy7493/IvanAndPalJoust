@@ -5,6 +5,8 @@ let joinButton = document.getElementById("joinButton");
 const audioPlayers = new Map();
 const readySongs = new Map();
 
+const lobbyMusic = "elevatorMusic.mp3";
+
 async function preloadAllAudio() {
   const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
@@ -63,9 +65,9 @@ export function setPlayerRate(rate) {
     console.log("GOT HERE YES")
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
-    if (!player.paused && song != 'elevatorMusic.mp3') {
+    if (!player.paused && song != lobbyMusic) {
       player.playbackRate = rate;
-    }else if(!player.paused && song == 'elevatorMusic.mp3'){
+    }else if(!player.paused && song == lobbyMusic){
         player.playbackRate = 1
     }
   }
