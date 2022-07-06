@@ -7,9 +7,7 @@ async function preloadAllAudio() {
   const audioFilenames = [
     "elevatorMusic.mp3",
     "lose.mp3",
-    "cottonEyedJoe.m4a",
     "JMABGRZ-claps-clapping.mp3",
-    "TeamSpirit.mp3",
     "Umbrella.mp3",
   ];
 
