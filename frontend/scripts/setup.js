@@ -102,7 +102,6 @@ let didSyncMusic = false;
 
 export function OnRTT(rtt) {
   rttValues.addValue(rtt);
-  // console.log("On rtt value ", rttValues.getAverage());
 }
 
 export function ResetMusicSync() {
@@ -125,11 +124,16 @@ export function OnServerTimestamp(serverTimestamp) {
     if (IsCurrentPageGamePage() && !didSyncMusic) {
       const avgDelta = serverClientTimeDeltas.getAverage();
       const estServerTime = Date.now() + avgDelta;
+      console.log("avgDelta", avgDelta);
 
       if (estServerTime >= serverTimeToResetSong) {
         didSyncMusic = true;
         RestartPlayingSong();
         console.log("music reset at est server time", estServerTime);
+      } else {
+        console.log("estimate: ", estServerTime, " resetTime: ", serverTimeToResetSong);
+        console.log("Music stopped");
+        StopMusic();
       }
     }
   }
@@ -199,9 +203,9 @@ export function displayPlayers() {
 
     let iColor = rgbToString(invColor);
     newPlayer.style.color = iColor;
-    if (playerName == p){
+    if (playerName == p) {
       newPlayer.style.border = "2px solid " + iColor;
-      newPlayer.textContent = newPlayer.textContent+" (You)";
+      newPlayer.textContent = newPlayer.textContent + " (You)";
     }
 
     newPlayer.style.backgroundColor = rgbToString(color);
