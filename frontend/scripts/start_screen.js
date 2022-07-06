@@ -4,7 +4,8 @@ import {
   getAllPlayers,
   Auth,
   removePlayerFromQueue,
-  getSongName
+  getSongName,
+  InitGameListener
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -34,12 +35,16 @@ window.start = async function start() {
 window.onload = async function () {
   await CheckForReload()
   const playerId = getUrlArgument("playerId");
+  InitGameListener(playerId);
+
   const isRunning = await gameIsRunning(playerId);      
   let canLobby = await Auth(playerId)
   console.log("Lobby stuff "+ canLobby)
   if (isRunning || !canLobby) {
     // Redirect the player to wait for the game to finish.
-    navigateTo(WAITING_FOR_FINISH);
+    navigateTo(WAITING_FOR_FINISH, {
+      playerId: playerId
+    });
   }
   let song = await getSongName();
   // alert(song);

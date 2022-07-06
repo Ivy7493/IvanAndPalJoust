@@ -3,7 +3,8 @@ import {
   removePlayerFromQueue,
   getGameState,
   addPlayerToLost,
-  Auth
+  Auth,
+  InitGameListener,
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -22,6 +23,8 @@ window.onload = async function () {
   const oneSecond = 400;
   await CheckForReload();
   const playerId = getUrlArgument("playerId");
+  InitGameListener(playerId);
+
   console.log("Player id is " + playerId);
   let canLobby = await Auth(playerId);
   console.log("DO we have permission?: ", canLobby);
@@ -68,12 +71,12 @@ async function onTick() {
 async function processPlayerState(playerState) {
   if (playerState === PLAYER_STATE.LOST) {
     const playerId = getUrlArgument("playerId");
-    addPlayerToLost(playerId);  
+    addPlayerToLost(playerId);
     await logoutPlayer();
     navigateTo(PLAYER_LOST);
   } else if (playerState === PLAYER_STATE.WON) {
     const playerId = getUrlArgument("playerId");
-    addPlayerToLost(playerId);  
+    addPlayerToLost(playerId);
     await logoutPlayer();
     window.confirm("Yay! You have won!");
 
@@ -92,8 +95,12 @@ async function processPlayerState(playerState) {
  */
 function computePlayerState(gameState) {
   sensitivity = 1 / gameState.threshold;
+  const winnerIsUs = gameState.winner === getUrlArgument("playerId");
+
   if (gameOver == true) {
     return PLAYER_STATE.LOST;
+  } else if (gameState.isDone || winnerIsUs) {
+    return PLAYER_STATE.WON;
   } else {
     return PLAYER_STATE.STILL_PLAYING;
   }
@@ -127,7 +134,7 @@ import Color from "https://colorjs.io/dist/color.js";
 //     },
 //     body: formData
 //   })
-//   .then( (response) => { 
+//   .then( (response) => {
 //     console.log("OVER HERE");
 //     console.log(response);
 //   });
@@ -166,30 +173,47 @@ let sensitivity = 1;
 let gameOver = false;
 
 if (window.DeviceOrientationEvent) {
-addEventListener("deviceorientation", function (event) {
-  // Vertical up has a beta of 90
-  // upIcon.style.transform.rotate
-  // setPercentage(Math.abs(90 - event.beta));
-  // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
+  addEventListener(
+    "deviceorientation",
+    function (event) {
+      // Vertical up has a beta of 90
+      // upIcon.style.transform.rotate
+      // setPercentage(Math.abs(90 - event.beta));
+      // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
 
-  let q = Quaternion.fromEuler(event.alpha * toRad, event.beta * toRad, event.gamma * toRad, 'ZXY');
-  let qFinal = q.inverse();
+      let q = Quaternion.fromEuler(
+        event.alpha * toRad,
+        event.beta * toRad,
+        event.gamma * toRad,
+        "ZXY"
+      );
+      let qFinal = q.inverse();
 
-  upIcon.style.transform = "scaleX(-1) matrix3d(" + qFinal.conjugate().toMatrix4() + ") rotateX(90deg) scaleX(-1)";
-  // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+      upIcon.style.transform =
+        "scaleX(-1) matrix3d(" +
+        qFinal.conjugate().toMatrix4() +
+        ") rotateX(90deg) scaleX(-1)";
+      // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
 
-  let v = qFinal.toVector();
-  debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
-  // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
-  }, true);
+      let v = qFinal.toVector();
+      debug.innerHTML =
+        v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
+      // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+    },
+    true
+  );
 }
 
 if (window.DeviceMotionEvent) {
   addEventListener(
     "devicemotion",
     function () {
-      if (!gameOver && Date.now()-pageLoadTime > 2000) {
-        let mag = norm( event.acceleration.x, event.acceleration.y, event.acceleration.z);
+      if (!gameOver && Date.now() - pageLoadTime > 2000) {
+        let mag = norm(
+          event.acceleration.x,
+          event.acceleration.y,
+          event.acceleration.z
+        );
         let sig = 100.0 * Math.abs(kfMotion.filter(mag));
 
         debug.textContent = sig.toFixed(4);
@@ -215,7 +239,6 @@ if (window.DeviceMotionEvent) {
     true
   );
 }
-
 
 function setPercentage(perc) {
   percentage = perc;
@@ -270,10 +293,8 @@ screen.orientation //TODO: DOUBLE CHECK THIS <<--
   .catch(function (e) {});
 
 function getRandom(list) {
-  return list[Math.floor(Math.random()*list.length)];
+  return list[Math.floor(Math.random() * list.length)];
 }
-
-
 
 // screen.orientation.lock();
 // screen.lockOrientation("default");

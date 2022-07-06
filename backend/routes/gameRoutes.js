@@ -1,14 +1,20 @@
 const path = require("path");
 const express = require("express");
-const { join } = require("path");
 const { statusSuccess } = require("../utils/utils");
 const GameRouter = express.Router();
 const fs = require("fs");
-const { TouchPlayer, RemoveDeadPlayers } = require("./queueRoutes");
+const {
+  TouchPlayer,
+  RemoveDeadPlayers,
+  GetAuthList,
+} = require("./queueRoutes");
 const { IsDone, SetIsDone } = require("./state_game");
 const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
+const socketConnections = new Map();
 let currentSong = "cottonEyedJoe.m4a";
+
+setInterval(onTick, 250);
 
 GameRouter.get("/", function (req, res) {
   RunOnHttp2Only(function () {
@@ -29,20 +35,6 @@ GameRouter.put("/start", function (req, res) {
   res.json(statusSuccess("Poggers"));
 });
 
-GameRouter.get("/state/:name", function (req, res) {
-  const playerName = req.params.name;
-  TouchPlayer(playerName);
-  console.log(playerName)
-  RemoveDeadPlayers();
-
-  temp = {
-    isDone: IsDone(),
-    Threshold: 50,
-    closeReason: "",
-  };
-  res.json(statusSuccess(temp));
-});
-
 GameRouter.get("/song", function (req, res) {
   if (currentSong == "") {
     // Logic for multiple songs
@@ -50,4 +42,44 @@ GameRouter.get("/song", function (req, res) {
   res.json(statusSuccess(path.join(__dirname, currentSong)));
 });
 
-module.exports = { GameRouter };
+function onTick() {
+  RemoveDeadPlayers();
+
+  let hasWinner = GetAuthList().length == 1;
+  let winner = hasWinner ? GetAuthList()[0] : "";
+
+  const state = {
+    isDone: IsDone(),
+    threshold: 50,
+    closeReason: hasWinner ? "winner" : "",
+    winner: winner,
+  };
+
+  for (const socket of socketConnections.keys()) {
+    socket.emit("state", JSON.stringify(state));
+  }
+}
+
+function SetupGameServer(expressServer) {
+  const { Server } = require("socket.io");
+  const io = new Server(expressServer);
+
+  io.on("connection", function (socket) {
+    console.log("new connection on game server");
+
+    socket.on("playerId", function (playerId) {
+      socketConnections.set(socket, playerId);
+      TouchPlayer(playerId);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected");
+      const playerId = socketConnections.get(socket);
+      if (Boolean(playerId)) {
+        socketConnections.delete(playerId);
+      }
+    });
+  });
+}
+
+module.exports = { GameRouter, SetupGameServer };

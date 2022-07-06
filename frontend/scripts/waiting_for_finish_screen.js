@@ -1,10 +1,13 @@
 // In this page we constantly polling the Game service
 // for the state of the game until the game is finished.
 
-import { gameIsRunning } from "./api_layer.js";
-import { navigateTo, JOIN_PAGE } from "./navigation.js";
+import { gameIsRunning, InitGameListener } from "./api_layer.js";
+import { navigateTo, JOIN_PAGE, getUrlArgument } from "./navigation.js";
 
 window.onload = async function () {
+  const playerId = getUrlArgument("playerId");
+  InitGameListener(playerId);
+  
   const oneSecond = 400;
   setInterval(navigateIfGameIsFinished, oneSecond);
 };
