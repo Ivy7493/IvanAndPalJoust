@@ -1,4 +1,5 @@
 import { setPage } from "./setPage.js";
+import {setPlayerRate} from './setup.js'
 
 // navigatge to start page
 socket.on("players", (p) => {

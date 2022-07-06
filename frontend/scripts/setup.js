@@ -47,7 +47,7 @@ async function preloadAllAudio() {
   document.getElementById("loading").style.display = "none";
 }
 
-async function playPreloadedSong(songPath) {
+export async function playPreloadedSong(songPath) {
   const lastSlashIndex = songPath.lastIndexOf("/");
   if (lastSlashIndex != -1) {
     songPath = songPath.substring(lastSlashIndex + 1);
@@ -64,7 +64,8 @@ async function playPreloadedSong(songPath) {
   }
 }
 
-function setPlayerRate(rate) {
+export function setPlayerRate(rate) {
+    console.log("GOT HERE YES")
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused && song != 'elevatorMusic.mp3') {
