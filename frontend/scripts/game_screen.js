@@ -3,7 +3,8 @@ import {
   removePlayerFromQueue,
   getGameState,
   addPlayerToLost,
-  Auth
+  Auth,
+  getSongName
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -18,6 +19,8 @@ const PLAYER_STATE = {
   WON: 3,
 };
 
+let audioPlayer = new Audio()
+
 window.onload = async function () {
   const oneSecond = 400;
   await CheckForReload();
@@ -30,8 +33,20 @@ window.onload = async function () {
       playerId: playerId,
     });
   }
+  await RetrieveSong()
   setInterval(onTick, oneSecond);
 };
+
+
+async function RetrieveSong (){
+  let song = await getSongName();
+  let base_url = window.location.origin;
+  console.log("LinkToFIle, ", base_url + song)
+  audioPlayer = new Audio(base_url + song)
+  audioPlayer.playbackRate = 2
+  audioPlayer.loop = true
+  audioPlayer.play();
+}
 
 async function CheckForReload() {
   let data = window.performance.getEntriesByType("navigation")[0].type;
@@ -51,13 +66,18 @@ async function logoutPlayer() {
 
 async function onTick() {
   // Check if the player is still authenticated.
-  const playerId = getUrlArgument("playerId");
-  const isAuthenticated = await Auth(playerId);
-  if (!isAuthenticated) {
-    await logoutPlayer();
-  }
+  //Ivan ------ Uncomment this later for BATA to fix
+  const playerId = getUrlArgument("playerId"); //<------------------------- HERE BOYS HERE
+  //const isAuthenticated = await Auth(playerId);
+  //if (!isAuthenticated) {
+   // alert("Yikes we got here")
+   // await logoutPlayer();
+ // }
 
   const gameState = await getGameState(playerId);
+  console.log("Over here!: ",gameState)
+  console.log("Furthermore, ", gameState.Threshold)
+  audioPlayer.playbackRate = gameState.Threshold
   const playerState = computePlayerState(gameState);
   await processPlayerState(playerState);
 }

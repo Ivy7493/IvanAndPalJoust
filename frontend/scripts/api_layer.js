@@ -53,6 +53,11 @@ export async function getSongName() {
   return response.data.data;
 }
 
+export async function downloadSong(){
+  const response = await axios.get("/Game/DownloadSong");
+  return response.data.data;
+}
+
 /**
  * Game state is as follows:
  *

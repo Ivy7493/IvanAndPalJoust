@@ -42,10 +42,9 @@ window.onload = async function () {
     navigateTo(WAITING_FOR_FINISH);
   }
   let song = await getSongName();
-  // alert(song);
-
-  // let aud = new Audio(song);
-  var audio = new Audio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3');
+  var audio = new Audio(base_url + song)
+  audio.playbackRate = 2
+  audio.loop = true
   audio.play();
   
   // Else keep polling for game to start.
