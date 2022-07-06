@@ -14,6 +14,7 @@ socket.on("name", (n) => {
 // navigate to waiting page
 socket.on("gameInProgress", () => {
     gameInProgress = true; // disable button
+    gameProgess();
 });
 
 // navigate to game page
@@ -38,5 +39,18 @@ socket.on("finished", async () => {
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     await sleep(5000); // waiting so everyone can see score
     gameInProgress = false;
+    gameFinished();
     setPage("join");
 });
+
+function gameProgess() {
+    let joinButton = document.getElementById("joinButton");
+    joinButton.innerHTML = "Game in Progress please wait...";
+    // joinButton.style.backgroundColor = 'brown'
+}
+
+function gameFinished() {
+    let joinButton = document.getElementById("joinButton");
+    joinButton.innerHTML = "Join game";
+    // joinButton.style.backgroundColor = 'rgb(42, 165, 54)';
+}
