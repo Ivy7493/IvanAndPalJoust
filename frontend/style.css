@@ -146,7 +146,22 @@ p {
   margin: 40px;
 }
 
-#joinButton, #startButton {
+#joinButton {
+  display: none;
+  margin: auto;
+  margin-top: 1em;
+  border: 0px;
+  border-radius: 0.3em;
+  padding: 1em;
+  color: white;
+  font-family: "Nura";
+  font-size: 2em;
+  letter-spacing: 1px;
+  background-color: brown;
+  transition: transform 0.05s ease-in-out;
+}
+
+#startButton {
   display: block;
   margin: auto;
   margin-top: 1em;
@@ -160,6 +175,7 @@ p {
   background-color: brown;
   transition: transform 0.05s ease-in-out;
 }
+
 #joinButton:hover, #startButton:hover {
   background-color: rgb(180, 46, 46);
   transform: scale(1.05);
