@@ -46,7 +46,8 @@ io.on('connection', (socket) => {
 
     connections[socket.id] = {
         socket: socket,
-        ready: false
+        ready: false,
+        playing: false,
     }; // adding to list
     numConnections++;
 
@@ -60,12 +61,36 @@ io.on('connection', (socket) => {
             if (p != connections[socket.id].name)
                 newPlayers.push(p);
 
+        // is client is in game and leaves add them as loser
+        if (connections[socket.id].playing) {
+            numPlaying--;
+            losers.push(connections[socket.id].name);
+            io.to(STATE.lost).emit("losers", losers);
+
+            if (numPlaying == 1) {
+                for (let c of Object.keys(connections))
+                    if (!losers.includes(connections[c].name)) {
+                        losers.push(connections[c].name);
+                        socket.join(STATE.lost);
+                        io.to(STATE.lost).emit("losers", losers);
+                        break;
+                    }
+    
+                reset();
+                console.log("got here");
+                io.emit("finished", null);
+            }
+        }
+
         players = newPlayers;
 
         io.to(STATE.playing).emit("players", players);
-        
+
         delete connections[socket.id];
         numConnections--;
+
+        if (numConnections == 0)
+            reset();
     });
 
     // asking for socket name
@@ -115,16 +140,13 @@ io.on('connection', (socket) => {
         io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
 
         if (numPlaying == 1) { // there is a winner
-            for (let c of Object.keys(connections)) {
-
-                console.log(!losers.includes(connections[c].name))
-                    if (!losers.includes(connections[c].name)) {
-                        losers.push(connections[c].name);
-                        socket.join(STATE.lost);
-                        io.to(STATE.lost).emit("losers", losers);
-                        break;
-                    }
-            }
+            for (let c of Object.keys(connections))
+                if (!losers.includes(connections[c].name)) {
+                    losers.push(connections[c].name);
+                    socket.join(STATE.lost);
+                    io.to(STATE.lost).emit("losers", losers);
+                    break;
+                }
 
             reset();
             io.emit("finished", null);
@@ -132,6 +154,9 @@ io.on('connection', (socket) => {
     });
 
     socket.on("gameStart", () => {
+        for (let c of Object.keys(connections))
+            connections[c].playing = true;
+
         gameInProgress = true;
         io.to(STATE.playing).emit("start", null) // for when the game starts
         numPlaying = numPlayersReady;
@@ -144,6 +169,8 @@ function reset() {
         connections[c].socket.leave(STATE.playing);
         connections[c].socket.leave(STATE.lost);
         connections[c].socket.leave(STATE.waiting);
+        connections[c].ready = false;
+        connections[c].playing = false;
     }
 
     players = [] // name of the players
@@ -155,5 +182,6 @@ function reset() {
 
 // send the threshold value
 setInterval(() => {
+    console.log("polled");
     io.to(STATE.playing).emit("threshhold", 0);
 }, 1000)
