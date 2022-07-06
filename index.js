@@ -125,3 +125,8 @@ io.on('connection', (socket) => {
         numPlaying = numPlayersReady;
     });
 });
+
+// send the threshold value
+setInterval(() => {
+    io.to(STATE.playing).emit("threshhold", 0);
+}, 1000)
