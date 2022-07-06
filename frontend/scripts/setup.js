@@ -6,12 +6,7 @@ const audioPlayers = new Map();
 const readySongs = new Map();
 
 async function preloadAllAudio() {
-  const audioFilenames = [
-    "elevatorMusic.mp3",
-    "lose.mp3",
-    "claps.mp3",
-    "Umbrella.mp3",
-  ];
+  const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
   for (const song of audioFilenames) {
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
@@ -72,6 +67,15 @@ export function setPlayerRate(rate) {
       player.playbackRate = rate;
     }else if(!player.paused && song == 'elevatorMusic.mp3'){
         player.playbackRate = 1
+    }
+  }
+}
+
+function StopMusic() {
+  for (const song of audioPlayers.keys()) {
+    const player = audioPlayers.get(song);
+    if (!player.paused) {
+      player.pause();
     }
   }
 }

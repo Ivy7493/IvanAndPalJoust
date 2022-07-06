@@ -44,7 +44,7 @@ window.onload = async function () {
   }
   
   // Else keep polling for game to start.
-  const delay = 250;
+  const delay = 400;
   setInterval(navigateIfGameHasStarted, delay);
   setInterval(UpdatePlayers, delay);
 };

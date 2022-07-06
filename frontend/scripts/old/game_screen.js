@@ -177,14 +177,14 @@ if (window.DeviceOrientationEvent) {
         let v = q.toVector();
         let gyroScore = Math.abs(vDot(v, [0.7, 0.7, 0]));
 
-        if(gyroScore < 0.9)
+        if(gyroScore < 0.75)
         {
             //Lose game
             gameOver = true;
             debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
         }
 
-        debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1) + "<br />" + gyroScore.toFixed(3);
+        debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);// + "<br />" + gyroScore.toFixed(3);
         // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
       }
     },
