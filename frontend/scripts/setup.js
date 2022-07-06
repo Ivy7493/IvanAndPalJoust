@@ -62,7 +62,6 @@ export async function playPreloadedSong(songPath) {
 }
 
 export function setPlayerRate(rate) {
-    console.log("GOT HERE YES")
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused && song != lobbyMusic) {
@@ -73,7 +72,7 @@ export function setPlayerRate(rate) {
   }
 }
 
-function StopMusic() {
+export function StopMusic() {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused) {
