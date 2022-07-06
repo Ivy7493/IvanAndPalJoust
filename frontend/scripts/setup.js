@@ -67,8 +67,10 @@ async function playPreloadedSong(songPath) {
 function setPlayerRate(rate) {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
-    if (!player.paused) {
+    if (!player.paused && song != 'elevatorMusic.mp3') {
       player.playbackRate = rate;
+    }else if(!player.paused && song == 'elevatorMusic.mp3'){
+        player.playbackRate = 1
     }
   }
 }

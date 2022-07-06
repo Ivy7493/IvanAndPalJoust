@@ -28,6 +28,8 @@ socket.on("start", () => {
 
 // getting the threshold value
 socket.on("threshhold", (thresh) => {
+    console.log("poggers: ",thresh)
+    setPlayerRate(thresh)
     threshhold = thresh;
 });
 

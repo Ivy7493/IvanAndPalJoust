@@ -183,6 +183,7 @@ function reset() {
 
 // send the threshold value
 setInterval(() => {
-    console.log("polled");
-    io.to(STATE.playing).emit("threshhold", 0);
-}, 1000)
+    let max = 1.5
+    let min = 0.5
+    io.to(STATE.playing).emit("threshhold",Math.random() * (max - min) + min);
+}, 5000)
