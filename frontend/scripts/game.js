@@ -6,6 +6,12 @@ async function playGameSong() {
     await playPreloadedSong(song);
 }
 
+let sensitivity = 1.0;
+export function SetSensitivity(_sense){
+    sensitivity = 0.1/_sense //if we wanna change the sensitivity relation here it is
+    console.log("sensitivity: ", sensitivity)
+}
+
 export function initGame() { // essentially onload for join
     playGameSong();
 
@@ -29,7 +35,7 @@ export function initGame() { // essentially onload for join
     let percentage = 0.0;
     let kfMotion = new KalmanFilter({ R: 0.01, Q: 20, A: 0.5 });
     let kfRotate = new KalmanFilter();
-    let sensitivity = 1;
+    
 
     let gameOver = false;
 

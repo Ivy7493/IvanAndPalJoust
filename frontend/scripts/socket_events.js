@@ -1,5 +1,6 @@
 import { setPage } from "./setPage.js";
 import {setPlayerRate} from './setup.js'
+import {SetSensitivity} from './game.js'
 
 // navigatge to start page
 socket.on("players", (p) => {
@@ -31,6 +32,7 @@ socket.on("start", () => {
 socket.on("threshhold", (thresh) => {
     console.log("poggers: ",thresh)
     setPlayerRate(thresh)
+    SetSensitivity(thresh)
     threshhold = thresh;
 });
 
