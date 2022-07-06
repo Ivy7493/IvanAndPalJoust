@@ -34,3 +34,17 @@ function displayPlayers() {
         playerList.appendChild(newPlayer);
     }
 }
+
+function displayLosers() {
+    const playerList = document.querySelector(".playerListLose");
+    playerList.innerHTML = "";
+
+    console.log(losers);
+
+    for (let i = 0; i < losers.length; i++) {
+        let newPlayer = document.createElement("div");
+        newPlayer.classList.add("playerItem");
+        newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
+        playerList.appendChild(newPlayer);
+      }
+}

@@ -26,3 +26,16 @@ socket.on("start", () => {
 socket.on("threshhold", (thresh) => {
     threshhold = thresh;
 });
+
+// gets sent to the losing players
+socket.on("losers", (l) => {
+    losers = l;
+    setPage("lose");
+});
+
+// gets sent to the losing players
+socket.on("finished", async () => {
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    await sleep(5000); // waiting so everyone can see score
+    setPage("join");
+});

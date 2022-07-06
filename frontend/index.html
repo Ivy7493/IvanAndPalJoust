@@ -23,6 +23,7 @@
         let playerName = ""; // players name
         let gameInProgress = false;
         let threshhold = 0;
+        let losers = [];
     </script>
 </head>
 <body>
@@ -86,6 +87,8 @@
         <div id="body">
             <div id="message">
                 <img class="img" id="loserImg" src="loser.png" alt="loser">
+                <div class="playerListLose">
+                </div>
             </div>
 
         <audio controls autoplay class="hiddenAudioElement" >
@@ -103,7 +106,7 @@
     <script type="module">
         import { setPage } from "./scripts/setPage.js";
 
-        setPage("game");
+        setPage("join");
     </script>
 
     <script src="scripts/socket_events.js" type="module"></script>

@@ -27,7 +27,7 @@ html {
   visibility: hidden;
 }
 
-.playerItem {
+.playerItem, .playerListLose {
 
   background-color: wheat;
   border-radius: 0.5em;

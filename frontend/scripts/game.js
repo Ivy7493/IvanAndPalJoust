@@ -1,7 +1,9 @@
 import Color from "https://colorjs.io/dist/color.js";
 
 export function initGame() { // essentially onload for join
-
+    console.log("got here");
+    socket.emit("playerLost");
+    return;
     const shakeBar = document.querySelector(".shakeBar");
     const root = document.querySelector(":root");
     const debug = document.querySelector("#debug");
@@ -86,9 +88,10 @@ export function initGame() { // essentially onload for join
 
             if (sig > 100.0) {
             //Lose game
-            gameOver = true;
-            setPercentage(100);
-            debug.textContent = "GAME OVER " + debug.textContent;
+                gameOver = true;
+                setPercentage(100);
+                debug.textContent = "GAME OVER " + debug.textContent;
+                socket.emit("playerLost");
             }
             // if(sig < min) { min = sig; debug.textContent = min; }
         }
