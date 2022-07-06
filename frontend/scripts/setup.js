@@ -14,6 +14,8 @@ async function preloadAllAudio() {
   for (const song of audioFilenames) {
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
     const audioObject = new Audio(url);
+    audioObject.load();
+
     audioObject.loop = true;
     audioPlayers.set(song, audioObject);
     readySongs.set(song, false);
