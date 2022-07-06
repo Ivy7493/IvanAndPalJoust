@@ -52,7 +52,18 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('user disconnected');
-        //   players.splice(players.findIndex(connections[socket.id].name), 1); // remove from names
+        if (connections[socket.id].ready)
+            numPlayersReady--;
+
+        let newPlayers = [];
+        for (let p of players)
+            if (p != connections[socket.id].name)
+                newPlayers.push(p);
+
+        players = newPlayers;
+
+        io.to(STATE.playing).emit("players", players);
+        
         delete connections[socket.id];
         numConnections--;
     });
@@ -61,7 +72,7 @@ io.on('connection', (socket) => {
     socket.on("join", async () => {
         if (gameInProgress) {
             socket.join(STATE.waiting);
-            socket.to(STATE.waiting).emit("gameInProgress");
+            io.to(STATE.waiting).emit("gameInProgress");
         } else {
             let name = nameLib.GenerateName();
             connections[socket.id]["name"] = name; // adding name to json object

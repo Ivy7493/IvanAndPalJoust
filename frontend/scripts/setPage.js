@@ -16,14 +16,14 @@ export function setPage(p) {
             x.classList.add("disabled");
         });
         activePage = document.querySelector("." + p + "Page"); //enable current page
-        
+
+        activePage.classList.remove("disabled");
+
         if (p == "join")
             initJoin();
         if (p == "start")
             initStart();
         if (p == "game")
             initGame();
-
-        activePage.classList.remove("disabled");
     }
 }

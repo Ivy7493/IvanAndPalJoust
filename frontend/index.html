@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,9 +25,8 @@
     </script>
 </head>
 <body>
-
     <!-- GAME -->
-    <div class="page gamePage">
+    <div class="page gamePage disabled">
         <div class="rotationMarker">
         </div>
 
@@ -43,7 +43,7 @@
     </div>
 
     <!-- JOIN -->
-    <div class="page joinPage">
+    <div class="page joinPage disabled">
         <div class="nav">
             <img id="logo" src="/logoWhite.svg" alt="logo">
         </div>
@@ -56,51 +56,50 @@
     </div>
 
     <!-- START -->
-    <div class="page startPage">
+    <div class="page startPage disabled">
         <div class="body">
-        <div>
-            <div id="startButton">Start Game</div>
-            <div class="playerList">
+            <div>
+                <div id="startButton">Start Game</div>
+                <div class="playerList">
+                </div>
             </div>
-        </div>
-        
-        </div>
-        
 
-        <audio controls autoplay loop id="hiddenAudioElement">
+        </div>
+
+        <audio controls autoplay loop class="hiddenAudioElement">
         <source id = "AudioSource" src="audio/elevatorMusic.mp3" type="audio/mp3" />
         Your browser does not support the audio element.
         </audio>
     </div>
 
     <!-- WIN -->
-    <div class="page winPage" id="winnerPage">
-        <body id="winnerPage">
-        <div id="body">
-            <div id="message">
-                <img class="img" src="winner.svg" alt="win">
+    <div class="page winPage disabled" id="winnerPage">
+            <div id="body">
+                <div id="message">
+                    <img class="img" src="winner.svg" alt="win">
+                </div>
             </div>
-        </div>
     </div>
 
     <!-- LOSE -->
-    <div class="page losePage" id="loserPage">
+    <div class="page losePage disabled" id="loserPage">
         <div id="body">
-        <div id="message">
-            <img class="img" id="loserImg" src="loser.png" alt="loser">
-        </div>
+            <div id="message">
+                <img class="img" id="loserImg" src="loser.png" alt="loser">
+            </div>
 
-        <audio controls autoplay id="hiddenAudioElement" >
+        <audio controls autoplay class="hiddenAudioElement" >
             <source src="audio/lose.mp3" type="audio/mp3" />
             Your browser does not support the audio element.
         </audio>
         <script>
             // document.getElementById('hiddenAudioElement').play();
-        </script>
+            </script>
         </div>
-        
     </div>
 
+    <script type="text/javascript" src="quaternion.min.js"></script>
+    <script type="text/javascript" src="kalman.min.js"></script>
     <script type="module">
         import { setPage } from "./scripts/setPage.js";
 
@@ -109,4 +108,5 @@
 
     <script src="scripts/socket_events.js" type="module"></script>
 </body>
+
 </html>
