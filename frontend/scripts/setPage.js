@@ -1,5 +1,6 @@
 import { initJoin } from "./join.js";
 import { initStart } from "./start.js";
+import { initGame } from "./game.js";
 
 //====='PAGE' SWITCHING ON SPA=====//
 const allPages = document.querySelectorAll(".page");
@@ -20,6 +21,8 @@ export function setPage(p) {
             initJoin();
         if (p == "start")
             initStart();
+        if (p == "game")
+            initGame();
 
         activePage.classList.remove("disabled");
     }
