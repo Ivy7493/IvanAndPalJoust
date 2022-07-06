@@ -1,3 +1,4 @@
+import { MovingAverageQueue } from "./data_structures.js";
 import { IsCurrentPageGamePage } from "./setPage.js";
 import { hashStringToColor, invertColor, rgbToString } from "./stringToRGB.js";
 
@@ -69,8 +70,8 @@ export function setPlayerRate(rate) {
     const player = audioPlayers.get(song);
     if (!player.paused && song != lobbyMusic) {
       player.playbackRate = rate;
-    }else if(!player.paused && song == lobbyMusic){
-        player.playbackRate = 1
+    } else if (!player.paused && song == lobbyMusic) {
+      player.playbackRate = 1;
     }
   }
 }
@@ -95,9 +96,13 @@ function RestartPlayingSong() {
 
 // The time in future that all devices should reset their music
 let serverTimeToResetSong = 0;
-let serverClientTimeDeltas = [];
-const serverClientDeltasToMaintain = 40;
+const serverClientTimeDeltas = new MovingAverageQueue(40);
+const rttValues = new MovingAverageQueue(40);
 let didSyncMusic = false;
+
+export function OnRTT(rtt) {
+  rttValues.addValue(rtt);
+}
 
 export function ResetMusicSync() {
   didSyncMusic = false;
@@ -108,35 +113,23 @@ export function SetServerTimeToResetSong(value) {
 }
 
 export function OnServerTimestamp(serverTimestamp) {
-  const delta = Date.now() - serverTimestamp;
-  serverClientTimeDeltas.push(delta);
+  if (!rttValues.isFull()) return;
 
-  if (serverClientTimeDeltas.length > serverClientDeltasToMaintain) {
-    serverClientTimeDeltas.shift();
+  const halfRtt = rttValues.getAverage() / 2;
+  const delta = Date.now() - serverTimestamp - halfRtt;
+  serverClientTimeDeltas.addValue(delta);
 
+  if (serverClientTimeDeltas.isFull()) {
     // Be ready to sync audio if we are on game screen
     if (IsCurrentPageGamePage() && !didSyncMusic) {
-      const arr = serverClientTimeDeltas;
-      const avgDelta = (() => arr.reduce((a, b) => a + b, 0) / arr.length)();
-
+      const avgDelta = serverClientTimeDeltas.getAverage();
       const estServerTime = Date.now() + avgDelta;
 
-      if ( estServerTime >= serverTimeToResetSong ) {
+      if (estServerTime >= serverTimeToResetSong) {
         didSyncMusic = true;
         RestartPlayingSong();
         console.log("music reset at est server time", estServerTime);
       }
-      //const localisedServerTimeToResetSong = serverTimeToResetSong + avgDelta;
-
-      // (localisedServerTimeToResetSong > 0) => is ahead, else behind serverTimeToResetString
-      // const diffToReset = localisedServerTimeToResetSong - Date.now();
-      // console.log("Syncing in", diffToReset);
-      // didSyncMusic = true;
-
-      // setTimeout(() => {
-      //   RestartPlayingSong();
-      //   console.log("Song reset at", Date.now());
-      // }, diffToReset);
     }
   }
 }
@@ -178,9 +171,8 @@ window.onload = () => {
     }
 
     // need at least 2 players to play
-    if (players.length > 1)
-      socket.emit("gameStart", null);
-    
+    if (players.length > 1) socket.emit("gameStart", null);
+
     clickCount++;
     if (clickCount == 5) {
       clickCount = 0;
@@ -192,51 +184,49 @@ window.onload = () => {
 // functions needed to be called in multple areas
 // add code to indentify players
 export function displayPlayers() {
-    const playerList = document.querySelector(".playerList");
-    playerList.innerHTML = "";
+  const playerList = document.querySelector(".playerList");
+  playerList.innerHTML = "";
 
-    for (let p of players) {
-        // colors
-        let color = hashStringToColor(p);
-        let invColor = invertColor(color);
+  for (let p of players) {
+    // colors
+    let color = hashStringToColor(p);
+    let invColor = invertColor(color);
 
-        let newPlayer = document.createElement("div");
-        newPlayer.classList.add("playerItem");
-        newPlayer.textContent = p;
+    let newPlayer = document.createElement("div");
+    newPlayer.classList.add("playerItem");
+    newPlayer.textContent = p;
 
-        let iColor = rgbToString(invColor)
-        newPlayer.style.color = iColor
-        if (playerName == p)
-            newPlayer.style.border = "2px solid " + iColor;
-        newPlayer.style.backgroundColor = rgbToString(color);
-
-        playerList.appendChild(newPlayer);
-    }
+    let iColor = rgbToString(invColor);
+    newPlayer.style.color = iColor;
+    if (playerName == p) newPlayer.style.border = "2px solid " + iColor;
     newPlayer.style.backgroundColor = rgbToString(color);
 
     playerList.appendChild(newPlayer);
+  }
+  newPlayer.style.backgroundColor = rgbToString(color);
+
+  playerList.appendChild(newPlayer);
 }
 
-
 export function displayLosers() {
-    const playerList = document.querySelector(".playerListLose");
-    playerList.innerHTML = "";
+  const playerList = document.querySelector(".playerListLose");
+  playerList.innerHTML = "";
 
-    for (let i = 0; i < losers.length; i++) {
-        // colors
-        let color = hashStringToColor(losers[losers.length - 1 - i]);
-        let invColor = invertColor(color);
+  for (let i = 0; i < losers.length; i++) {
+    // colors
+    let color = hashStringToColor(losers[losers.length - 1 - i]);
+    let invColor = invertColor(color);
 
-        let newPlayer = document.createElement("div");
-        newPlayer.classList.add("playerItem");
-        newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
+    let newPlayer = document.createElement("div");
+    newPlayer.classList.add("playerItem");
+    newPlayer.textContent = i + 1 + ". " + losers[losers.length - 1 - i];
 
-        let iColor = rgbToString(invColor)
-        newPlayer.style.color = iColor
-        if (playerName == losers[losers.length - 1 - i])
-            newPlayer.style.border = "2px solid " + iColor;
-        newPlayer.style.backgroundColor = rgbToString(color);
+    let iColor = rgbToString(invColor);
+    newPlayer.style.color = iColor;
+    if (playerName == losers[losers.length - 1 - i])
+      newPlayer.style.border = "2px solid " + iColor;
+    newPlayer.style.backgroundColor = rgbToString(color);
 
-        playerList.appendChild(newPlayer);
-    }
+    playerList.appendChild(newPlayer);
+  }
 }
