@@ -60,6 +60,8 @@
         <div>
             <div id="joinButton" onclick="start()" >Start Game</div>
             <div class="playerList">
+                <div class="playerList">
+                </div>
             </div>
         </div>
         
@@ -86,7 +88,7 @@
     <div class="page losePage" id="loserPage">
         <div id="body">
         <div id="message">
-            <img class="img" src="loser.svg" alt="loser">
+            <img class="img" id="loserImg" src="loser.png" alt="loser">
         </div>
 
         <audio controls autoplay id="hiddenAudioElement" >
@@ -97,8 +99,7 @@
             // document.getElementById('hiddenAudioElement').play();
         </script>
         </div>
-        <div class="playerList">
-        </div>
+        
     </div>
 
     <script>
