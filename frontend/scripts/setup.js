@@ -192,8 +192,11 @@ export function displayPlayers() {
 
         let iColor = rgbToString(invColor)
         newPlayer.style.color = iColor
-        if (playerName == p)
-            newPlayer.style.border = "2px solid " + iColor;
+        if (playerName == p){
+          newPlayer.style.border = "2px solid " + iColor;
+          newPlayer.textContent = newPlayer.textContent + " (You)";
+        }
+            
         newPlayer.style.backgroundColor = rgbToString(color);
 
         playerList.appendChild(newPlayer);
