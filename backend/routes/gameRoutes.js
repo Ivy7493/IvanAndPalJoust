@@ -22,7 +22,7 @@ setInterval(ChangeSongSpeed,TempChange)
 
 const socketConnections = new Map();
 
-setInterval(onTick, 250);
+setInterval(onTick, 1000);
 
 GameRouter.get("/", function (req, res) {
   RunOnHttp2Only(function () {

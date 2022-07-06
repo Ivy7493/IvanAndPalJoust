@@ -113,7 +113,7 @@ async function processPlayerState(playerState) {
  * TODO: Logic to be implemented.
  */
 function computePlayerState(gameState) {
-  sensitivity = 1.0 / gameState.threshold;
+  sensitivity = 0.1 / gameState.threshold;
   const winnerIsUs = gameState.winner === getUrlArgument("playerId");
 
   if (gameOver == true) {
