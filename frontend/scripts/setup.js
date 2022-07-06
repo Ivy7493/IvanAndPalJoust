@@ -42,7 +42,7 @@ async function preloadAllAudio() {
   document.getElementById("loading").style.display = "none";
 }
 
-async function playPreloadedSong(songPath) {
+export async function playPreloadedSong(songPath) {
   const lastSlashIndex = songPath.lastIndexOf("/");
   if (lastSlashIndex != -1) {
     songPath = songPath.substring(lastSlashIndex + 1);
@@ -59,7 +59,8 @@ async function playPreloadedSong(songPath) {
   }
 }
 
-function setPlayerRate(rate) {
+export function setPlayerRate(rate) {
+    console.log("GOT HERE YES")
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
     if (!player.paused && song != 'elevatorMusic.mp3') {
@@ -84,8 +85,8 @@ window.onload = () => {
   preloadAllAudio();
 
   // buttons
-  joinButton.onclick = function tryJoin() {
-    var elem = document.documentElement;
+  joinButton.onclick = () => {
+    let elem = document.documentElement;
 
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
@@ -101,8 +102,29 @@ window.onload = () => {
     playPreloadedSong("elevatorMusic.mp3");
   };
 
-  document.getElementById("startButton").onclick = function tryJoin() {
-    socket.emit("gameStart", null);
+  let clickCount = 0; // number of clicks before showing alert
+  document.getElementById("startButton").onclick = () => {
+    let elem = document.documentElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem.msRequestFullscreen();
+    }
+
+    // need at least 2 players to play
+    if (players.length > 1)
+      socket.emit("gameStart", null);
+    
+    clickCount++;
+    if (clickCount == 5) {
+      clickCount = 0;
+      alert("You require at least 2 players to player");
+    }
   };
 };
 
