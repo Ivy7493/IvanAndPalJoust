@@ -139,9 +139,10 @@ export function displayPlayers() {
         newPlayer.textContent = p;
 
         if (playerName == p) {
-            let iColor = rgbToString(invColor)
-            newPlayer.style.color = iColor
-            newPlayer.style.border = "2px solid " + iColor;
+            newPlayer.textContent = newPlayer.textContent + " (You)";
+            let iColor = rgbToString(invColor);
+            newPlayer.style.color = iColor;
+            newPlayer.style.border = "4px solid " + iColor;
         }
         newPlayer.style.backgroundColor = rgbToString(color);
 
