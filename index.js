@@ -36,6 +36,7 @@ let connections = {}; // list of connection ids
 let numConnections = 0;
 let players = []; // name of the players
 let losers = [];
+let readyList = []; // list of players who are ready
 let numPlayersReady = 0;
 let numPlaying = 0;
 let gameInProgress = false;
@@ -118,12 +119,18 @@ io.on("connection", (socket) => {
         numPlayersReady++;
       }
 
+      readyList.push(connections[socket.id]);
+
+      io.to(STATE.playing).emit("readyPlayers", readyList);
+
       if (numPlayersReady == numConnections) {
-        io.emit("allReady", null);
+        io.to(STATE.playing).emit("allReady", true);
       }
     } else {
       if (connections[socket.id].ready) numPlayersReady--;
       connections[socket.id].ready = false;
+      readyList.splice(readyList.findIndex(connections[socket.id].name), 1);
+      io.to(STATE.playing).emit("allReady", false);
     }
   });
 
@@ -176,6 +183,7 @@ function reset() {
 
   players = []; // name of the players
   losers = [];
+  readyList = [];
   numPlayersReady = 0;
   numPlaying = 0;
   gameInProgress = false;

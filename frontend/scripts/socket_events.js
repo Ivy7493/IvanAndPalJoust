@@ -62,6 +62,14 @@ socket.on("finished", async () => {
     setPage("join");
 });
 
+socket.on("readyPlayers", (p) => {
+    readyPlayers = p;
+});
+
+socket.on("allReady", (r) => {
+    allReady = r;
+});
+
 socket.on("serverTime", (timestamp) => {
     OnServerTimestamp(timestamp);
 });
