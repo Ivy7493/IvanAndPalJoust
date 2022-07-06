@@ -46,6 +46,7 @@ socket.on("finished", async () => {
 function gameProgess() {
     let joinButton = document.getElementById("joinButton");
     joinButton.innerHTML = "Game in Progress please wait...";
+    joinButton.disabled = true;
     // joinButton.style.backgroundColor = 'brown'
 }
 
@@ -53,4 +54,5 @@ function gameFinished() {
     let joinButton = document.getElementById("joinButton");
     joinButton.innerHTML = "Join game";
     // joinButton.style.backgroundColor = 'rgb(42, 165, 54)';
+    joinButton.disabled = false;
 }
