@@ -36,7 +36,6 @@ socket.on("threshhold", (thresh) => {
 
 // gets sent to the losing players
 socket.on("losers", (l) => {
-    console.log("got here");
     losers = l;
     setPage("lose");
 });
@@ -45,14 +44,16 @@ socket.on("losers", (l) => {
 socket.on("finished", async () => {
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     await sleep(5000); // waiting so everyone can see score
-    gameInProgress = false;
     gameFinished();
+
+    // resetting state
     players = []; // the players
     playerName = ""; // players name
     gameInProgress = false;
     playing = false;
     threshhold = 0;
     losers = [];
+
     setPage("join");
 });
 

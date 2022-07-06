@@ -34,7 +34,7 @@ const STATE = {
 
 let connections = {}; // list of connection ids
 let numConnections = 0;
-let players = [] // name of the players
+let players = []; // name of the players
 let losers = [];
 let numPlayersReady = 0;
 let numPlaying = 0;
@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     }; // adding to list
     numConnections++;
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
         console.log('user disconnected');
         if (connections[socket.id].ready)
             numPlayersReady--;
@@ -60,6 +60,8 @@ io.on('connection', (socket) => {
         for (let p of players)
             if (p != connections[socket.id].name)
                 newPlayers.push(p);
+
+        players = newPlayers;
 
         // is client is in game and leaves add them as loser
         if (connections[socket.id].playing) {
@@ -71,18 +73,16 @@ io.on('connection', (socket) => {
                 for (let c of Object.keys(connections))
                     if (!losers.includes(connections[c].name)) {
                         losers.push(connections[c].name);
-                        socket.join(STATE.lost);
+                        await connections[c].socket.join(STATE.lost);
                         io.to(STATE.lost).emit("losers", losers);
                         break;
                     }
     
                 reset();
-                console.log("got here");
+                console.log(players);
                 io.emit("finished", null);
             }
         }
-
-        players = newPlayers;
 
         io.to(STATE.playing).emit("players", players);
 
@@ -96,9 +96,10 @@ io.on('connection', (socket) => {
     // asking for socket name
     socket.on("join", async () => {
         if (gameInProgress) {
-            socket.join(STATE.waiting);
+            await socket.join(STATE.waiting);
             io.to(STATE.waiting).emit("gameInProgress");
         } else {
+            console.log(players);
             numPlayersReady++; // temp
             let name = nameLib.GenerateName();
             connections[socket.id]["name"] = name; // adding name to json object
@@ -133,17 +134,17 @@ io.on('connection', (socket) => {
     });
 
     // for when a player lost
-    socket.on("playerLost", () => {
+    socket.on("playerLost", async () => {
         numPlaying--;
         losers.push(connections[socket.id].name);
-        socket.join(STATE.lost);
+        await socket.join(STATE.lost);
         io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
 
         if (numPlaying == 1) { // there is a winner
             for (let c of Object.keys(connections))
                 if (!losers.includes(connections[c].name)) {
                     losers.push(connections[c].name);
-                    socket.join(STATE.lost);
+                    await connections[c].socket.join(STATE.lost);
                     io.to(STATE.lost).emit("losers", losers);
                     break;
                 }
@@ -173,7 +174,7 @@ function reset() {
         connections[c].playing = false;
     }
 
-    players = [] // name of the players
+    players = []; // name of the players
     losers = [];
     numPlayersReady = 0;
     numPlaying = 0;
@@ -184,5 +185,5 @@ function reset() {
 setInterval(() => {
     let max = 1.5
     let min = 0.5
-    io.to(STATE.playing).emit("threshhold",Math.random() * (max - min) + min);
+    io.to(STATE.playing).emit("threshhold", Math.random() * (max - min) + min);
 }, 5000)
