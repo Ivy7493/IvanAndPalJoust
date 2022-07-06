@@ -12,7 +12,8 @@ async function preloadAllAudio() {
     audioObject.loop = true;
     audioPlayers.set(song, audioObject);
     readySongs.set(song, false);
-    audioObject.oncanplaythrough = function (_) {
+    // audioObject.oncanplaythrough = function (_) {
+    audioObject.oncanplay = function (_) {
       console.log(song, " is ready");
       readySongs.set(song, true);
     };
