@@ -2,7 +2,7 @@
 // Here we vibrate the device for 1 second and wait for 4
 // more seconds to navigate to the waiting_for_finish_screen.
 import { InitGameListener } from "./api_layer.js";
-import { navigateTo, WAITING_FOR_FINISH } from "./navigation.js";
+import { getUrlArgument, navigateTo, WAITING_FOR_FINISH } from "./navigation.js";
 
 window.onload = async function () {
   const playerId = getUrlArgument("playerId");
