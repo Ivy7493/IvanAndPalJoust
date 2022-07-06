@@ -44,8 +44,6 @@ const io = new Server(server);
 io.on('connection', (socket) => {
     console.log('a user connected');
 
-    numPlayersReady++;
-
     connections[socket.id] = {
         socket: socket,
         ready: false
@@ -76,6 +74,7 @@ io.on('connection', (socket) => {
             socket.join(STATE.waiting);
             io.to(STATE.waiting).emit("gameInProgress");
         } else {
+            numPlayersReady++; // temp
             let name = nameLib.GenerateName();
             connections[socket.id]["name"] = name; // adding name to json object
             players.push(name);
@@ -117,7 +116,7 @@ io.on('connection', (socket) => {
 
         console.log(numPlaying);
         if (numPlaying == 0) {
-            gameInProgress = false;
+            reset();
             io.emit("finished", null);
         }
     });
@@ -128,6 +127,15 @@ io.on('connection', (socket) => {
         numPlaying = numPlayersReady;
     });
 });
+
+function reset() {
+    // connections = {}; // list of connection ids
+    players = [] // name of the players
+    losers = [];
+    numPlayersReady = 0;
+    numPlaying = 0;
+    gameInProgress = false;
+}
 
 // send the threshold value
 setInterval(() => {

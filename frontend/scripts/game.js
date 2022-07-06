@@ -6,14 +6,11 @@ async function playGameSong() {
 }
 
 export function initGame() { // essentially onload for join
-<<<<<<< HEAD
     console.log("got here");
     socket.emit("playerLost");
     return;
-=======
     playGameSong();
 
->>>>>>> 89bd3929231b80e8c4257e6109df9eb6ca58afb5
     const shakeBar = document.querySelector(".shakeBar");
     const root = document.querySelector(":root");
     const debug = document.querySelector("#debug");
