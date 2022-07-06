@@ -114,7 +114,7 @@ function ClearPlayers() {
 function RemoveDeadPlayers() {
   console.log(authList());
   for (const playerName of authList()) {
-    const isDead = Date.now() - authMap.get(playerName) > 2 * 1000;
+    const isDead = Date.now() - authMap.get(playerName) > 5 * 1000;
     if (isDead) {
       console.log(playerName + " dead");
       RemovePlayerFromList(playerName);
