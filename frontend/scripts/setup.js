@@ -1,3 +1,5 @@
+import { hashStringToColor, invertColor, rgbToString } from "./stringToRGB.js";
+
 let joinButton = document.getElementById("joinButton");
 
 const audioPlayers = new Map();
@@ -100,28 +102,50 @@ window.onload = () => {
 
 // functions needed to be called in multple areas
 // add code to indentify players
-function displayPlayers() {
+export function displayPlayers() {
     const playerList = document.querySelector(".playerList");
     playerList.innerHTML = "";
 
     for (let p of players) {
+        // colors
+        let color = hashStringToColor(p);
+        let invColor = invertColor(color);
+
         let newPlayer = document.createElement("div");
         newPlayer.classList.add("playerItem");
         newPlayer.textContent = p;
+
+        if (playerName == p) {
+            let iColor = rgbToString(invColor)
+            newPlayer.style.color = iColor
+            newPlayer.style.border = "2px solid " + iColor;
+        }
+        newPlayer.style.backgroundColor = rgbToString(color);
+
         playerList.appendChild(newPlayer);
     }
 }
 
-function displayLosers() {
+export function displayLosers() {
     const playerList = document.querySelector(".playerListLose");
     playerList.innerHTML = "";
 
-    console.log(losers);
-
     for (let i = 0; i < losers.length; i++) {
+        // colors
+        let color = hashStringToColor(losers[losers.length - 1 - i]);
+        let invColor = invertColor(color);s
+
         let newPlayer = document.createElement("div");
         newPlayer.classList.add("playerItem");
         newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
+
+        if (playerName == losers[losers.length - 1 - i]) {
+            let iColor = rgbToString(invColor)
+            newPlayer.style.color = iColor
+            newPlayer.style.border = "2px solid " + iColor;
+        }
+        newPlayer.style.backgroundColor = rgbToString(color);
+
         playerList.appendChild(newPlayer);
       }
 }
