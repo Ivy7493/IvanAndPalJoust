@@ -7,7 +7,7 @@ async function preloadAllAudio() {
   const audioFilenames = [
     "elevatorMusic.mp3",
     "lose.mp3",
-    "JMABGRZ-claps-clapping.mp3",
+    "claps.mp3",
     "Umbrella.mp3",
   ];
 
@@ -65,8 +65,10 @@ async function playPreloadedSong(songPath) {
 function setPlayerRate(rate) {
   for (const song of audioPlayers.keys()) {
     const player = audioPlayers.get(song);
-    if (!player.paused) {
+    if (!player.paused && song != 'elevatorMusic.mp3') {
       player.playbackRate = rate;
+    }else if(!player.paused && song == 'elevatorMusic.mp3'){
+        player.playbackRate = 1
     }
   }
 }
