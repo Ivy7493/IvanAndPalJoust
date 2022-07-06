@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
     }; // adding to list
     numConnections++;
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', async () => {
         console.log('user disconnected');
         if (connections[socket.id].ready)
             numPlayersReady--;
@@ -65,19 +65,20 @@ io.on('connection', (socket) => {
         if (connections[socket.id].playing) {
             numPlaying--;
             losers.push(connections[socket.id].name);
+            console.log(connections[socket.id].name);
             io.to(STATE.lost).emit("losers", losers);
 
             if (numPlaying == 1) {
                 for (let c of Object.keys(connections))
                     if (!losers.includes(connections[c].name)) {
+                        console.log(connections[c].name);
                         losers.push(connections[c].name);
-                        socket.join(STATE.lost);
+                        await connections[c].socket.join(STATE.lost);
                         io.to(STATE.lost).emit("losers", losers);
                         break;
                     }
     
                 reset();
-                console.log("got here");
                 io.emit("finished", null);
             }
         }
@@ -96,7 +97,7 @@ io.on('connection', (socket) => {
     // asking for socket name
     socket.on("join", async () => {
         if (gameInProgress) {
-            socket.join(STATE.waiting);
+            await socket.join(STATE.waiting);
             io.to(STATE.waiting).emit("gameInProgress");
         } else {
             numPlayersReady++; // temp
@@ -133,17 +134,17 @@ io.on('connection', (socket) => {
     });
 
     // for when a player lost
-    socket.on("playerLost", () => {
+    socket.on("playerLost", async () => {
         numPlaying--;
         losers.push(connections[socket.id].name);
-        socket.join(STATE.lost);
+        await socket.join(STATE.lost);
         io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
 
         if (numPlaying == 1) { // there is a winner
             for (let c of Object.keys(connections))
                 if (!losers.includes(connections[c].name)) {
                     losers.push(connections[c].name);
-                    socket.join(STATE.lost);
+                    await connections[c].socket.join(STATE.lost);
                     io.to(STATE.lost).emit("losers", losers);
                     break;
                 }
