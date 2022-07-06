@@ -146,7 +146,7 @@ p {
   margin: 40px;
 }
 
-#joinButton {
+#joinButton, #startButton {
   display: block;
   margin: auto;
   margin-top: 1em;
@@ -160,7 +160,7 @@ p {
   background-color: brown;
   transition: transform 0.05s ease-in-out;
 }
-#joinButton:hover {
+#joinButton:hover, #startButton:hover {
   background-color: rgb(180, 46, 46);
   transform: scale(1.05);
   cursor: pointer;
@@ -168,7 +168,7 @@ p {
   /* box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.627); */
 }
 
-#joinButton:active {
+#joinButton:active, #startButton:active {
   background-color: rgb(151, 36, 36);
   transform: scale(0.97);
 }
@@ -212,7 +212,7 @@ height: 30vh;
   
 }
 
-#hiddenAudioElement {
+.hiddenAudioElement {
   display: none;
 }
 
