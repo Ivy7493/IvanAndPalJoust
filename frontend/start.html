@@ -5,28 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/style.css" />
     <title>Start Game</title>
-    <link rel="icon" type="image/x-icon" href="/arrow.svg">
+    <link rel="icon" type="image/x-icon" href="/arrow.svg" />
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="scripts/start_screen.js" type="module"></script>
+    <script type="text/javascript">
+      window.parent.playPreloadedSong("audio/elevatorMusic.mp3");
+    </script>
   </head>
   <body>
-    
-
     <div class="body">
       <div>
-        <div id="joinButton" onclick="start()" >Start Game</div>
-        <div class="playerList">
-        </div>
+        <div id="startButton" onclick="start()">Start Game</div>
+        <div class="playerList"></div>
       </div>
-      
     </div>
-    
-
-    <audio controls autoplay loop id="hiddenAudioElement">
-      <source id = "AudioSource" src="audio/elevatorMusic.mp3" type="audio/mp3" />
-      Your browser does not support the audio element.
-    </audio>
   </body>
 </html>

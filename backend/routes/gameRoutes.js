@@ -11,14 +11,18 @@ const {
 const { IsDone, SetIsDone } = require("./state_game");
 const { RunOnHttp2Only } = require("./utils/http2_bridge");
 
-let songList = ['Umbrella.mp3','cottonEyedJoe.m4a', 'JMABGRZ-claps-clapping.mp3']
-let currentSong = ""
-let Threshold = 1
-let max = 1.5
-let min = 0.5
-let TempChange = 5000
-console.log("Any poggers and piggers?")
-setInterval(ChangeSongSpeed,TempChange)
+let songList = [
+  "Umbrella.mp3",
+  "cottonEyedJoe.m4a",
+  "JMABGRZ-claps-clapping.mp3",
+];
+let currentSong = "";
+let Threshold = 1;
+let max = 1.5;
+let min = 0.5;
+let TempChange = 5000;
+console.log("Any poggers and piggers?");
+setInterval(ChangeSongSpeed, TempChange);
 
 const socketConnections = new Map();
 
@@ -39,8 +43,8 @@ GameRouter.get("/", function (req, res) {
 GameRouter.put("/start", function (req, res) {
   if (IsDone() == true) {
     SetIsDone(false);
-    currentSong = songList[Math.floor(Math.random()*songList.length)];
-    console.log("Chosen song: ",currentSong)
+    currentSong = songList[Math.floor(Math.random() * songList.length)];
+    console.log("Chosen song: ", currentSong);
   }
   res.json(statusSuccess("Poggers"));
 });
@@ -48,25 +52,22 @@ GameRouter.put("/start", function (req, res) {
 GameRouter.get("/song", function (req, res) {
   if (currentSong == "") {
     // Logic for multiple songs
-  
   }
-  res.json(statusSuccess('/Game/DownloadSong'));
+  res.json(statusSuccess("/Game/DownloadSong/" + currentSong));
 });
 
+GameRouter.get("/DownloadSong", function (req, res) {
+  let relativePath = "../songs/" + currentSong;
+  console.log("Poggers: ", path.join(__dirname, relativePath));
+  res.sendFile(path.join(__dirname, "../songs/" + currentSong));
+});
 
-GameRouter.get("/DownloadSong",function(req,res){
-  let relativePath = "../songs/"+currentSong
-  console.log("Poggers: ",path.join(__dirname,relativePath))
-  res.sendFile(path.join(__dirname,"../songs/"+currentSong))
-})
-
-
-function ChangeSongSpeed(){
-  console.log("Any Pig, Poggers")
-  console.log("Old Threshold: ", Threshold)
+function ChangeSongSpeed() {
+  console.log("Any Pig, Poggers");
+  console.log("Old Threshold: ", Threshold);
   newThreshold = Math.random() * (max - min) + min;
-  Threshold = newThreshold
-  console.log("New Threshold: ", Threshold)
+  Threshold = newThreshold;
+  console.log("New Threshold: ", Threshold);
 }
 
 function onTick() {

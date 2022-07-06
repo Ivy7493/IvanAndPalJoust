@@ -19,7 +19,6 @@ async function preloadAllAudio() {
     audioObject.loop = true;
     audioPlayers.set(song, audioObject);
     readySongs.set(song, false);
-
     audioObject.oncanplaythrough = function (_) {
       console.log(song, " is ready");
       readySongs.set(song, true);
@@ -45,6 +44,7 @@ async function preloadAllAudio() {
   } while (shouldWait);
 
   console.log("All songs ready");
+  window.isMusicReady = true;
 }
 
 async function playPreloadedSong(songPath) {
@@ -64,26 +64,60 @@ async function playPreloadedSong(songPath) {
   }
 }
 
+function setPlayerRate(rate) {
+  for (const song of audioPlayers.keys()) {
+    const player = audioPlayers.get(song);
+    if (!player.paused) {
+      player.playbackRate = rate;
+    }
+  }
+}
+
+window.isMusicReady = false;
+
 window.playPreloadedSong = playPreloadedSong;
+window.setPlayerRate = setPlayerRate;
+
 window.onload = () => {
   preloadAllAudio();
 };
 
-var elem = document.getElementById("frame");
+var iFrame = document.getElementById("frame");
+if (window.DeviceOrientationEvent) {
+  addEventListener(
+    "deviceorientation",
+    (event) => {
+      if (Boolean(iFrame.contentWindow.onGyroscopeEvent)) {
+        iFrame.contentWindow.onGyroscopeEvent(event);
+      }
+    },
+    true
+  );
+}
+
+if (window.DeviceMotionEvent) {
+  addEventListener(
+    "devicemotion",
+    (event) => {
+      if (Boolean(iFrame.contentWindow.onAccelerometerEvent)) {
+        iFrame.contentWindow.onAccelerometerEvent(event);
+      }
+    },
+    true
+  );
+}
 
 $(document).ready(function () {
   $("iframe").on("load", function () {
     $(this)
       .contents()
       .on("mousedown, mouseup, click", function () {
-        playPreloadedSong("audio/Umbrella.mp3");
-
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
+        if (iFrame.requestFullscreen) {
+          iFrame.requestFullscreen();
+        } else if (iFrame.webkitRequestFullscreen) {
+          iFrame.webkitRequestFullscreen();
+        } else if (iFrame.msRequestFullscreen) {
+          iFrame.msRequestFullscreen();
         }
       });
   });

@@ -1,4 +1,4 @@
-import { makeUniquePlayer,addPlayerToQueue } from "./api_layer.js";
+import { makeUniquePlayer, addPlayerToQueue } from "./api_layer.js";
 import { navigateTo, START_PAGE } from "./navigation.js";
 
 /**
@@ -9,3 +9,12 @@ window.join = async function join() {
   await addPlayerToQueue(playerId);
   navigateTo(START_PAGE, { playerId: playerId });
 };
+
+let isJoinEnabled = false;
+setInterval(() => {
+  if (!isJoinEnabled && window.parent.isMusicReady) {
+    isJoinEnabled = true;
+    document.getElementById("joinButton").style.display = "block";
+    console.log("Join enabled");
+  }
+}, 100);

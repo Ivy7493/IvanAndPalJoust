@@ -20,7 +20,6 @@ const PLAYER_STATE = {
   WON: 3,
 };
 
-let audioPlayer = new Audio();
 let weDidShowWin = false;
 
 window.onload = async function () {
@@ -31,7 +30,7 @@ window.onload = async function () {
 
   console.log("Player id is " + playerId);
   let canLobby = await Auth(playerId);
-  console.log("DO we have permission?: ", canLobby);
+  console.log("Do we have permission?: ", canLobby);
   if (!canLobby) {
     navigateTo(WAITING_FOR_FINISH, {
       playerId: playerId,
@@ -41,14 +40,19 @@ window.onload = async function () {
   setInterval(onTick, oneSecond);
 };
 
+window.onGyroscopeEvent = handleGyrosscopeEvent;
+window.onAccelerometerEvent = handleAccelerometerEvent;
+
 async function RetrieveSong() {
   let song = await getSongName();
   let base_url = window.location.origin;
-  console.log("LinkToFIle, ", base_url + song);
-  audioPlayer = new Audio(base_url + song);
-  audioPlayer.playbackRate = 2;
-  audioPlayer.loop = true;
-  audioPlayer.play();
+  console.log("LinkToFile, ", song);
+  window.parent.playPreloadedSong(song);
+
+  // audioPlayer = new Audio(base_url + song);
+  // audioPlayer.playbackRate = 2;
+  // audioPlayer.loop = true;
+  // audioPlayer.play();
 }
 
 async function CheckForReload() {
@@ -77,9 +81,7 @@ async function onTick() {
   }
 
   const gameState = await getGameState(playerId);
-  console.log("Over here!: ", gameState);
-  console.log("Furthermore, ", gameState.threshold);
-  audioPlayer.playbackRate = gameState.threshold;
+  window.parent.setPlayerRate(gameState.threshold);
   const playerState = computePlayerState(gameState);
   await processPlayerState(playerState);
 }
@@ -149,83 +151,62 @@ let sensitivity = 1;
 
 let gameOver = false;
 
-if (window.DeviceOrientationEvent) {
-  addEventListener(
-    "deviceorientation",
-    function (event) {
-        if (!gameOver && Date.now() - pageLoadTime > 2000) {
+function handleGyrosscopeEvent(event) {
+  if (!gameOver && Date.now() - pageLoadTime > 2000) {
+    // Vertical up has a beta of 90
+    // upIcon.style.transform.rotate
+    // setPercentage(Math.abs(90 - event.beta));
+    // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
 
-        // Vertical up has a beta of 90
-        // upIcon.style.transform.rotate
-        // setPercentage(Math.abs(90 - event.beta));
-        // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
+    let q = Quaternion.fromEuler(
+      event.alpha * toRad,
+      event.beta * toRad,
+      event.gamma * toRad,
+      "ZXY"
+    );
+    let qFinal = q.inverse();
 
-        let q = Quaternion.fromEuler(
-            event.alpha * toRad,
-            event.beta * toRad,
-            event.gamma * toRad,
-            "ZXY"
-        );
-        let qFinal = q.inverse();
+    upIcon.style.transform =
+      "scaleX(-1) matrix3d(" +
+      qFinal.conjugate().toMatrix4() +
+      ") rotateX(90deg) scaleX(-1)";
+    // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
 
-        upIcon.style.transform =
-            "scaleX(-1) matrix3d(" +
-            qFinal.conjugate().toMatrix4() +
-            ") rotateX(90deg) scaleX(-1)";
-        // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+    let v = q.toVector();
+    let gyroScore = Math.abs(vDot(v, [0.7, 0.7, 0]));
 
-        let v = q.toVector();
-        let gyroScore = Math.abs(vDot(v, [0.7, 0.7, 0]));
+    if (gyroScore < 0.75) {
+      //Lose game
+      gameOver = true;
+      debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
+    }
 
-        if(gyroScore < 0.75)
-        {
-            //Lose game
-            gameOver = true;
-            debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
-        }
-
-        debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);// + "<br />" + gyroScore.toFixed(3);
-        // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
-      }
-    },
-    true
-  );
+    debug.innerHTML =
+      v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1); // + "<br />" + gyroScore.toFixed(3);
+    // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+  }
 }
 
-if (window.DeviceMotionEvent) {
-  addEventListener(
-    "devicemotion",
-    function () {
-      if (!gameOver && Date.now() - pageLoadTime > 2000) {
-        let mag = norm(
-          event.acceleration.x,
-          event.acceleration.y,
-          event.acceleration.z
-        );
-        let sig = 100.0 * Math.abs(kfMotion.filter(mag)) * sensitivity;
+function handleAccelerometerEvent(event) {
+  if (!gameOver && Date.now() - pageLoadTime > 2000) {
+    let mag = norm(
+      event.acceleration.x,
+      event.acceleration.y,
+      event.acceleration.z
+    );
+    let sig = 100.0 * Math.abs(kfMotion.filter(mag)) * sensitivity;
 
-        debug.textContent = sig.toFixed(4);
-        setPercentage(clamp(sig, 0.0, 100.0));
+    debug.textContent = sig.toFixed(4);
+    setPercentage(clamp(sig, 0.0, 100.0));
 
-        if (sig > 100.0) {
-          //Lose game
-          gameOver = true;
-          setPercentage(100);
-          debug.textContent = "GAME OVER " + debug.textContent;
-        }
-        // if(sig < min) { min = sig; debug.textContent = min; }
-      }
-    },
-    true
-  );
-} else {
-  addEventListener(
-    "MozOrientation",
-    function (event) {
-      // debug.textContent = orientation.x;
-    },
-    true
-  );
+    if (sig > 100.0) {
+      //Lose game
+      gameOver = true;
+      setPercentage(100);
+      debug.textContent = "GAME OVER " + debug.textContent;
+    }
+    // if(sig < min) { min = sig; debug.textContent = min; }
+  }
 }
 
 function setPercentage(perc) {
@@ -274,7 +255,7 @@ function norm(x, y, z) {
 }
 
 function vDot(v1, v2) {
-    return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
+  return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
 screen.orientation //TODO: DOUBLE CHECK THIS <<--
