@@ -14,6 +14,8 @@ const { RunOnHttp2Only } = require("./utils/http2_bridge");
 const socketConnections = new Map();
 let currentSong = "cottonEyedJoe.m4a";
 
+let players = []; // list of players
+
 setInterval(onTick, 250);
 
 GameRouter.get("/", function (req, res) {
@@ -60,6 +62,15 @@ function onTick() {
   }
 }
 
+// socket
+
+let currentGameState = {
+  threshold: 50,
+  isDone: false,
+  closeReason: "",
+  winner: "",
+}
+
 function SetupGameServer(expressServer) {
   const { Server } = require("socket.io");
   const io = new Server(expressServer);
@@ -69,7 +80,14 @@ function SetupGameServer(expressServer) {
 
     socket.on("playerId", function (playerId) {
       socketConnections.set(socket, playerId);
-      TouchPlayer(playerId);
+      
+      players.push(playerId);
+      io.emit("playerList", players);
+    });
+
+    socket.on("start", function (start) {
+      players.push(playerId);
+      io.emit("playerList", players);
     });
 
     socket.on("disconnect", () => {

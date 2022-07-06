@@ -5,7 +5,6 @@ import {
   Auth,
   removePlayerFromQueue,
   getSongName,
-  InitGameListener
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -17,9 +16,10 @@ import {
 const playerList = document.querySelector(".playerList");
 
 
-async function UpdatePlayers(){
-  let list = await getAllPlayers();
-  console.log("what we got from request: ",list);
+function UpdatePlayers(){
+  // let list = await getAllPlayers();
+  let list = parent.gameStateSocket.players;
+  console.log("what we got from request: ", list);
   addPlayers(list);
 }
 
@@ -35,10 +35,10 @@ window.start = async function start() {
 window.onload = async function () {
   await CheckForReload()
   const playerId = getUrlArgument("playerId");
-  InitGameListener(playerId);
-
-  const isRunning = await gameIsRunning(playerId);      
+  
+  const isRunning = gameIsRunning(playerId);      
   let canLobby = await Auth(playerId)
+  console.log("got here");
   console.log("Lobby stuff "+ canLobby)
   if (isRunning || !canLobby) {
     // Redirect the player to wait for the game to finish.
@@ -92,10 +92,11 @@ function clearPlayersList(){
 }
 
 function addPlayer(name) {
-    let newPlayer = document.createElement("div");
-    newPlayer.classList.add("playerItem");
-    newPlayer.textContent = name;
-    playerList.appendChild(newPlayer);
+  console.log(name);
+  let newPlayer = document.createElement("div");
+  newPlayer.classList.add("playerItem");
+  newPlayer.textContent = name;
+  playerList.appendChild(newPlayer);
 }
 
 async function CheckForReload(){

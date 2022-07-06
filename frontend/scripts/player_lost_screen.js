@@ -1,12 +1,11 @@
 // This page is shown when the player has lost (or is out)
 // Here we vibrate the device for 1 second and wait for 4
 // more seconds to navigate to the waiting_for_finish_screen.
-import { getAllLostPlayers, addPlayerToLost, InitGameListener } from "./api_layer.js";
+import { getAllLostPlayers, addPlayerToLost } from "./api_layer.js";
 import { navigateTo, WAITING_FOR_FINISH } from "./navigation.js";
 
 window.onload = async function () {
   const playerId = getUrlArgument("playerId");
-  InitGameListener(playerId);
 
   const oneSecond = 400;
   setInterval(navigateToWaitingForFinishScreen, oneSecond * 5);

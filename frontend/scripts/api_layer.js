@@ -1,31 +1,3 @@
-let lastReceivedGameState = undefined;
-
-export function InitGameListener(playerId) {
-  const gameStateSocket = io();
-
-  gameStateSocket.emit("playerId", playerId);
-
-  gameStateSocket.on("state", (stateStr) => {
-    lastReceivedGameState = JSON.parse(stateStr);
-    gameStateSocket.emit("playerId", playerId);
-  });
-
-  gameStateSocket.on("disconnect", () => {
-    lastReceivedGameState = {
-      isDone: true,
-      threshold: 50,
-      closeReason: "",
-      winner: "",
-    };
-  });
-
-  gameStateSocket.on("connect_error", () => {
-    setTimeout(() => {
-      gameStateSocket.connect();
-    }, 1000);
-  });
-}
-
 export async function makeUniquePlayer() {
   const response = await axios.get("/Identity/uniquePlayer");
   return response.data.data;
@@ -87,15 +59,15 @@ export async function getSongName() {
  * 2. isDone (false if game is running)
  * 3. doneReason
  */
-export async function getGameState(playerId) {
-  while (!Boolean(lastReceivedGameState)) {
-    await new Promise((r) => setTimeout(r, 200));
-  }
+export function getGameState() {
+  // while (!Boolean(parent.gameStateSocket.lastReceivedGameState)) {
+  //   await new Promise((r) => setTimeout(r, 200));
+  // }
 
-  return lastReceivedGameState;
+  return parent.gameStateSocket.lastReceivedGameState;
 }
 
-export async function gameIsRunning(playerId) {
-  const gameState = await getGameState(playerId);
+export function gameIsRunning() {
+  const gameState = getGameState();
   return !gameState.isDone;
 }

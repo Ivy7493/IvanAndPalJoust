@@ -4,8 +4,10 @@ import {
   getGameState,
   addPlayerToLost,
   Auth,
-  InitGameListener,
 } from "./api_layer.js";
+
+// import { InitGameListener } from "./socket.js";
+
 import {
   getUrlArgument,
   navigateTo,
@@ -23,7 +25,7 @@ window.onload = async function () {
   const oneSecond = 400;
   await CheckForReload();
   const playerId = getUrlArgument("playerId");
-  InitGameListener(playerId);
+  // InitGameListener(playerId);
 
   console.log("Player id is " + playerId);
   let canLobby = await Auth(playerId);
