@@ -23,8 +23,41 @@
         let playerName = ""; // players name
         let gameInProgress = false;
         let playing = false;
+        let playerReady = false;
         let threshhold = 0;
         let losers = [];
+    </script>
+    <script>
+        if (window.DeviceOrientationEvent) {
+            addEventListener(
+                "deviceorientation",
+                function (event) {
+                    //=====Gyro score=====
+                    let gyroScore = calcGyroScore(event.beta);
+
+                    //=====Player ready events=====
+                    if(gyroScore >= 0.65 && !playerReady)
+                    {
+                        // alert("READY " + gyroScore);
+                        playerReady = true;
+                        socket.emit("playerReady", true);
+                    }
+                    else if(gyroScore < 0.65 && playerReady)
+                    {
+                        // alert("NTRDY " + gyroScore);
+                        playerReady = false;
+                        socket.emit("playerReady", false);
+                    }
+                },
+            true
+        );
+        function calcGyroScore(beta)
+        {
+            //this is fuck ugly, will reduce later
+            return Math.sign(beta)*(1.0-Math.abs(90-Math.abs(beta))/90.0);
+        }
+
+    }
     </script>
 </head>
 <body>
