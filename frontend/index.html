@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,7 +25,6 @@
     </script>
 </head>
 <body>
-
     <!-- GAME -->
     <div class="page gamePage">
         <div class="rotationMarker">
@@ -57,47 +57,46 @@
     <!-- START -->
     <div class="page startPage">
         <div class="body">
-        <div>
-            <div id="startButton">Start Game</div>
-            <div class="playerList">
+            <div>
+                <div id="startButton">Start Game</div>
+                <div class="playerList">
+                </div>
             </div>
+
         </div>
-        
-        </div>
-        
 
         <audio controls autoplay loop id="hiddenAudioElement">
-        <source id = "AudioSource" src="audio/elevatorMusic.mp3" type="audio/mp3" />
-        Your browser does not support the audio element.
+            <source id="AudioSource" src="audio/elevatorMusic.mp3" type="audio/mp3" />
+            Your browser does not support the audio element.
         </audio>
     </div>
 
     <!-- WIN -->
     <div class="page winPage" id="winnerPage">
+
         <body id="winnerPage">
-        <div id="body">
-            <div id="message">
-                <img class="img" src="winner.svg" alt="win">
+            <div id="body">
+                <div id="message">
+                    <img class="img" src="winner.svg" alt="win">
+                </div>
             </div>
-        </div>
     </div>
 
     <!-- LOSE -->
     <div class="page losePage" id="loserPage">
         <div id="body">
-        <div id="message">
-            <img class="img" id="loserImg" src="loser.png" alt="loser">
-        </div>
+            <div id="message">
+                <img class="img" id="loserImg" src="loser.png" alt="loser">
+            </div>
 
-        <audio controls autoplay id="hiddenAudioElement" >
-            <source src="audio/lose.mp3" type="audio/mp3" />
-            Your browser does not support the audio element.
-        </audio>
-        <script>
+            <audio controls autoplay id="hiddenAudioElement">
+                <source src="audio/lose.mp3" type="audio/mp3" />
+                Your browser does not support the audio element.
+            </audio>
+            <script>
             // document.getElementById('hiddenAudioElement').play();
-        </script>
+            </script>
         </div>
-        
     </div>
 
     <script type="module">
@@ -108,4 +107,5 @@
 
     <script src="scripts/socket_events.js" type="module"></script>
 </body>
+
 </html>

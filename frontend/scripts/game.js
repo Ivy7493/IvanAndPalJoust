@@ -1,3 +1,3 @@
-export function initJoin() { // essentially onload for join
+export function initGame() { // essentially onload for join
 
 }
