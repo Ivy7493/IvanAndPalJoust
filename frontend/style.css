@@ -27,16 +27,21 @@ html {
 }
 
 .playerItem {
-  margin: auto;
-  width: 80%;
-  max-width: 500px;
+
   background-color: wheat;
   border-radius: 0.5em;
   color: black;
-  font-size: 2em;
+  font-size: 1.2em;
   font-family: "Nura Light";
   margin-top: 1em;
   padding: 1em;
+  display: block;
+  margin: 30px auto;
+  border: 0px;
+  width: 80%;
+  letter-spacing: 1px;
+  text-align: center;
+
 }
 
 h2 {

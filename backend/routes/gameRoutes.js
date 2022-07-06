@@ -80,6 +80,7 @@ function onTick() {
     threshold: Threshold,
     closeReason: hasWinner ? "winner" : "",
     winner: winner,
+    authList: GetAuthList(),
   };
 
   for (const socket of socketConnections.keys()) {

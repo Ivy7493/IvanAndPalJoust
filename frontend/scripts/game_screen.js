@@ -153,29 +153,40 @@ if (window.DeviceOrientationEvent) {
   addEventListener(
     "deviceorientation",
     function (event) {
-      // Vertical up has a beta of 90
-      // upIcon.style.transform.rotate
-      // setPercentage(Math.abs(90 - event.beta));
-      // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
+        if (!gameOver && Date.now() - pageLoadTime > 2000) {
 
-      let q = Quaternion.fromEuler(
-        event.alpha * toRad,
-        event.beta * toRad,
-        event.gamma * toRad,
-        "ZXY"
-      );
-      let qFinal = q.inverse();
+        // Vertical up has a beta of 90
+        // upIcon.style.transform.rotate
+        // setPercentage(Math.abs(90 - event.beta));
+        // root.style.setProperty("--upIconRotation", 0*(event.beta-90) + "deg");
 
-      upIcon.style.transform =
-        "scaleX(-1) matrix3d(" +
-        qFinal.conjugate().toMatrix4() +
-        ") rotateX(90deg) scaleX(-1)";
-      // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+        let q = Quaternion.fromEuler(
+            event.alpha * toRad,
+            event.beta * toRad,
+            event.gamma * toRad,
+            "ZXY"
+        );
+        let qFinal = q.inverse();
 
-      let v = qFinal.toVector();
-      debug.innerHTML =
-        v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1);
-      // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+        upIcon.style.transform =
+            "scaleX(-1) matrix3d(" +
+            qFinal.conjugate().toMatrix4() +
+            ") rotateX(90deg) scaleX(-1)";
+        // upIcon.style.transform = "rotate(" + qUp.dot(q) + "deg)";
+
+        let v = q.toVector();
+        let gyroScore = Math.abs(vDot(v, [0.7, 0.7, 0]));
+
+        if(gyroScore < 0.9)
+        {
+            //Lose game
+            gameOver = true;
+            debug.textContent = "GAME OVER GYRO\n" + debug.textContent;
+        }
+
+        debug.innerHTML = v[0].toFixed(1) + ", " + v[1].toFixed(1) + ", " + v[2].toFixed(1) + "<br />" + gyroScore.toFixed(3);
+        // debug.innerHTML = event.alpha.toFixed(1) + "<br />" + event.beta.toFixed(1) + "<br />" + event.gamma.toFixed(1);
+      }
     },
     true
   );
@@ -191,7 +202,7 @@ if (window.DeviceMotionEvent) {
           event.acceleration.y,
           event.acceleration.z
         );
-        let sig = 100.0 * Math.abs(kfMotion.filter(mag * sensitivity));
+        let sig = 100.0 * Math.abs(kfMotion.filter(mag)) * sensitivity;
 
         debug.textContent = sig.toFixed(4);
         setPercentage(clamp(sig, 0.0, 100.0));
@@ -260,6 +271,10 @@ function threshold(x, t) {
 
 function norm(x, y, z) {
   return x * x + y * y + z * z;
+}
+
+function vDot(v1, v2) {
+    return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
 }
 
 screen.orientation //TODO: DOUBLE CHECK THIS <<--

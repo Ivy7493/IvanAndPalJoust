@@ -17,12 +17,14 @@
     <div class="body">
       <div>
         <div id="joinButton" onclick="start()" >Start Game</div>
+        <div class="playerList">
+        </div>
       </div>
+      
     </div>
-    <div class="playerList">
-    </div>
+    
 
-    <audio controls autoplay id="hiddenAudioElement" >
+    <audio controls autoplay loop id="hiddenAudioElement">
       <source id = "AudioSource" src="audio/elevatorMusic.mp3" type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
