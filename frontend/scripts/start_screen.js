@@ -42,13 +42,13 @@ window.onload = async function () {
     navigateTo(WAITING_FOR_FINISH);
   }
   let song = await getSongName();
-  var audio = new Audio(base_url + song)
-  audio.playbackRate = 2
-  audio.loop = true
-  audio.play();
+  //var audio = new Audio(base_url + song)
+ // audio.playbackRate = 2
+  //audio.loop = true
+  //audio.play();
   
   // Else keep polling for game to start.
-  const oneSecond = 400;
+  const oneSecond = 100;
   setInterval(navigateIfGameHasStarted, oneSecond);
   setInterval(UpdatePlayers, oneSecond);
 };

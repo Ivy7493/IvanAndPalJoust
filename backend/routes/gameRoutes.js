@@ -11,11 +11,11 @@ const { RunOnHttp2Only } = require("./utils/http2_bridge");
 //let currentSong = "cottonEyedJoe.m4a";
 let songList = ['Umbrella.mp3','cottonEyedJoe.m4a']
 let currentSong = ""
-let Threshold = 1
-let max = 1.5
-let min = 0.5
-let TempChange = 5000
-console.log("Any poggers and piggers?")
+let Threshold = 1;
+let max = 1.5;
+let min = 0.5;
+let TempChange = 5000;
+console.log("Any poggers and piggers?");
 setInterval(ChangeSongSpeed,5000)
 
 
@@ -36,7 +36,7 @@ GameRouter.put("/start", function (req, res) {
     SetIsDone(false);
     currentSong = songList[Math.floor(Math.random()*songList.length)];
     console.log("Chosen song: ",currentSong)
-    setInterval(ChangeSongSpeed,5000)
+    //setInterval(ChangeSongSpeed,5000)
   }
   res.json(statusSuccess("Poggers"));
 });

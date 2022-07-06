@@ -44,7 +44,8 @@ async function RetrieveSong (){
   console.log("LinkToFIle, ", base_url + song)
   audioPlayer = new Audio(base_url + song)
   audioPlayer.playbackRate = 2
-  audioPlayer.loop = true
+  audioPlayer.loop = true;
+  audioPlayer.preservesPitch = false;
   audioPlayer.play();
 }
 
