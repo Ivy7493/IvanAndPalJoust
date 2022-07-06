@@ -143,11 +143,10 @@ export function displayPlayers() {
         newPlayer.classList.add("playerItem");
         newPlayer.textContent = p;
 
-        if (playerName == p) {
-            let iColor = rgbToString(invColor)
-            newPlayer.style.color = iColor
+        let iColor = rgbToString(invColor)
+        newPlayer.style.color = iColor
+        if (playerName == p)
             newPlayer.style.border = "2px solid " + iColor;
-        }
         newPlayer.style.backgroundColor = rgbToString(color);
 
         playerList.appendChild(newPlayer);
@@ -167,11 +166,10 @@ export function displayLosers() {
         newPlayer.classList.add("playerItem");
         newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
 
-        if (playerName == losers[losers.length - 1 - i]) {
-            let iColor = rgbToString(invColor)
-            newPlayer.style.color = iColor
+        let iColor = rgbToString(invColor)
+        newPlayer.style.color = iColor
+        if (playerName == losers[losers.length - 1 - i])
             newPlayer.style.border = "2px solid " + iColor;
-        }
         newPlayer.style.backgroundColor = rgbToString(color);
 
         playerList.appendChild(newPlayer);
