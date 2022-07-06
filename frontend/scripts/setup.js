@@ -124,7 +124,7 @@ export function OnServerTimestamp(serverTimestamp) {
       if ( estServerTime >= serverTimeToResetSong ) {
         didSyncMusic = true;
         RestartPlayingSong();
-        console.log("music reset");
+        console.log("music reset at est server time", estServerTime);
       }
       //const localisedServerTimeToResetSong = serverTimeToResetSong + avgDelta;
 
