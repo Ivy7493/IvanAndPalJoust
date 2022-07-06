@@ -147,7 +147,7 @@ p {
 }
 
 #joinButton {
-  display: block;
+  display: none;
   margin: auto;
   margin-top: 1em;
   border: 0px;
@@ -160,6 +160,7 @@ p {
   background-color: brown;
   transition: transform 0.05s ease-in-out;
 }
+
 #joinButton:hover {
   background-color: rgb(180, 46, 46);
   transform: scale(1.05);
