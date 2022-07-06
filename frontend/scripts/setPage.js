@@ -30,3 +30,7 @@ export function setPage(p) {
             initLose();
     }
 }
+
+export function IsCurrentPageGamePage() {
+    return currPage === "game";
+}
