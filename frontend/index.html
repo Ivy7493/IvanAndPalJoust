@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="/arrow.svg">
     <title>This Way Up</title>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="scripts/setup.js"></script>
+    <script src="scripts/setup.js" type="module"></script>
     <!-- page scripts -->
     <script>
         var socket = io();
@@ -52,6 +52,7 @@
         <div class="body">
             <div>
                 <div id="joinButton">Join game</div>
+                <img src="qr.svg" alt="qr" id="qr">
                 <img src="loading.svg" alt="loading" id="loading">
             </div>
         </div>
