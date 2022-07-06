@@ -4,10 +4,7 @@ const audioPlayers = new Map();
 const readySongs = new Map();
 
 async function preloadAllAudio() {
-  const audioFilenames = [
-    "elevatorMusic.mp3",
-    "Umbrella.mp3",
-  ];
+  const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
   for (const song of audioFilenames) {
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
@@ -69,6 +66,15 @@ function setPlayerRate(rate) {
   }
 }
 
+function StopMusic() {
+  for (const song of audioPlayers.keys()) {
+    const player = audioPlayers.get(song);
+    if (!player.paused) {
+      player.pause();
+    }
+  }
+}
+
 window.onload = () => {
   joinButton = document.getElementById("joinButton");
   preloadAllAudio();
@@ -99,27 +105,27 @@ window.onload = () => {
 // functions needed to be called in multple areas
 // add code to indentify players
 function displayPlayers() {
-    const playerList = document.querySelector(".playerList");
-    playerList.innerHTML = "";
+  const playerList = document.querySelector(".playerList");
+  playerList.innerHTML = "";
 
-    for (let p of players) {
-        let newPlayer = document.createElement("div");
-        newPlayer.classList.add("playerItem");
-        newPlayer.textContent = p;
-        playerList.appendChild(newPlayer);
-    }
+  for (let p of players) {
+    let newPlayer = document.createElement("div");
+    newPlayer.classList.add("playerItem");
+    newPlayer.textContent = p;
+    playerList.appendChild(newPlayer);
+  }
 }
 
 function displayLosers() {
-    const playerList = document.querySelector(".playerListLose");
-    playerList.innerHTML = "";
+  const playerList = document.querySelector(".playerListLose");
+  playerList.innerHTML = "";
 
-    console.log(losers);
+  console.log(losers);
 
-    for (let i = 0; i < losers.length; i++) {
-        let newPlayer = document.createElement("div");
-        newPlayer.classList.add("playerItem");
-        newPlayer.textContent = (i + 1) + ". " + losers[losers.length - 1 - i];
-        playerList.appendChild(newPlayer);
-      }
+  for (let i = 0; i < losers.length; i++) {
+    let newPlayer = document.createElement("div");
+    newPlayer.classList.add("playerItem");
+    newPlayer.textContent = i + 1 + ". " + losers[losers.length - 1 - i];
+    playerList.appendChild(newPlayer);
+  }
 }
