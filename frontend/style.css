@@ -215,3 +215,27 @@ height: 30vh;
 #hiddenAudioElement {
   display: none;
 }
+
+.joinPage{
+  background-color: coral;
+}
+
+.gamePage
+{
+  background-color: var(--background);
+  height: 100vh;
+}
+
+.startPage{
+  background-color: coral;
+}
+
+.losePage{
+  height: 100vh;
+}
+
+#loserImg{
+  width: 50%;
+  margin: 5px auto;
+  display: block;
+}
