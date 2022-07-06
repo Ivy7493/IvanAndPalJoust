@@ -1,7 +1,19 @@
 window.onload = () => {
     // buttons
     document.getElementById("joinButton").onclick = function tryJoin() {
+        
+        var elem = document.documentElement;
+
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+        
         socket.emit("join", null);
+        
     }
 
     document.getElementById("startButton").onclick = function tryJoin() {
