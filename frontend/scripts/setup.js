@@ -14,6 +14,8 @@ async function preloadAllAudio() {
   for (const song of audioFilenames) {
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
     const audioObject = new Audio(url);
+    audioObject.load();
+
     audioObject.loop = true;
     audioPlayers.set(song, audioObject);
     readySongs.set(song, false);
@@ -94,8 +96,12 @@ function RestartPlayingSong() {
 // The time in future that all devices should reset their music
 let serverTimeToResetSong = 0;
 let serverClientTimeDeltas = [];
-const serverClientDeltasToMaintain = 20;
+const serverClientDeltasToMaintain = 40;
 let didSyncMusic = false;
+
+export function ResetMusicSync() {
+  didSyncMusic = false;
+}
 
 export function SetServerTimeToResetSong(value) {
   serverTimeToResetSong = value;
@@ -113,16 +119,24 @@ export function OnServerTimestamp(serverTimestamp) {
       const arr = serverClientTimeDeltas;
       const avgDelta = (() => arr.reduce((a, b) => a + b, 0) / arr.length)();
 
-      const localisedServerTimeToResetSong = serverTimeToResetSong + avgDelta;
+      const estServerTime = Date.now() + avgDelta;
 
-      // localisedServerTimeToResetSong is in future
-      const diffToReset = localisedServerTimeToResetSong - Date.now();
-      console.log("Syncing in", diffToReset);
-      setTimeout(() => {
-        RestartPlayingSong();
+      if ( estServerTime >= serverTimeToResetSong ) {
         didSyncMusic = true;
-        console.log("Song reset at", Date.now());
-      }, diffToReset);
+        RestartPlayingSong();
+        console.log("music reset at est server time", estServerTime);
+      }
+      //const localisedServerTimeToResetSong = serverTimeToResetSong + avgDelta;
+
+      // (localisedServerTimeToResetSong > 0) => is ahead, else behind serverTimeToResetString
+      // const diffToReset = localisedServerTimeToResetSong - Date.now();
+      // console.log("Syncing in", diffToReset);
+      // didSyncMusic = true;
+
+      // setTimeout(() => {
+      //   RestartPlayingSong();
+      //   console.log("Song reset at", Date.now());
+      // }, diffToReset);
     }
   }
 }
