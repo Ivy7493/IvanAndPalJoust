@@ -96,7 +96,7 @@ function RestartPlayingSong() {
 // The time in future that all devices should reset their music
 let serverTimeToResetSong = 0;
 let serverClientTimeDeltas = [];
-const serverClientDeltasToMaintain = 20;
+const serverClientDeltasToMaintain = 40;
 let didSyncMusic = false;
 
 export function ResetMusicSync() {
