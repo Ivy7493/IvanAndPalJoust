@@ -5,7 +5,7 @@ import {
   addPlayerToLost,
   Auth,
   getSongName,
-  InitGameListener
+  InitGameListener,
 } from "./api_layer.js";
 import {
   getUrlArgument,
@@ -20,7 +20,8 @@ const PLAYER_STATE = {
   WON: 3,
 };
 
-let audioPlayer = new Audio()
+let audioPlayer = new Audio();
+let weDidShowWin = false;
 
 window.onload = async function () {
   const oneSecond = 400;
@@ -36,18 +37,17 @@ window.onload = async function () {
       playerId: playerId,
     });
   }
-  await RetrieveSong()
+  await RetrieveSong();
   setInterval(onTick, oneSecond);
 };
 
-
-async function RetrieveSong (){
+async function RetrieveSong() {
   let song = await getSongName();
   let base_url = window.location.origin;
-  console.log("LinkToFIle, ", base_url + song)
-  audioPlayer = new Audio(base_url + song)
-  audioPlayer.playbackRate = 2
-  audioPlayer.loop = true
+  console.log("LinkToFIle, ", base_url + song);
+  audioPlayer = new Audio(base_url + song);
+  audioPlayer.playbackRate = 2;
+  audioPlayer.loop = true;
   audioPlayer.play();
 }
 
@@ -77,9 +77,9 @@ async function onTick() {
   }
 
   const gameState = await getGameState(playerId);
-  console.log("Over here!: ",gameState)
-  console.log("Furthermore, ", gameState.threshold)
-  audioPlayer.playbackRate = gameState.threshold
+  console.log("Over here!: ", gameState);
+  console.log("Furthermore, ", gameState.threshold);
+  audioPlayer.playbackRate = gameState.threshold;
   const playerState = computePlayerState(gameState);
   await processPlayerState(playerState);
 }
@@ -96,14 +96,12 @@ async function processPlayerState(playerState) {
   } else if (playerState === PLAYER_STATE.WON) {
     const playerId = getUrlArgument("playerId");
     addPlayerToLost(playerId);
-    await logoutPlayer();
-    window.confirm("Yay! You have won!");
+    if (!weDidShowWin) {
+      window.confirm("Yay! You have won!");
+      weDidShowWin = true;
+    }
 
-    // Wait for finish screen should navigate automaticaly to join screen.
-    // This is a way of ensuring there are no more players remaining.
-    navigateTo(WAITING_FOR_FINISH, {
-      playerId: playerId,
-    });
+    await logoutPlayer();
   }
 }
 
