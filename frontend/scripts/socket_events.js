@@ -44,6 +44,12 @@ socket.on("finished", async () => {
     await sleep(5000); // waiting so everyone can see score
     gameInProgress = false;
     gameFinished();
+    players = []; // the players
+    playerName = ""; // players name
+    gameInProgress = false;
+    playing = false;
+    threshhold = 0;
+    losers = [];
     setPage("join");
 });
 
