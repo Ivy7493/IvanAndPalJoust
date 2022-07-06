@@ -9,7 +9,7 @@ const { time } = require("console");
 
 // A map of player name to the last time they accessed the server.
 let authMap = new Map();
-let losers = [];
+let losers = ["Ivan & Pals", "My Will To Live", "JavaScript", "ECMA Script", "Dell Users"];
 
 function authList() {
   const out = [];

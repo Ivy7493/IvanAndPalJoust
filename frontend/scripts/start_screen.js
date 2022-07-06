@@ -16,7 +16,6 @@ import {
 
 const playerList = document.querySelector(".playerList");
 
-
 async function UpdatePlayers(){
   let list = await getAllPlayers();
   console.log("what we got from request: ",list);
@@ -25,10 +24,7 @@ async function UpdatePlayers(){
 
 window.start = async function start() {
   // This player is starting the game.
-
   await startGame();
-
-
   goToPlayingPage();
 };
 
