@@ -40,25 +40,31 @@ socket.on("threshhold", (thresh) => {
 // gets sent to the losing players
 socket.on("losers", (l) => {
     losers = l;
+    console.log(l);
     setPage("lose");
 });
 
 // gets sent to the losing players
 socket.on("finished", async () => {
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
-    await sleep(5000); // waiting so everyone can see score
-    gameFinished();
-
+    if (playing) {
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        await sleep(5000); // waiting so everyone can see score
+        
+        StopMusic();
+    }
+    
     // resetting state
     players = []; // the players
     playerName = ""; // players name
     gameInProgress = false;
     playing = false;
+    playerReady = false;
+    readyPlayers = [];
+    allReady = false;
     threshhold = 0;
     losers = [];
 
-    StopMusic();
-    
+    gameFinished();
     setPage("join");
 });
 
@@ -91,7 +97,6 @@ setInterval(() =>{
 function gameProgess() {
   let joinButton = document.getElementById("joinButton");
   joinButton.innerHTML = "Game in Progress please wait...";
-  joinButton.id = "joinButtonNo";
   // joinButton.disabled = true;
   // joinButton.style.backgroundColor = 'brown'
 }
@@ -99,7 +104,6 @@ function gameProgess() {
 function gameFinished() {
   let joinButton = document.getElementById("joinButton");
   joinButton.innerHTML = "Join game";
-  joinButton.id = "joinButton";
   // joinButton.style.backgroundColor = 'rgb(42, 165, 54)';
   // joinButton.disabled = false;
 }
