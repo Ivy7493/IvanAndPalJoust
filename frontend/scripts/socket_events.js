@@ -1,5 +1,5 @@
 import { setPage } from "./setPage.js";
-import { OnRTT, OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
+import { displayPlayers, OnRTT, OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
 import {SetSensitivity} from './game.js'
 import {setPlayerRate, StopMusic} from './setup.js'
 import { MovingAverageQueue } from "./data_structures.js";
@@ -48,7 +48,7 @@ socket.on("losers", (l) => {
 socket.on("finished", async () => {
     if (playing) {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
-        await sleep(5000); // waiting so everyone can see score
+        await sleep(7000); // waiting so everyone can see score
         
         StopMusic();
     }
@@ -63,6 +63,7 @@ socket.on("finished", async () => {
     allReady = false;
     threshhold = 0;
     losers = [];
+    globGyroScore = 0
 
     gameFinished();
     setPage("join");
@@ -70,10 +71,12 @@ socket.on("finished", async () => {
 
 socket.on("readyPlayers", (p) => {
     readyPlayers = p;
+    displayPlayers();
 });
 
 socket.on("allReady", (r) => {
     allReady = r;
+    displayPlayers();
 });
 
 socket.on("serverTime", (timestamp) => {
