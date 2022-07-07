@@ -162,7 +162,7 @@ io.on("connection", (socket) => {
 
     gameInProgress = true;
     io.to(STATE.playing).emit("start", null); // for when the game starts
-    io.to(STATE.playing).emit("timeToResetMusic", Date.now() + 4000); // set time in future for clients to sync music
+    io.to(STATE.playing).emit("timeToResetMusic", Date.now() + 5000); // set time in future for clients to sync music
     numPlaying = numPlayersReady;
   });
 
@@ -194,7 +194,7 @@ setInterval(() => {
   let max = 1.5;
   let min = 0.5;
   io.to(STATE.playing).emit("threshhold", Math.random() * (max - min) + min);
-}, 1000);
+}, 5000);
 
 // Send server timestamp
 setInterval(() => {

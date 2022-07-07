@@ -1,107 +1,62 @@
+import {
+  createTrack,
+  enableAudio,
+  getActiveTrackPath,
+  getAudioBuffer,
+  getAudioTime,
+  setActiveTrack,
+  setActiveTrackTrate,
+  stopActiveTrack,
+} from "./audio_setup.js";
 import { MovingAverageQueue } from "./data_structures.js";
 import { IsCurrentPageGamePage } from "./setPage.js";
 import { hashStringToColor, invertColor, rgbToString } from "./stringToRGB.js";
 
 let joinButton = document.getElementById("joinButton");
 
-const audioPlayers = new Map();
-const readySongs = new Map();
-
+const audioBuffers = new Map();
 const lobbyMusic = "elevatorMusic.mp3";
 
-const flashIndicator = document.querySelector(".flashIndicator");
-
-async function preloadAllAudio() {
+export async function preloadAllAudio() {
   const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
 
   for (const song of audioFilenames) {
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
-    const audioObject = new Audio(url);
-    audioObject.load();
-
-    audioObject.loop = true;
-    audioPlayers.set(song, audioObject);
-    readySongs.set(song, false);
-    audioObject.oncanplaythrough = function (_) {
-      console.log(song, " is ready");
-      readySongs.set(song, true);
-    };
+    const audioBuffer = await getAudioBuffer(url);
+    audioBuffers.set(song, audioBuffer);
   }
-
-  // Wait for them to be ready to play
-  let shouldWait = false;
-  do {
-    await new Promise((r) => setTimeout(r, 100)); // Use Promise to not block song fetching
-
-    shouldWait = false;
-    for (const song of readySongs.keys()) {
-      const ready = readySongs.get(song);
-
-      if (!ready) {
-        shouldWait = true;
-        break;
-      } else {
-        readySongs.set(song, true);
-      }
-    }
-  } while (shouldWait);
 
   joinButton.style.display = "block";
   document.getElementById("loading").style.display = "none";
 }
 
-export async function playPreloadedSong(songPath) {
+export async function playPreloadedSong(songPath, playInMillisFromNow = 0) {
   const lastSlashIndex = songPath.lastIndexOf("/");
   if (lastSlashIndex != -1) {
     songPath = songPath.substring(lastSlashIndex + 1);
   }
 
-  for (const songFile of audioPlayers.keys()) {
-    const songPlayer = audioPlayers.get(songFile);
+  for (const songFile of audioBuffers.keys()) {
+    if (songFile === songPath && getActiveTrackPath() != songFile) {
+      stopActiveTrack();
 
-    if (songFile === songPath) {
-      await songPlayer.play();
-    } else {
-      songPlayer.pause();
+      const songBuffer = audioBuffers.get(songFile);
+      const track = await createTrack(songBuffer);
+
+      const when = getAudioTime() + playInMillisFromNow / 1000;
+      track.start();
+      setActiveTrack(track, songFile);
+      console.log("Song started ", songPath);
     }
   }
 }
 
 export function setPlayerRate(rate) {
-  for (const song of audioPlayers.keys()) {
-    const player = audioPlayers.get(song);
-    if (!player.paused && song != lobbyMusic) {
-      player.playbackRate = rate;
-    } else if (!player.paused && song == lobbyMusic) {
-      player.playbackRate = 1;
-    }
-  }
+  setActiveTrackTrate(rate);
 }
+
 export function StopMusic() {
-  for (const song of audioPlayers.keys()) {
-    const player = audioPlayers.get(song);
-    if (!player.paused) {
-      // player.pause();
-    }
-  }
-}
-
-function RestartPlayingSong(data="") {
-  for (const song of audioPlayers.keys()) {
-    const player = audioPlayers.get(song);
-    if (!player.paused) {
-      // player.currentTime = 0;
-      // player.pause();
-      // alert(data);
-
-      setInterval(function() {
-        flashIndicator.classList.remove("disabled");
-        setTimeout(function() {
-          flashIndicator.classList.add("disabled");
-        }, 100);
-      }, 1000);
-    }
-  }
+  stopActiveTrack();
 }
 
 // The time in future that all devices should reset their music
@@ -132,15 +87,18 @@ export function OnServerTimestamp(serverTimestamp) {
   if (serverClientTimeDeltas.isFull()) {
     // Be ready to sync audio if we are on game screen
     if (IsCurrentPageGamePage() && !didSyncMusic) {
+      didSyncMusic = true;
       const avgDelta = serverClientTimeDeltas.getAverage();
-      const estServerTime = Date.now() + avgDelta;
-      console.log("avgDelta", avgDelta);
+      // const estServerTime = Date.now() + avgDelta;
 
-      if (estServerTime >= serverTimeToResetSong) {
-        didSyncMusic = true;
-        RestartPlayingSong(estServerTime);
-        console.log("music reset at est server time", estServerTime);
-      }
+      const futureServerTimeAsLocal = serverTimeToResetSong + avgDelta;
+      const diffToAwait = futureServerTimeAsLocal - Date.now();
+      playPreloadedSong("Umbrella.mp3", diffToAwait);
+
+      // if (estServerTime >= serverTimeToResetSong) {
+      //   RestartPlayingSong(estServerTime);
+      //   console.log("music reset at est server time", estServerTime);
+      // }
     }
   }
 }
@@ -150,7 +108,7 @@ window.onload = () => {
   preloadAllAudio();
 
   // buttons
-  joinButton.onclick = () => {
+  joinButton.onclick = async () => {
     let elem = document.documentElement;
 
     if (elem.requestFullscreen) {
@@ -163,8 +121,10 @@ window.onload = () => {
       elem.msRequestFullscreen();
     }
 
-    socket.emit("join", null);
+    await enableAudio();
     playPreloadedSong("elevatorMusic.mp3");
+
+    socket.emit("join", null);
   };
 
   let clickCount = 0; // number of clicks before showing alert
