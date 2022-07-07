@@ -1,6 +1,5 @@
 const express = require("express");
 const http = require("http");
-const { createSocket } = require("dgram");
 const bodyParser = require("body-parser");
 const mainRouter = require("./backend/routes/mainRoutes.js");
 const { Server } = require("socket.io");
@@ -64,6 +63,9 @@ io.on("connection", (socket) => {
 
     // is client is in game and leaves add them as loser
     if (connections[socket.id].playing) {
+      if (connections[socket.id].ready) {
+        numPlayersReady--;
+      }
       numPlaying--;
       losers.push(connections[socket.id].name);
       io.to(STATE.lost).emit("losers", losers);
@@ -96,8 +98,8 @@ io.on("connection", (socket) => {
       await socket.join(STATE.waiting);
       io.to(STATE.waiting).emit("gameInProgress");
     } else {
-      numPlayersReady++; // temp
       let name = nameLib.GenerateName();
+      numPlaying++;
       connections[socket.id]["name"] = name; // adding name to json object
       players.push(name);
       socket.emit("name", name);
@@ -115,45 +117,63 @@ io.on("connection", (socket) => {
   socket.on("playerReady", (ready) => {
     if (ready) {
       if (!connections[socket.id].ready) {
+        console.log("got here");
         connections[socket.id].ready = true;
         numPlayersReady++;
+        readyList.push(connections[socket.id].name);
       }
-
-      readyList.push(connections[socket.id]);
 
       io.to(STATE.playing).emit("readyPlayers", readyList);
 
-      if (numPlayersReady == numConnections) {
+      if (numPlayersReady == numPlaying) {
+        console.log(numPlayersReady + " PLAYERS READY");
         io.to(STATE.playing).emit("allReady", true);
       }
     } else {
       if (connections[socket.id].ready) numPlayersReady--;
       connections[socket.id].ready = false;
-      readyList.splice(readyList.findIndex(connections[socket.id].name), 1);
+      // readyList.splice(readyList.findIndex(connections[socket.id].name), 1);
+
+      let newPlayers = [];
+      for (let p of readyList)
+        if (p != connections[socket.id].name) newPlayers.push(p);
+
+      readyList = newPlayers;
+
+      io.to(STATE.playing).emit("readyPlayers", readyList);
+
+      console.log("THE CAKE IS A LIE (NOT OFFERED BY RED RADISSON :( ))");
+
       io.to(STATE.playing).emit("allReady", false);
     }
+    console.log("NUM PLAYERS READY : : :: :: : " + numPlayersReady);
+    console.log("NUM PLAYERS PLAYING " + numPlaying);
   });
 
 
   // for when a player lost
   socket.on("playerLost", async () => {
-    numPlaying--;
-    losers.push(connections[socket.id].name);
-    await socket.join(STATE.lost);
-    io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
+    if (gameInProgress) {
+      numPlaying--;
+      losers.push(connections[socket.id].name);
+      console.log(losers);
 
-    if (numPlaying == 1) {
-      // there is a winner
-      for (let c of Object.keys(connections))
-        if (!losers.includes(connections[c].name)) {
-          losers.push(connections[c].name);
-          await connections[c].socket.join(STATE.lost);
-          io.to(STATE.lost).emit("losers", losers);
-          break;
-        }
-
-      reset();
-      io.emit("finished", null);
+      await socket.join(STATE.lost);
+      io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
+  
+      if (numPlaying == 1) {
+        // there is a winner
+        for (let c of Object.keys(connections))
+          if (!losers.includes(connections[c].name)) {
+            losers.push(connections[c].name);
+            await connections[c].socket.join(STATE.lost);
+            io.to(STATE.lost).emit("losers", losers);
+            break;
+          }
+  
+        reset();
+        io.emit("finished", null);
+      }
     }
   });
 
@@ -163,7 +183,6 @@ io.on("connection", (socket) => {
     gameInProgress = true;
     io.to(STATE.playing).emit("start", null); // for when the game starts
     io.to(STATE.playing).emit("timeToResetMusic", Date.now() + 4000); // set time in future for clients to sync music
-    numPlaying = numPlayersReady;
   });
 
   socket.on("rtt", (timestamp) => {
@@ -195,7 +214,7 @@ setInterval(() => {
   let min = 0.5;
   let x = Math.random() * (max - min) + min;
   x = Math.floor(x*2)/2.0;
-  console.log("POGGERS X: " + x);
+  // console.log("POGGERS X: " + x);
   io.to(STATE.playing).emit("threshhold", x);
 }, 4000);
 
