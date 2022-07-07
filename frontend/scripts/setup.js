@@ -139,12 +139,27 @@ export function OnServerTimestamp(serverTimestamp) {
   }
 }
 
+function getMobileOperatingSystem() {
+  var userAgent = navigator.userAgent ||  navigator.vendor ||  window.opera;
+  if (/windows phone/i.test(userAgent)) { return "Windows Phone"; }
+  if (/android/i.test(userAgent)) { return "Android"; }
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) { return "iOS"; }
+  return "unknown";
+}
+
 window.onload = () => {
   joinButton = document.getElementById("joinButton");
   preloadAllAudio();
 
   // buttons
   joinButton.onclick = () => {
+    if(getMobileOperatingSystem() == 'iOS') {
+      DeviceMotionEvent.requestPermission().then(response => {
+          if (response == 'granted') { socket.emit("join", null); }
+          else { alert("Please grant permissions to play"); }
+      });
+  }
+  else {
     let elem = document.documentElement;
 
     if (elem.requestFullscreen) {
@@ -156,8 +171,8 @@ window.onload = () => {
       /* IE11 */
       elem.msRequestFullscreen();
     }
-
-    socket.emit("join", null);
+ 
+    socket.emit("join", null); }
     playPreloadedSong("elevatorMusic.mp3");
   };
 
