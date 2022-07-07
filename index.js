@@ -117,7 +117,6 @@ io.on("connection", (socket) => {
   socket.on("playerReady", (ready) => {
     if (ready) {
       if (!connections[socket.id].ready) {
-        console.log("got here");
         connections[socket.id].ready = true;
         numPlayersReady++;
         readyList.push(connections[socket.id].name);
@@ -142,34 +141,32 @@ io.on("connection", (socket) => {
 
       io.to(STATE.playing).emit("readyPlayers", readyList);
 
-      console.log("THE CAKE IS A LIE (NOT OFFERED BY RED RADISSON :( ))");
-
       io.to(STATE.playing).emit("allReady", false);
     }
-    console.log("NUM PLAYERS READY : : :: :: : " + numPlayersReady);
-    console.log("NUM PLAYERS PLAYING " + numPlaying);
   });
-
-
+  
+  
   // for when a player lost
   socket.on("playerLost", async () => {
     if (gameInProgress) {
       numPlaying--;
+      console.log("NUM PLAYERS PLAYING " + numPlaying);
       losers.push(connections[socket.id].name);
-      console.log(losers);
-
+      
       await socket.join(STATE.lost);
       io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
-  
+      
       if (numPlaying == 1) {
         // there is a winner
-        for (let c of Object.keys(connections))
-          if (!losers.includes(connections[c].name)) {
+        for (let c of Object.keys(connections)) {
+          if (!losers.includes(connections[c].name) && connections[c].playing) {
             losers.push(connections[c].name);
+            console.log(losers);
             await connections[c].socket.join(STATE.lost);
             io.to(STATE.lost).emit("losers", losers);
             break;
           }
+        }
   
         reset();
         io.emit("finished", null);
@@ -178,7 +175,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("gameStart", () => {
-    for (let c of Object.keys(connections)) connections[c].playing = true;
+    for (let c of Object.keys(connections)) if (connections[c].name != undefined) connections[c].playing = true;
 
     gameInProgress = true;
     io.to(STATE.playing).emit("start", null); // for when the game starts
