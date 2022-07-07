@@ -1,6 +1,5 @@
 const express = require("express");
 const http = require("http");
-const { createSocket } = require("dgram");
 const bodyParser = require("body-parser");
 const mainRouter = require("./backend/routes/mainRoutes.js");
 const { Server } = require("socket.io");
@@ -118,7 +117,7 @@ io.on("connection", (socket) => {
   socket.on("playerReady", (ready) => {
     if (ready) {
       if (!connections[socket.id].ready) {
-        console.log("got here");
+        // console.log("got here");
         connections[socket.id].ready = true;
         numPlayersReady++;
         readyList.push(connections[socket.id].name);
@@ -145,12 +144,10 @@ io.on("connection", (socket) => {
 
       io.to(STATE.playing).emit("readyPlayers", readyList);
 
-      console.log("THE CAKE IS A LIE (NOT OFFERED BY RED RADISSON :( ))");
-
       io.to(STATE.playing).emit("allReady", false);
     }
-    console.log("NUM PLAYERS READY : : :: :: : " + numPlayersReady);
-    console.log("NUM PLAYERS PLAYING " + numPlaying);
+    // console.log("NUM PLAYERS READY : : :: :: : " + numPlayersReady);
+    // console.log("NUM PLAYERS PLAYING " + numPlaying);
   });
 
 
@@ -166,13 +163,14 @@ io.on("connection", (socket) => {
   
       if (numPlaying == 1) {
         // there is a winner
-        for (let c of Object.keys(connections))
-          if (!losers.includes(connections[c].name)) {
+        for (let c of Object.keys(connections)) {
+          if (!losers.includes(connections[c].name) && connections[c].playing) {
             losers.push(connections[c].name);
             await connections[c].socket.join(STATE.lost);
             io.to(STATE.lost).emit("losers", losers);
             break;
           }
+        }
   
         reset();
         io.emit("finished", null);
@@ -181,7 +179,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("gameStart", () => {
-    for (let c of Object.keys(connections)) connections[c].playing = true;
+    for (let c of Object.keys(connections)) {
+        if (connections[c].name != undefined) {
+            connections[c].playing = true;
+        }
+    }
 
     gameInProgress = true;
     io.to(STATE.playing).emit("start", null); // for when the game starts
