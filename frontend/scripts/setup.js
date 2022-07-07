@@ -132,8 +132,8 @@ export function OnServerTimestamp(serverTimestamp) {
         console.log("music reset at est server time", estServerTime);
       } else {
         console.log("estimate: ", estServerTime, " resetTime: ", serverTimeToResetSong);
-        console.log("Music stopped");
-        StopMusic();
+        //console.log("Music stopped");
+        //StopMusic();
       }
     }
   }
@@ -179,7 +179,7 @@ window.onload = () => {
   let clickCount = 0; // number of clicks before showing alert
   document.getElementById("startButton").onclick = () => {
     let elem = document.documentElement;
-
+    
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) {
@@ -189,7 +189,6 @@ window.onload = () => {
       /* IE11 */
       elem.msRequestFullscreen();
     }
-
     // need at least 2 players to play
     if (players.length > 1) socket.emit("gameStart", null);
 
@@ -198,6 +197,7 @@ window.onload = () => {
       clickCount = 0;
       alert("You require at least 2 players to player");
     }
+    playPreloadedSong("Umbrella.mp3");
   };
 };
 
