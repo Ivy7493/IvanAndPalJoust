@@ -1,5 +1,5 @@
 import { setPage } from "./setPage.js";
-import { OnRTT, OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
+import { displayPlayers, OnRTT, OnServerTimestamp, ResetMusicSync, SetServerTimeToResetSong } from "./setup.js";
 import {SetSensitivity} from './game.js'
 import {setPlayerRate, StopMusic} from './setup.js'
 import { MovingAverageQueue } from "./data_structures.js";
@@ -70,10 +70,12 @@ socket.on("finished", async () => {
 
 socket.on("readyPlayers", (p) => {
     readyPlayers = p;
+    displayPlayers();
 });
 
 socket.on("allReady", (r) => {
     allReady = r;
+    displayPlayers();
 });
 
 socket.on("serverTime", (timestamp) => {

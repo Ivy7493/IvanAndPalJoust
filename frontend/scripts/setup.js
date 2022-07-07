@@ -176,12 +176,22 @@ window.onload = () => {
     }
 
     // need at least 2 players to play
-    if (players.length > 1) socket.emit("gameStart", null);
+    if (players.length > 1)
+    {
+      if(!allReady)
+      {
+        alert("All players must be ready to begin");
+      }
+      else
+      {
+        socket.emit("gameStart", null);
+      }
+    }
 
     clickCount++;
     if (clickCount == 5) {
       clickCount = 0;
-      alert("You require at least 2 players to player");
+      alert("You require at least 2 players to play");
     }
   };
 };
@@ -201,6 +211,7 @@ export function displayPlayers() {
     newPlayer.classList.add("playerItem");
 
     //Player colored bubble
+    console.log(readyPlayers);
     let newPlayerBubble = document.createElement("span");
     newPlayerBubble.textContent = "⬤";
     newPlayerBubble.classList.add("playerBubble");
@@ -208,7 +219,15 @@ export function displayPlayers() {
 
     newPlayer.appendChild(newPlayerBubble);
 
-    // newPlayer.style.backgroundColor = "#81d881"; //TODO: Integrate with player ready state
+    //TODO: Integrate with player ready state
+    if(readyPlayers.indexOf(p) > -1)
+    {
+      newPlayer.style.backgroundColor = "#80d881";
+    }
+    else
+    {
+      newPlayer.style.backgroundColor = "wheat";
+    }
 
     //You
     if (playerName == p){
