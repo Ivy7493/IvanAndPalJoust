@@ -63,7 +63,8 @@ socket.on("finished", async () => {
     allReady = false;
     threshhold = 0;
     losers = [];
-    globGyroScore = 0
+    globGyroScore = 0;
+    canJoin = true;
 
     gameFinished();
     setPage("join");

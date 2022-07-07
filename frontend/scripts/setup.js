@@ -126,31 +126,34 @@ window.onload = async () => {
 
   // buttons
   joinButton.onclick = async () => {
-  if(getMobileOperatingSystem() == 'iOS') {
-        DeviceMotionEvent.requestPermission().then(response => {
-            if (response == 'granted') { socket.emit("join", null); }
-            else { alert("Please grant permissions to play"); }
-        });
+    if (canJoin) {
+      if(getMobileOperatingSystem() == 'iOS') {
+            DeviceMotionEvent.requestPermission().then(response => {
+                if (response == 'granted') { socket.emit("join", null); }
+                else { alert("Please grant permissions to play"); }
+            });
+        }
+        else {
+          let elem = document.documentElement;
+    
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+          } else if (elem.webkitRequestFullscreen) {
+            /* Safari */
+            elem.webkitRequestFullscreen();
+          } else if (elem.msRequestFullscreen) {
+            /* IE11 */
+            elem.msRequestFullscreen();
+          }
+    
+          socket.emit("join", null);
+        }
+        await enableAudio();
+        playPreloadedSong("elevatorMusic.mp3");
+
+        canJoin = false;
+    
     }
-    else {
-      let elem = document.documentElement;
-
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen();
-      } else if (elem.webkitRequestFullscreen) {
-        /* Safari */
-        elem.webkitRequestFullscreen();
-      } else if (elem.msRequestFullscreen) {
-        /* IE11 */
-        elem.msRequestFullscreen();
-      }
-
-      socket.emit("join", null);
-    }
-    await enableAudio();
-    playPreloadedSong("elevatorMusic.mp3");
-
-    socket.emit("join", null);
   };
 
   let clickCount = 0; // number of clicks before showing alert
