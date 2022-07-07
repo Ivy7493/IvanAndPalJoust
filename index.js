@@ -140,6 +140,7 @@ io.on("connection", (socket) => {
     numPlaying--;
     losers.push(connections[socket.id].name);
     await socket.join(STATE.lost);
+    console.log(losers);
     io.to(STATE.lost).emit("losers", losers); // sending the latest data of all the losers
 
     if (numPlaying == 1) {
