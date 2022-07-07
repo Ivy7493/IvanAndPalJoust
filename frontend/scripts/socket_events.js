@@ -48,7 +48,7 @@ socket.on("losers", (l) => {
 socket.on("finished", async () => {
     if (playing) {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
-        await sleep(5000); // waiting so everyone can see score
+        await sleep(7000); // waiting so everyone can see score
         
         StopMusic();
     }
@@ -63,6 +63,7 @@ socket.on("finished", async () => {
     allReady = false;
     threshhold = 0;
     losers = [];
+    globGyroScore = 0
 
     gameFinished();
     setPage("join");
