@@ -8,7 +8,7 @@ async function playGameSong() {
 
 let sensitivity = 1.0;
 export function SetSensitivity(_sense){
-    sensitivity = 0.1/_sense //if we wanna change the sensitivity relation here it is
+    sensitivity = 1.9/_sense //if we wanna change the sensitivity relation here it is
 }
 
 export function initGame() { // essentially onload for join

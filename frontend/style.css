@@ -45,6 +45,13 @@ html {
 
 }
 
+.playerBubble {
+  font-size: 2em;
+  position: relative;
+  top: 0.1em;
+  padding-right: 0.2em;
+}
+
 .playerListLose > .playerItem {
   margin-top: 0px;
   margin-bottom: 0px;
