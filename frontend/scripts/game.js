@@ -12,7 +12,7 @@ export function SetSensitivity(_sense){
 }
 
 export function initGame() { // essentially onload for join
-    const shakeBar = document.querySelector(".shakeBar");
+    const shakeBar = document.querySelector(".shakeBar")
     const root = document.querySelector(":root");
     const debug = document.querySelector("#debug");
     const upIcon = document.querySelector(".bigIcon");

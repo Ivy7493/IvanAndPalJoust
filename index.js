@@ -114,6 +114,7 @@ io.on("connection", (socket) => {
 
   // makes player ready
   socket.on("playerReady", (ready) => {
+    if (connections[socket.id].name != undefined)
     if (ready) {
       if (!connections[socket.id].ready) {
         connections[socket.id].ready = true;

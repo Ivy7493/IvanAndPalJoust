@@ -297,3 +297,9 @@ height: 30vh;
   margin: 5px auto;
   display: block;
 }
+
+#loading{
+  display: block;
+  margin: 10px auto;
+  height: 6em;
+}

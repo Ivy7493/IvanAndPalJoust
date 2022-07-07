@@ -103,7 +103,7 @@ export function OnServerTimestamp(serverTimestamp) {
 
       const futureServerTimeAsLocal = serverTimeToResetSong + avgDelta;
       const diffToAwait = futureServerTimeAsLocal - Date.now();
-      playPreloadedSong("Umbrella.mp3", diffToAwait);
+      playPreloadedSong("cottonEyedJoe.mp3", diffToAwait);
 
       // if (estServerTime >= serverTimeToResetSong) {
       //   RestartPlayingSong(estServerTime);
@@ -149,6 +149,7 @@ window.onload = async () => {
           socket.emit("join", null);
         }
         await enableAudio();
+        // playPreloadedSong('cottonEyedJoe.mp3')new A
         playPreloadedSong("elevatorMusic.mp3");
 
         canJoin = false;
