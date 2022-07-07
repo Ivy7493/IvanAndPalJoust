@@ -119,6 +119,7 @@ io.on("connection", (socket) => {
       if (!connections[socket.id].ready) {
         connections[socket.id].ready = true;
         numPlayersReady++;
+        console.log("NPREADY " + numPlayersReady);
         readyList.push(connections[socket.id].name);
       }
 
