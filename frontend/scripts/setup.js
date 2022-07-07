@@ -18,16 +18,26 @@ const audioBuffers = new Map();
 const lobbyMusic = "elevatorMusic.mp3";
 
 export async function preloadAllAudio() {
-  const audioFilenames = ["elevatorMusic.mp3", "Umbrella.mp3"];
+  const audioFilenames = ["elevatorMusic.mp3", "cottonEyedJoe.mp3"];
 
   for (const song of audioFilenames) {
+    // alert("SONG " + song);
     const url = `${window.location.protocol}//${window.location.host}/audio/${song}`;
-    const audioBuffer = await getAudioBuffer(url);
-    audioBuffers.set(song, audioBuffer);
+    // alert("URL " + url);
+    try
+    {
+      const audioBuffer = await getAudioBuffer(url);
+      audioBuffers.set(song, audioBuffer);
+    } catch(e) {alert(e.message);}
   }
 
-  joinButton.style.display = "block";
-  document.getElementById("loading").style.display = "none";
+  try{
+    joinButton.style.display = "block";
+    // joinButton.classList.remove("disabled")
+    document.getElementById("loading").style.display = "none";
+    // document.getElementById("loading").classList.add("disabled");
+  } catch (e) {alert(e.message);}
+  // alert("HI THERE");
 }
 
 export async function playPreloadedSong(songPath, playInMillisFromNow = 0) {
@@ -103,24 +113,40 @@ export function OnServerTimestamp(serverTimestamp) {
   }
 }
 
-window.onload = () => {
+function getMobileOperatingSystem() {
+            var userAgent = navigator.userAgent ||  navigator.vendor || window.opera;
+            if (/windows phone/i.test(userAgent)) { return "Windows Phone"; }
+            if (/android/i.test(userAgent)) { return "Android"; }
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) { return "iOS"; }
+            return "unknown";
+        }
+window.onload = async () => {
   joinButton = document.getElementById("joinButton");
-  preloadAllAudio();
+  await preloadAllAudio();
 
   // buttons
   joinButton.onclick = async () => {
-    let elem = document.documentElement;
-
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.webkitRequestFullscreen) {
-      /* Safari */
-      elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      /* IE11 */
-      elem.msRequestFullscreen();
+  if(getMobileOperatingSystem() == 'iOS') {
+        DeviceMotionEvent.requestPermission().then(response => {
+            if (response == 'granted') { socket.emit("join", null); }
+            else { alert("Please grant permissions to play"); }
+        });
     }
+    else {
+      let elem = document.documentElement;
 
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        /* Safari */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        /* IE11 */
+        elem.msRequestFullscreen();
+      }
+
+      socket.emit("join", null);
+    }
     await enableAudio();
     playPreloadedSong("elevatorMusic.mp3");
 

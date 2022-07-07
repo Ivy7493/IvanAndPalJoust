@@ -29,7 +29,6 @@
         let losers = [];
         let globGyroScore = 0;
     </script>
-    <script src="scripts/setup.js" type="module"></script>
     <script>
         if (window.DeviceOrientationEvent) {
             addEventListener("deviceorientation", function(event) {
@@ -132,6 +131,7 @@
         </div>
     </div>
 
+    <script src="scripts/setup.js" type="module"></script>
     <script type="text/javascript" src="quaternion.min.js"></script>
     <script type="text/javascript" src="kalman.min.js"></script>
     <script type="module">
