@@ -126,6 +126,8 @@ io.on("connection", (socket) => {
       if (numPlayersReady == numPlaying) {
         console.log(numPlayersReady + " PLAYERS READY");
         io.to(STATE.playing).emit("allReady", true);
+      } else {
+        io.to(STATE.playing).emit("allReady", false);
       }
     } else {
       if (connections[socket.id].ready) numPlayersReady--;

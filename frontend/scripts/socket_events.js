@@ -6,6 +6,9 @@ import { MovingAverageQueue } from "./data_structures.js";
 
 // navigatge to start page
 socket.on("players", (p) => {
+
+  socket.emit("playerReady", true);
+
   players = p;
   if (!gameInProgress) {
     playing = true;
