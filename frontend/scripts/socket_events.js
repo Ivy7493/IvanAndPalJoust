@@ -40,7 +40,6 @@ socket.on("threshhold", (thresh) => {
 // gets sent to the losing players
 socket.on("losers", (l) => {
     losers = l;
-    console.log(l);
     setPage("lose");
 });
 
