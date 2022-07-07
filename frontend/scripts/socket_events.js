@@ -63,6 +63,7 @@ socket.on("finished", async () => {
     allReady = false;
     threshhold = 0;
     losers = [];
+    canJoin = true;
 
     gameFinished();
     setPage("join");

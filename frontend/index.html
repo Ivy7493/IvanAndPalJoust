@@ -28,6 +28,7 @@
         let allReady = false;
         let threshhold = 0;
         let losers = [];
+        let canJoin = true;
     </script>
     <script>
         if (window.DeviceOrientationEvent) {
@@ -68,7 +69,7 @@
         <div class="rotationMarker">
         </div>
 
-        <p id="debug">
+        <p id="debug" class="disabled">
             Debug text
         </p>
 
@@ -87,9 +88,10 @@
         </div>
         <div class="body">
             <div>
+                <img src="loading.svg" alt="loading" id="loading">
                 <div id="joinButton">Join game</div>
                 <img src="qr.svg" alt="qr" id="qr">
-                <img src="loading.svg" alt="loading" id="loading">
+                
             </div>
         </div>
     </div>
