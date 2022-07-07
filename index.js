@@ -191,10 +191,13 @@ function reset() {
 
 // send the threshold value
 setInterval(() => {
-  let max = 1.5;
+  let max = 2;
   let min = 0.5;
-  io.to(STATE.playing).emit("threshhold", Math.random() * (max - min) + min);
-}, 1000);
+  let x = Math.random() * (max - min) + min;
+  x = Math.floor(x*2)/2.0;
+  console.log("POGGERS X: " + x);
+  io.to(STATE.playing).emit("threshhold", x);
+}, 4000);
 
 // Send server timestamp
 setInterval(() => {

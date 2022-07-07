@@ -1,6 +1,6 @@
 import { MovingAverageQueue } from "./data_structures.js";
 import { IsCurrentPageGamePage } from "./setPage.js";
-import { hashStringToColor, invertColor, rgbToString } from "./stringToRGB.js";
+import { hashStringToColor, invertColor, hsvToString } from "./stringToRGB.js";
 
 let joinButton = document.getElementById("joinButton");
 
@@ -201,20 +201,27 @@ export function displayPlayers() {
   for (let p of players) {
     // colors
     let color = hashStringToColor(p);
-    let invColor = invertColor(color);
 
+    //Create elements
     let newPlayer = document.createElement("div");
     newPlayer.classList.add("playerItem");
-    newPlayer.textContent = p;
 
-    let iColor = rgbToString(invColor);
-    newPlayer.style.color = iColor;
-    if (playerName == p) {
-      newPlayer.style.border = "2px solid " + iColor;
-      newPlayer.textContent = newPlayer.textContent + " (You)";
+    //Player colored bubble
+    let newPlayerBubble = document.createElement("span");
+    newPlayerBubble.textContent = "⬤";
+    newPlayerBubble.classList.add("playerBubble");
+    newPlayerBubble.style.color = hsvToString(color);
+
+    newPlayer.appendChild(newPlayerBubble);
+
+    // newPlayer.style.backgroundColor = "#81d881"; //TODO: Integrate with player ready state
+
+    //You
+    if (playerName == p){
+      newPlayer.style.border = "2px solid white";
+      newPlayer.style.transform = "scale(1.05)";
     }
-
-    newPlayer.style.backgroundColor = rgbToString(color);
+    newPlayer.appendChild(document.createTextNode(p + (playerName == p ? " (You)" : "")));
 
     playerList.appendChild(newPlayer);
   }
@@ -233,11 +240,11 @@ export function displayLosers() {
     newPlayer.classList.add("playerItem");
     newPlayer.textContent = i + 1 + ". " + losers[losers.length - 1 - i];
 
-    let iColor = rgbToString(invColor);
+    let iColor = hsvToString(invColor);
     newPlayer.style.color = iColor;
     if (playerName == losers[losers.length - 1 - i])
       newPlayer.style.border = "2px solid " + iColor;
-    newPlayer.style.backgroundColor = rgbToString(color);
+    newPlayer.style.backgroundColor = hsvToString(color);
 
     playerList.appendChild(newPlayer);
   }
